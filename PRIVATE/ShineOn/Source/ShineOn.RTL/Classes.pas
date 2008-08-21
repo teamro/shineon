@@ -143,22 +143,21 @@ type
     property Duplicates: TDuplicates read FDuplicates write FDuplicates;
   end;
   
-  [Guid('285DEA8A-B865-11D1-AAA7-00C04FB17A72')]
   IInterfaceList = public interface
     procedure Clear;
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
-    function First: IInterface;
-    function IndexOf(const Item: IInterface): Integer;
-    function Add(const Item: IInterface): Integer;
-    procedure Insert(Index: Integer; const Item: IInterface);
-    function Last: IInterface;
-    function Remove(const Item: IInterface): Integer;
+    function First: Object;
+    function IndexOf(const Item: Object): Integer;
+    function Add(const Item: Object): Integer;
+    procedure Insert(Index: Integer; const Item: Object);
+    function Last: Object;
+    function Remove(const Item: Object): Integer;
     procedure Lock;
     procedure Unlock;
     property Capacity: Integer read write;
     property Count: Integer  read write;
-    property Items[Index: Integer]: IInterface read write;
+    property Items[Index: Integer]: Object read write;
   end;
 
   TInterfacedObject = public class(TObject); // in .NET, all objects are interfaced
@@ -167,10 +166,10 @@ type
   protected
     // IInterfaceList 
     FList:TThreadList;
-    function Get(Index: Integer): IInterface;
+    function Get(Index: Integer): Object;
     function GetCapacity: Integer;
     function GetCount: Integer;
-    procedure Put(Index: Integer; const Value: IInterface);
+    procedure Put(Index: Integer; const Value: Object);
     procedure SetCapacity(const Value: Integer);
     procedure SetCount(const Value: Integer);
   public
@@ -179,17 +178,17 @@ type
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
     function Expand: TInterfaceList;
-    function First: IInterface;
-    function IndexOf(const Item: IInterface): Integer;
-    function Add(const Item: IInterface): Integer;
-    procedure Insert(Index: Integer; const Item: IInterface);
-    function Last: IInterface;
-    function Remove(const Item: IInterface): Integer;
+    function First: Object;
+    function IndexOf(const Item: Object): Integer;
+    function Add(const Item: Object): Integer;
+    procedure Insert(Index: Integer; const Item: Object);
+    function Last: Object;
+    function Remove(const Item: Object): Integer;
     procedure Lock;
     procedure Unlock;
     property Capacity: Integer read GetCapacity write SetCapacity;
     property Count: Integer read GetCount write SetCount;
-    property Items[Index: Integer]: IInterface read Get write Put; default;
+    property Items[Index: Integer]: Object read Get write Put; default;
  end;
 
 
@@ -220,21 +219,9 @@ type
    function GetNamePath: String; virtual;
   end;
   
-  TInterfacedPersistent = public class(TPersistent, IInterface)
-    function QueryInterface(const IID: TGUID; out Obj:IInterface): HRESULT; // stdcall;
-    function _AddRef: Integer; // stdcall;
-    function _Release: Integer; // stdcall;
-  end;
- 
-  [Guid('739C2F34-52EC-11D0-9EA6-0020AF3D82DA')]
-  IStringsAdapter = public interface
-    procedure ReferenceStrings(S: TStrings);
-    procedure ReleaseStrings;
-  end;
-  
   TStrings = public abstract class(TPersistent)
   private
-    FStringsAdapter:IStringsAdapter;
+    //FStringsAdapter:IStringsAdapter;
     FUpdateCount:Int32;
     FDelimiter, FQuoteChar:Char;
     function GetCommaText:String;
@@ -244,7 +231,7 @@ type
     procedure SetValue(Name, Value:String);
     function GetDelimitedText:String;
     procedure SetDelimitedText(Value:String);
-    procedure SetStringsAdapter(const Value:IStringsAdapter);
+//    procedure SetStringsAdapter(const Value:IStringsAdapter);
   protected
     function Get(Index: Integer): String; virtual; abstract;
     function GetCapacity: Integer; virtual;
@@ -296,7 +283,7 @@ type
     property Values[Name: String]: String read GetValue write SetValue;
     property Strings[Index: Integer]: String read Get write Put; default;
     property Text: String read GetTextStr write SetTextStr;
-    property StringsAdapter: IStringsAdapter read FStringsAdapter write SetStringsAdapter;
+    //property StringsAdapter: IStringsAdapter read FStringsAdapter write SetStringsAdapter;
   end;
   
   TStringListSortCompare = public function(List: TStringList; Index1, Index2: Integer): Integer;
@@ -1088,9 +1075,9 @@ end;
 
 { TInterfaceList }
 
-function TInterfaceList.Get(Index: Integer): IInterface;
+function TInterfaceList.Get(Index: Integer): Object;
 begin
-  Result := FList.LockList[Index] as IInterface;
+  Result := FList.LockList[Index];
   FList.UnlockList;
 end;
 
@@ -1106,7 +1093,7 @@ begin
   FList.UnlockList;
 end;
 
-procedure TInterfaceList.Put(Index: Integer; const Value: IInterface);
+procedure TInterfaceList.Put(Index: Integer; const Value: Object);
 begin
   FList.LockList[Index] := Value;
   FList.UnlockList;
@@ -1163,11 +1150,11 @@ end;
 procedure TInterfaceList.Exchange(Index1, Index2: Integer);
 var 
   AList:TList;
-  Temp:IInterface;
+  Temp:Object;
 begin
   AList := FList.LockList;
   try
-    Temp := AList.Items[Index1] as IInterface;
+    Temp := AList.Items[Index1];
     AList.Items[Index1] := AList.Items[Index2];
     AList.Items[Index2] := Temp;
   finally
@@ -1188,37 +1175,37 @@ begin
   Result := self;
 end;
 
-function TInterfaceList.First: IInterface;
+function TInterfaceList.First: Object;
 begin
-  Result := FList.LockList.First as IInterface;
+  Result := FList.LockList.First;
   FList.UnlockList;
 end;
 
-function TInterfaceList.IndexOf(const Item: IInterface): Integer;
+function TInterfaceList.IndexOf(const Item: Object): Integer;
 begin
   Result := FList.LockList.IndexOf(Item);
   FList.UnlockList;
 end;
 
-function TInterfaceList.Add(const Item: IInterface): Integer;
+function TInterfaceList.Add(const Item: Object): Integer;
 begin
   Result := FList.LockList.Add(Item);
   FList.UnlockList;
 end;
 
-procedure TInterfaceList.Insert(Index: Integer; const Item: IInterface);
+procedure TInterfaceList.Insert(Index: Integer; const Item: Object);
 begin
   FList.LockList.Insert(Index, Item);
   FList.UnlockList;
 end;
 
-function TInterfaceList.Last: IInterface;
+function TInterfaceList.Last: Object;
 begin
-  Result := FList.LockList.Last as IInterface;
+  Result := FList.LockList.Last;
   FList.UnlockList;
 end;
 
-function TInterfaceList.Remove(const Item: IInterface): Integer;
+function TInterfaceList.Remove(const Item: Object): Integer;
 begin
   FList.LockList.Remove(Item);
   FList.UnlockList;
@@ -1316,34 +1303,6 @@ begin
   raise EConvertError.Create(String.Format(SAssignError, SourceName, ToString));
 end;
 
-{ TInterfacePersistent }
-
-function TInterfacedPersistent.QueryInterface(const IID: TGUID; out Obj:IInterface): HRESULT;
-const
-  S_OK    = $00000000;
-  E_NOTIMPL = HRESULT($80004001);
-begin
-  // TODO: this is probably not correct...
-  if Self.GetType.GUID = IID then
-  begin
-    Result := S_OK;
-    Obj := self;
-  end
-  else begin
-    Obj := nil;
-    Result := E_NOTIMPL;
-  end;
-end;
-
-function TInterfacedPersistent._AddRef: Integer;
-begin
-  Result := -1;
-end;
-
-function TInterfacedPersistent._Release: Integer;
-begin
-  Result := -1;
-end;
 
 { TStrings }
 
@@ -1437,15 +1396,6 @@ begin
     for each S:String in Value.Split([Delimiter]) do  
       Add(AnsiDequotedStr(S, QuoteChar));
 end;
-
-procedure TStrings.SetStringsAdapter(const Value:IStringsAdapter);
-begin
-  if FStringsAdapter <> nil then
-    FStringsAdapter.ReleaseStrings;
-  FStringsAdapter := Value;
-  if FStringsAdapter <> nil then
-    FStringsAdapter.ReferenceStrings(self);
-end;    
 
     
 function TStrings.GetCapacity: Integer; 

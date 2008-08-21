@@ -366,7 +366,7 @@ begin
           Exit;
         end;
 
-      Result := Ord(System.Char.ToUpper(S1[I],Culture)) - Ord(System.Char.ToUpper(S2[I],Culture));
+      Result := ord(System.Char.ToUpper(S1[I],Culture)) - ord(System.Char.ToUpper(S2[I],Culture));
 
       if Result <> 0 then Exit;
     end;
@@ -635,14 +635,7 @@ end;
 
 class function SysUtils.TryStrToInt(S: String; out Value: Integer): Boolean;
 begin
-  // noob implementation
-  Result := true;
-  try
-    Value := StrToInt(S);
-  except
-    Value := default(Int32);
-    Result := false;
-  end;
+  result := Int32.TryParse(S, out Value);
 end;
 
 class function SysUtils.StrToInt64(S: String): Int64;
@@ -661,13 +654,7 @@ end;
 
 class function SysUtils.TryStrToInt64(S: String; out Value: Int64): Boolean;
 begin
-  Result := true;
-  try
-    Value := StrToInt64(S);
-  except
-    Value := default(Int64);
-    Result := false;
-  end;
+  result := Int64.TryParse(S, out Value);
 end;
 
 class function SysUtils.StrToBool(S:String):Boolean;
@@ -705,14 +692,8 @@ end;
 
 class function SysUtils.StrToDateTimeDef(S:String; Default:TDateTime):TDateTime;
 begin
-  try
-    Result := StrToDateTime(S);
-  except 
-    on E:ArgumentNullException do
-      Result := Default;
-    on E:FormatException do
-      Result := Default;
-  end;
+  var lRes: DateTime;
+  if not DateTime.TryParse(S, out lRes) then result := Default else result := lRes;
 end;
 
 class function SysUtils.StrToTime(S:String):TDateTime;
@@ -722,14 +703,7 @@ end;
 
 class function SysUtils.StrToTimeDef(S:String; Default:TDateTime):TDateTime;
 begin
-  try
-    Result := StrToTime(S);
-  except
-    on E:ArgumentNullException do
-      Result := Default;
-    on E:FormatException do
-      Result := Default;
-  end;
+  result := StrToDateTimeDef(S,Default);
 end;
 
 class function SysUtils.DateToStr(ADate:TDateTime):String;
@@ -749,10 +723,7 @@ end;
 
 class procedure SysUtils.FreeAndNil(var Obj);
 begin
-  if Obj is TObject then
-    TObject(Obj).Free
-  else if Obj is IDisposable then
-    IDisposable(Obj).Dispose;
+  Obj.Free;
   Obj := nil;
 end;
 
@@ -861,19 +832,19 @@ begin
     while (baseIdx < baseTokens.Length) and 
           (destIdx < destTokens.Length) and 
           SameFileName(baseTokens[baseIdx], destTokens[destIdx]) do begin
-      Inc(baseIdx);
-      Inc(destIdx);
+      inc(baseIdx);
+      inc(destIdx);
     end;
     builder := new StringBuilder;
     while baseIdx < baseTokens.Length do begin
       builder.Append( '..' );
       builder.Append( System.IO.Path.DirectorySeparatorChar );
-      Inc(baseIdx);
+      inc(baseIdx);
     end;
     while destIdx < destTokens.Length do begin
       builder.Append( destTokens[destIdx] );
       builder.Append( System.IO.Path.DirectorySeparatorChar );
-      Inc(destIdx);
+      inc(destIdx);
     end;
     builder.Append( ExtractFileName(DestName) );
     result := builder.ToString;
@@ -1090,7 +1061,7 @@ begin
         var subStringIndex: Integer := 1;
         while not IsFormattingChar(aFormatting[stringIndex + subStringIndex]) do
         begin
-          Inc(subStringIndex); 
+          inc(subStringIndex); 
         end;
         var formattingSubstring: String := aFormatting.Substring(stringIndex, subStringIndex + 1);
         subStringIndex := 0; 

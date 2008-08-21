@@ -218,16 +218,16 @@ const
   SNumeric = '0123456789';
 begin
   Code := 0;
-  if not Int32.TryParse(S, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
+  if not Int32.TryParse(s, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
   begin
     // find first non-numeric value
-    for i:Int32 := 0 to S.Length - 1 do
-      if SNumeric.IndexOf(S[i]) < 0 then
+    for i:Int32 := 0 to s.Length - 1 do
+      if SNumeric.IndexOf(s[i]) < 0 then
       begin
         Code := i + 1; // since Val in Delphi sets Code = 0 on success, we add an additional 1 to the result here as well
         Exit;
       end;
-    Code := S.Length;
+    Code := s.Length;
   end;
 end;
 
@@ -236,16 +236,16 @@ const
   SNumeric = '0123456789';
 begin
   Code := 0;
-  if not Int64.TryParse(S, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
+  if not Int64.TryParse(s, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
   begin
     // find first non-numeric value
-    for i:Int32 := 0 to S.Length - 1 do
-      if SNumeric.IndexOf(S[i]) < 0 then
+    for i:Int32 := 0 to s.Length - 1 do
+      if SNumeric.IndexOf(s[i]) < 0 then
       begin
         Code := i + 1; // since Val in Delphi sets Code = 0 on success, we add an additional 1 to the result here as well
         Exit;
       end;
-    Code := S.Length;
+    Code := s.Length;
   end;
 end;
 

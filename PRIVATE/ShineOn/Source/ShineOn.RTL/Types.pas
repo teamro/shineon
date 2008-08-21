@@ -13,6 +13,7 @@ interface
 uses
   System,
   System.Globalization,
+  System.IO,
   System.Runtime.InteropServices; // for guid attribute and FILETIME
   
 type
@@ -55,104 +56,38 @@ type
 
   TFileTime = public FILETIME;
 
-  [Guid('00000000-0000-0000-C000-000000000046')]
-  IInterface = public interface
-    function QueryInterface(const IID: TGUID; out Obj:IInterface): HRESULT; // stdcall;
-    function _AddRef: Integer; // stdcall;
-    function _Release: Integer; // stdcall;
+  IUnknown = public interface // there's no "root" interface type in .NET
   end;
-  
-  IUnknown = public interface(IInterface);
+    
 
-  IInvokable = public interface(IInterface);
-
- 
   // Exceptions
-  EAbort = public class(Exception);
 
-  EHeapException = public class(Exception)
-  private
-    AllowFree: Boolean;
-  public
-//    procedure FreeInstance; override;
-  end;
+  EOutOfMemory = public OutOfMemoryException;
 
-  EOutOfMemory = public class(EHeapException);
+  EInOutError = public IOException;
+  EExternal = public SystemException;
+  EExternalException = public SystemException;
 
-  EInOutError = public class(Exception)
-  public
-    ErrorCode: Integer;
-  end;
+  EIntError = public ArithmeticException;
+  EDivByZero = public DivideByZeroException;
+  ERangeError = public IndexOutOfRangeException ;
+  EIntOverflow = public OverflowException;
 
-  EExternal = public class(Exception)
-  public
-{$IFDEF MSWINDOWS}
-    //ExceptionRecord: PExceptionRecord platform;
-{$ENDIF}
-{$IFDEF LINUX}
-    //ExceptionAddress: LongWord platform;
-    //AccessAddress: LongWord platform;
-    //SignalNumber: Integer platform;
-{$ENDIF}
-  end;
+  EMathError = public ArithmeticException;
+  EInvalidOp = public InvalidOperationException;
+  EZeroDivide = public DivideByZeroException;
+  EOverflow = public OverflowException;
+  EUnderflow = public OverflowException;
 
-  EExternalException = public class(EExternal);
+  EInvalidPointer = public AccessViolationException;
 
-  EIntError = public class(EExternal);
-  EDivByZero = public class(EIntError);
-  ERangeError = public class(EIntError);
-  EIntOverflow = public class(EIntError);
+  EInvalidCast = public InvalidCastException;
 
-  EMathError = public class(EExternal);
-  EInvalidOp = public class(EMathError);
-  EZeroDivide = public class(EMathError);
-  EOverflow = public class(EMathError);
-  EUnderflow = public class(EMathError);
+  EConvertError = public FormatException;
 
-  EInvalidPointer = public class(EHeapException);
-
-  EInvalidCast = public class(Exception);
-
-  EConvertError = public class(Exception);
-
-  EAccessViolation = public class(EExternal);
-  EPrivilege = public class(EExternal);
-  EStackOverflow = public class(EExternal);
-  EControlC = public class(EExternal);
+  EAccessViolation = public AccessViolationException;
+  EStackOverflow = public StackOverflowException;
   
-{$IFDEF LINUX}
-  EQuit = class(EExternal);
-{$ENDIF}
-
-  EVariantError = public class(Exception);
-
-  EPropReadOnly = public class(Exception);
-  EPropWriteOnly = public class(Exception);
-
-  EAssertionFailed = public class(Exception);
-
-{$IFNDEF PC_MAPPED_EXCEPTIONS}
-  EAbstractError = public class(Exception);
-{$ENDIF}
-
-  EIntfCastError = public class(Exception);
-
-  EInvalidContainer = public class(Exception);
-  EInvalidInsert = public class(Exception);
-
-  EPackageError = public class(Exception);
-
-  EOSError = public class(Exception)
-  public
-    ErrorCode: DWORD;
-  end;
-  
-{$IFDEF MSWINDOWS}
-  EWin32Error = public class(EOSError);
-{$ENDIF}
-
-  ESafecallException = public class(Exception);
-
 
 type
 
@@ -166,8 +101,6 @@ type
   
 { Types used by standard events }
 type
-//  THelpContext = -MaxLongint..MaxLongint; // not supported by Chrome
-//  TShortCut = Low(Word)..High(Word); // not supported by Chrome
 
 { Standard events }
 
@@ -176,23 +109,24 @@ type
 
 { Exception classes }
 
-  EStreamError = public class(Exception);
+  (*
   EFCreateError = public class(EStreamError);
   EFOpenError = public class(EStreamError);
-  EFilerError = public class(EStreamError);
-  EReadError = public class(EFilerError);
-  EWriteError = public class(EFilerError);
   EClassNotFound = public class(EFilerError);
   EMethodNotFound = public class(EFilerError);
   EInvalidImage = public class(EFilerError);
   EResNotFound = public class(Exception);
-  EListError = public class(Exception);
   EBitsError = public class(Exception);
   EStringListError = public class(Exception);
   EComponentError = public class(Exception);
   EParserError = public class(Exception);
-  EOutOfResources = public class(EOutOfMemory);
-  EInvalidOperation = public class(Exception);
+  EOutOfResources = public class(EOutOfMemory);*)
+  EStreamError = public class(Exception);
+  EFilerError = public class(EStreamError);
+  EReadError = public class(EFilerError);
+  EWriteError = public class(EFilerError);
+  EListError = public class(Exception);
+  EInvalidOperation = public InvalidOperationException;
 
 { Duplicate management }
 
@@ -214,7 +148,7 @@ type
   TDate = TDateTime;
   TTime = TDateTime;
 
-  // TODO: handle negative values
+  
   EDateTimeException = public class(Exception);
   TDateTime = public record (IFormattable, IComparable, IConvertible)
   private
