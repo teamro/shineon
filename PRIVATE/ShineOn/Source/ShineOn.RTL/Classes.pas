@@ -1559,12 +1559,12 @@ procedure TStrings.BeginUpdate;
 begin
   if FUpdateCount = 0 then
     Changing;
-  Inc(FUpdateCount);
+  inc(FUpdateCount);
 end;
 
 procedure TStrings.EndUpdate;
 begin
-  Dec(FUpdateCount);
+  dec(FUpdateCount);
   if FUpdateCount = 0 then
     Changed;
 end;

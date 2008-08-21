@@ -21,66 +21,6 @@ uses System,
 type
   TReplaceFlags = public set of (ReplaceAll, IgnoreCase);
   
-  SeparatorType = public String;
-
-  TSysLocale = public record
-  public 
-    DefaultLCID: LCID;
-    PriLangID: LANGID;
-    SubLangID: LANGID;
-    FarEast: Boolean;
-    MiddleEast: Boolean;
-  end;
-  
-  TFormatSettings = public record
-  public 
-    CurrencyFormat: Byte;
-    NegCurrFormat: Byte;
-    ThousandSeparator: SeparatorType;
-    DecimalSeparator: SeparatorType;
-    CurrencyDecimals: Byte;
-    DateSeparator: SeparatorType;
-    TimeSeparator: SeparatorType;
-    ListSeparator: SeparatorType;
-    CurrencyString: String;
-    ShortDateFormat: String;
-    LongDateFormat: String;
-    TimeAMString: String;
-    TimePMString: String;
-    ShortTimeFormat: String;
-    LongTimeFormat: String;
-    ShortMonthNames: array [1..12] of String;
-    LongMonthNames: array [1..12] of String;
-    ShortDayNames: array [1..7] of String;
-    LongDayNames: array [1..7] of String;
-    TwoDigitYearCenturyWindow: Word;
-  end;
-
-// Should these be members of the SysUtils class? - LK
-var
-  SysLocale: TSysLocale;
-
-  CurrencyString: String;
-  CurrencyFormat: System.Byte;
-  NegCurrFormat: Byte;
-  ThousandSeparator: SeparatorType;
-  DecimalSeparator: SeparatorType;
-  CurrencyDecimals: Byte;
-  DateSeparator: SeparatorType;
-  ShortDateFormat: String;
-  LongDateFormat: String;
-  TimeSeparator: SeparatorType;
-  TimeAMString: String;
-  TimePMString: String;
-  ShortTimeFormat: String;
-  LongTimeFormat: String;
-  ShortMonthNames: array [1..12] of String;
-  LongMonthNames: array [1..12] of String;
-  ShortDayNames: array [1..7] of String;
-  LongDayNames: array [1..7] of String;
-  TwoDigitYearCenturyWindow: Word;
-  ListSeparator: SeparatorType;
-
 type
   TLocaleOptions = public (InvariantLocale, UserLocale);
   
@@ -413,6 +353,7 @@ end;
 class function SysUtils._CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
 var
   I, LA, LB: Integer;
+
 begin
   LA := length(S1);
   LB := length(S2);
@@ -1584,7 +1525,7 @@ begin
   Result := ShineOn.Rtl.SysUtils.RemoveDir(Dir);
 end;
   
-function IsPathDelimiter(S: String; Index: Integer): Boolean;
+  function IsPathDelimiter(S: String; Index: Integer): Boolean;
 begin
   Result := ShineOn.Rtl.SysUtils.IsPathDelimiter(S, Index);
 end;
@@ -1664,27 +1605,5 @@ begin
   Result := ShineOn.Rtl.SysUtils.GetEnvironmentVariable(Name);
 end;
   
-
-// This class takes the place of the initialization section which isn't available
-// in Chrome.It simply sets up all the global variables and then returns.
-type
-  TInitializer = class
-    public
-      constructor Create;
-    end;
-    
-var
-  InitClass: TInitializer := TInitializer.Create;
-  
-constructor TInitializer.Create;
-begin
-  //PathDelim  := System.IO.Path.DirectorySeparatorChar;
-  //DriveDelim := System.IO.Path.VolumeSeparatorChar;
-  //PathSep    := System.IO.Path.PathSeparator;
-
-  //SysUtils.GetFormatSettings;
-  
-  InitClass := nil;
-end; 
   
 end.

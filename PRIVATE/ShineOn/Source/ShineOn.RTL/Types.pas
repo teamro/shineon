@@ -23,13 +23,6 @@ type
   HRESULT = public LongInt;
 
   TGUID = public System.Guid;
-  PGUID = public ^TGUID;
-
-  PLongint = public ^LongInt;
-  PInteger = public ^Integer;
-  PSmallInt = public ^SmallInt;
-  PDouble = public ^Double;
-  PByte = public ^Byte;
   DWORD = public LongWord;
 
   TIntegerDynArray      = public array of Integer;
@@ -52,19 +45,14 @@ type
   TSmallPoint = public System.Drawing.Point;
 
   TOleChar = public WideChar;
-  POleStr = public ^WideChar;
-  PPOleStr = public ^POleStr;
-
-  PCLSID = public ^TGUID;
+  
   TCLSID = public TGUID;
 
   Largeint = public Int64;
-  PDWORD = public ^DWORD;
   
   LCID = public Word;
   LANGID = public Word;
 
-  PFileTime = public ^TFileTime;
   TFileTime = public FILETIME;
 
   [Guid('00000000-0000-0000-C000-000000000046')]
@@ -214,13 +202,11 @@ type
 type
 { TList class }
 
-  //PPointerList = public ^TPointerList;
-  //TPointerList = public array[0..MaxListSize - 1] of IntPtr;
   TTextLineBreakStyle = public (LF, CRLF);
   
 type  
   THandle = public IntPtr;
-  Currency = public Double;     // TODO: is this correct?
+  Currency = public Decimal;     
   
 { TDateTime Class }
   

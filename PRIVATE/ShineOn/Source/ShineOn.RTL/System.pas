@@ -35,19 +35,8 @@ type
 
     class procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:String);
     class procedure Val(S:String; var V:Double; var Code: Integer);
-
-
-    class function Ord(Value:Char):Int32;
-    class function Ord(Value:Boolean):Int32;
-
-    class procedure Inc(var Value:Int32);
-    class procedure Inc(var Value:Int32; Amount:Int32);
-    class procedure Dec(var Value:Int32);
-    class procedure Dec(var Value:Int32; Amount:Int32);
-    class procedure Inc(var Value:Char);
-    class procedure Inc(var Value:Char; Amount:Int32);
-    class procedure Dec(var Value:Char);
-    class procedure Dec(var Value:Char; Amount:Int32);
+    class procedure Val(s: String; var V: Integer; var Code: Integer);
+    class procedure Val(s: String; var V: Int64; var Code: Integer);
 
     class function Pred(Value:Integer):Integer;
     class function Pred(Value:Char):Char;
@@ -94,17 +83,9 @@ function LoCase(Letter: Char): Char;public;
 function StringOfChar(RepeatCharacter: Char; RepeatCount: Integer ): String; public;
 procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:String);public;
 procedure Val(S:String; var V:Double; var Code: Integer);public;
-procedure Inc(var Value:Char); public;
-procedure Inc(var Value:Char;Amount:Int32); public;
-procedure Dec(var Value:Char); public;
-procedure Dec(var Value:Char;Amount:Int32); public;
+procedure Val(S:String; var V:Integer; var Code: Integer);public;
+procedure Val(S:String; var V:Int64; var Code: Integer);public;
 
-function Ord(Value:Char):Int32;public;
-function Ord(Value:Boolean):Int32;public;
-procedure Inc(var Value:Int32);public;
-procedure Inc(var Value:Int32; Amount:Int32);public;
-procedure Dec(var Value:Int32);public;
-procedure Dec(var Value:Int32; Amount:Int32);public;
 function Pred(Value:Integer):Integer;public;
 function Pred(Value:Char):Char;public;
 function Succ(Value:Integer):Integer;public;
@@ -218,7 +199,6 @@ class procedure SystemUnit.Val(S:String; var V:Double; var Code: Integer);
 const
   SNumeric:String = '0123456789.+-eE';
 begin
-  // TODO: should we use NumberFormatInfo.CurrentInfo here?
   Code := 0;
   if not Double.TryParse(S, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
   begin
@@ -233,58 +213,45 @@ begin
   end;
 end;
 
-class procedure SystemUnit.Inc(var Value:Int32);
+class procedure SystemUnit.Val(s: String; var V: Integer; var Code: Integer);
+const
+  SNumeric = '0123456789';
 begin
-  Value := Value + 1;
+  Code := 0;
+  if not Int32.TryParse(S, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
+  begin
+    // find first non-numeric value
+    for i:Int32 := 0 to S.Length - 1 do
+      if SNumeric.IndexOf(S[i]) < 0 then
+      begin
+        Code := i + 1; // since Val in Delphi sets Code = 0 on success, we add an additional 1 to the result here as well
+        Exit;
+      end;
+    Code := S.Length;
+  end;
 end;
 
-class procedure SystemUnit.Inc(var Value:Int32; Amount:Int32);
+class procedure SystemUnit.Val(s: String; var V: Int64; var Code: Integer);
+const
+  SNumeric = '0123456789';
 begin
-  Value := Value + Amount;
+  Code := 0;
+  if not Int64.TryParse(S, NumberStyles.Any, NumberFormatInfo.InvariantInfo, V) then
+  begin
+    // find first non-numeric value
+    for i:Int32 := 0 to S.Length - 1 do
+      if SNumeric.IndexOf(S[i]) < 0 then
+      begin
+        Code := i + 1; // since Val in Delphi sets Code = 0 on success, we add an additional 1 to the result here as well
+        Exit;
+      end;
+    Code := S.Length;
+  end;
 end;
 
-class procedure SystemUnit.Dec(var Value:Int32);
-begin
-  Value := Value - 1;
-end;
 
-class procedure SystemUnit.Dec(var Value:Int32; Amount:Int32);
-begin
-  Value := Value - Amount;
-end;
 
-class procedure SystemUnit.Inc(var Value:Char); 
-begin
-  Value := Char(Integer(Value) + 1);
-end;
 
-class procedure SystemUnit.Inc(var Value:Char; Amount:Int32); 
-begin
-  Value := Char(Integer(Value) + Amount);
-end;
-
-class procedure SystemUnit.Dec(var Value:Char); 
-begin
-  Value := Char(Integer(Value) - 1);
-end;
-
-class procedure SystemUnit.Dec(var Value:Char; Amount:Int32); 
-begin
-  Value := Char(Integer(Value) - Amount);
-end;
-
-class function SystemUnit.Ord(Value:Char):Int32;
-begin
-  Result := Int32(Value);
-end;
-
-class function SystemUnit.Ord(Value:Boolean):Int32;
-begin
-  if Value then
-    Result := 1
-  else
-    Result := 0;
-end;
 
 class function SystemUnit.Pred(Value:Integer):Integer;
 begin
@@ -504,56 +471,17 @@ begin
   ShineOn.Rtl.SystemUnit.Val(S, V, Code);
 end;
 
-procedure Inc(var Value:Char); 
+procedure Val(S:String; var V:Integer; var Code: Integer);
 begin
-  ShineOn.Rtl.SystemUnit.Inc(Value);
+  ShineOn.Rtl.SystemUnit.Val(S, V, Code);
 end;
 
-procedure Inc(var Value:Char; Amount:Int32); 
+procedure Val(S:String; var V:Int64; var Code: Integer);
 begin
-  ShineOn.Rtl.SystemUnit.Inc(Value, Amount);
+  ShineOn.Rtl.SystemUnit.Val(S, V, Code);
 end;
 
-procedure Dec(var Value:Char); 
-begin
-  ShineOn.Rtl.SystemUnit.Dec(Value);
-end;
 
-procedure Dec(var Value:Char; Amount:Int32); 
-begin
-  ShineOn.Rtl.SystemUnit.Dec(Value, Amount);
-end;
-  
-function Ord(Value:Char):Int32;
-begin
-  Result := ShineOn.Rtl.SystemUnit.Ord(Value);
-end;
-  
-function Ord(Value:Boolean):Int32;
-begin
-  Result := ShineOn.Rtl.SystemUnit.Ord(Value);
-end;
-  
-procedure Inc(var Value:Int32);
-begin
-  ShineOn.Rtl.SystemUnit.Inc(Value);
-end;
-  
-procedure Inc(var Value:Int32; Amount:Int32);
-begin
-  ShineOn.Rtl.SystemUnit.Inc(Value, Amount);
-end;
-  
-procedure Dec(var Value:Int32);
-begin
-  ShineOn.Rtl.SystemUnit.Dec(Value);
-end;
-  
-procedure Dec(var Value:Int32; Amount:Int32);
-begin
-  ShineOn.Rtl.SystemUnit.Dec(Value, Amount);
-end;
-  
 function Pred(Value:Integer):Integer;
 begin
   Result := ShineOn.Rtl.SystemUnit.Pred(Value);

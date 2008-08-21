@@ -111,12 +111,12 @@ end;
 
 function TCustomIniFile.ReadBool(Section, Name: String; Default: Boolean): Boolean; 
 begin
-  Result := ReadInteger(Section, Name, Ord(Default)) <> 0;
+  Result := ReadInteger(Section, Name, ord(Default)) <> 0;
 end;
 
 procedure TCustomIniFile.WriteBool(Section, Name: String; Value: Boolean); 
 begin
-  WriteInteger(Section, Name, Ord(Value));
+  WriteInteger(Section, Name, ord(Value));
 end;
 
 function TCustomIniFile.ReadBinaryStream(Section, Name: String; Value: TStream): Integer; 
