@@ -6,7 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-namespace ShineOn.Rtl;
+namespace ShineOn.RTL;
 
 // ToDo: not worth changing just for the sake of it, but these methids should just be defined globally, 
 // instead of relying on the SystemUnit class. it's just dupe work. making the class internal for now. mh.

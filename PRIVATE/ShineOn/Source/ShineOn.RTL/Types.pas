@@ -14,7 +14,8 @@ uses
   System,
   System.Globalization,
   System.IO,
-  System.Runtime.InteropServices; // for guid attribute and FILETIME
+  System.Runtime.InteropServices, // for guid attribute and FILETIME
+  System.Text;
   
 type
 { TStream seek origins }
@@ -266,34 +267,6 @@ type
   end;
   
   TDayTable = public array [1..12] of Word;
-  // The only difference between AnsiString and String is that AnsiString assumes that [] access is 1-based
-  // TODO: maybe implement IComparable, ICloneable, IConvertible and IEnumerable?
-  // !!! CURRENTLY EXPERIMENTAL - use at your own risk!!!
-  AnsiString = public sealed class // should this be a struct instead (avoids having to create instances explicitly)?
-  private
-    FString:String;
-    method set_Chars(Index:Int32; value: Char);
-    method get_Chars(Index:Int32): Char;
-  public
-    class operator Add(const Left, Right: AnsiString): AnsiString;
-    class operator Equal(const Left, Right: AnsiString): Boolean;
-    class operator NotEqual(const Left, Right: AnsiString): Boolean;
-    class operator Less(const Left, Right: AnsiString): Boolean;
-    class operator LessOrEqual(const Left, Right: AnsiString): Boolean;
-    class operator Greater(const Left, Right: AnsiString): Boolean;
-    class operator GreaterOrEqual(const Left, Right: AnsiString): Boolean;
-
-    class operator Implicit(const Value: String): AnsiString;
-    // TODO: should we really allow implicit conversion from AnsiString to String? 
-    // What happens when users call RTL String routines (i.e Pos) with AnsiString parameters?
-    class operator Implicit(const Value: AnsiString): String;
-    
-    function ToString(Provider: IFormatProvider): String;
-    function ToString: String;override;
-    constructor (S:String);
-    constructor (S:AnsiString);
-    property Chars[Index:Int32]:Char read get_Chars write set_Chars;default;
-  end;
 
 const
   SDateOutOfRangeError = 'Value given is out of TDateTime range';
@@ -348,8 +321,164 @@ const
 
   MinDateTimeAsDouble:Double = -657434.0;     //  1/01/0100  0:00:00.000 AM
   MaxDateTimeAsDouble:Double = 2958465.99999; // 12/31/9999 11:59:59.999 PM
+
+type
+  DelphiString = public class
+  private
+    FString: String;
+
+    method GetChar(Index: Integer): Char;
+    method SetChar(Index: Integer; Value: Char);
+    method GetLength(): Integer;
+  protected
+    method GetEncoding(): Encoding; virtual;
+  public
+    constructor(const S: String);
+    constructor(const S: DelphiString);
+
+    method ToString(): String; override;
+
+    class operator &Add(const Left, Right: DelphiString): DelphiString;
+    class operator Equal(const Left, Right: DelphiString): Boolean;
+    class operator NotEqual(const Left, Right: DelphiString): Boolean;
+    class operator Less(const Left, Right: DelphiString): Boolean;
+    class operator LessOrEqual(const Left, Right: DelphiString): Boolean;
+    class operator Greater(const Left, Right: DelphiString): Boolean;
+    class operator GreaterOrEqual(const Left, Right: DelphiString): Boolean;
+
+    class operator Implicit(const Value: String): DelphiString;
+    class operator Implicit(const Value: DelphiString): String;
+
+    property Chars[Index: Integer]: Char read GetChar write SetChar; default;
+    property Encoding: System.Text.Encoding read GetEncoding;
+    property Length: Integer read GetLength;
+  end;
+
+  AnsiString = public sealed class(DelphiString)
+  protected
+    method GetEncoding(): Encoding; override;
+  public
+    class operator Implicit(const Value: String): AnsiString;
+  end;
+
+  WideString = public sealed class(DelphiString)
+  protected
+    method GetEncoding(): Encoding; override;
+  public
+    class operator Implicit(const Value: String): WideString;
+  end;
+
+function EqualRect(const R1, R2: TRect): Boolean;
+function Rect(Left, Top, Right, Bottom: Integer): TRect;
+function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect;
+function Point(X, Y: Integer): TPoint;
+function SmallPoint(X, Y: Integer): TSmallPoint;
+function SmallPoint(XY: LongWord): TSmallPoint;
+function PtInRect(const Rect: TRect; const P: TPoint): Boolean;
+function IntersectRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+function UnionRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+function IsRectEmpty(const Rect: TRect): Boolean;
+function OffsetRect(var Rect: TRect; DX: Integer; DY: Integer): Boolean;
+function CenterPoint(const Rect: TRect): TPoint;
   
 implementation
+
+function EqualRect(const R1, R2: TRect): Boolean;
+begin
+  Result := ((R1.Left = R2.Left) and (R1.Top = R2.Top) and (R1.Right = R2.Right) and (R1.Bottom = R2.Bottom));
+end;
+
+function Rect(Left, Top, Right, Bottom: Integer): TRect;
+begin
+  Result := new TRect(Left,Top,Right - Left,Bottom - Top);
+end;
+
+function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect;
+begin
+  Result := new TRect(ALeft,ATop,AWidth,AHeight);
+end;
+
+function Point(X, Y: Integer): TPoint;
+begin
+  Result := new TPoint(X,Y);
+end;
+
+function SmallPoint(X, Y: Integer): TSmallPoint; 
+begin
+  Result := new TSmallPoint(X,Y);
+end;
+
+function SmallPoint(XY: LongWord): TSmallPoint;
+begin
+  Result := new TSmallPoint(XY);
+end;
+
+function PtInRect(const Rect: TRect; const P: TPoint): Boolean;
+begin
+  Result :=  ((P.X >= Rect.Left) and (P.X <= Rect.Right) and (P.Y >= Rect.Top) and (P.Y <= Rect.Bottom));
+end;
+
+function IntersectRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+begin
+  Rect := R1;
+
+  if R2.Left > R1.Left then Rect.X := R2.X;
+  if R2.Top > R1.Top then Rect.Y := R2.Y;
+  if R2.Right < R1.Right then Rect.Width := (R2.Right - R2.Left);
+  if R2.Bottom < R1.Bottom then Rect.Height := (R2.Bottom - R2.Top);
+
+  Result := not IsRectEmpty(Rect);
+
+  if not Result then Rect := new TRect(0,0,0,0);
+end;
+
+function UnionRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+begin
+  Rect := R1;
+
+  if not IsRectEmpty(R2) then
+    begin
+      if R2.Left < R1.Left then Rect.X := R2.X;
+      if R2.Top < R1.Top then Rect.Y := R2.Y;
+      if R2.Right > R1.Right then Rect.Width := (R2.Right - R2.Left);
+      if R2.Bottom > R1.Bottom then Rect.Height := (R2.Bottom - R2.Top);
+    end;
+
+  Result := not IsRectEmpty(Rect);
+
+  if not Result then Rect := new TRect(0,0,0,0);
+end;
+
+function IsRectEmpty(const Rect: TRect): Boolean;
+begin
+  Result := (Rect.Right <= Rect.Left) or (Rect.Bottom <= Rect.Top);
+end;
+
+function OffsetRect(var Rect: TRect; DX: Integer; DY: Integer): Boolean;
+begin
+  if Rect <> nil then
+    begin
+      Rect.X := Rect.X + DX;
+      Rect.Width := Rect.Right + DX;
+      Rect.Y := Rect.Y + DY;
+      Rect.Height := Rect.Bottom + DY;
+
+      Result := True;
+    end
+  else
+    Result := False;
+end;
+
+function CenterPoint(const Rect: TRect): TPoint;
+begin
+  with Rect do
+    begin
+      Result.X := (Right - Left) div 2 + Left;
+      Result.Y := (Bottom - Top) div 2 + Top;
+    end;
+end;
+
+{}
 
 function DelphiEpoch: DateTime;
 begin
@@ -992,89 +1121,124 @@ begin
 end;
 
 
-{ AnsiString }
+{ DelphiString }
 
-method AnsiString.get_Chars(Index:Int32): Char;
-require
-  Index > 0;
+constructor DelphiString(const S: String);
 begin
-  Result := FString[Index-1];
-end;
+  inherited constructor;
 
-method AnsiString.set_Chars(Index:Int32; value: Char);
-require
-  Index > 0;
-begin
-  // String doesn't support changing chars in the String, but we make an exception for AnsiString :)
-  FString := FString.Remove(Index-1, 1).Insert(Index-1, value);
-end;
-
-constructor AnsiString(S:String); 
-begin
-  inherited Create;
   FString := S;
 end;
 
-constructor AnsiString(S:AnsiString); 
+constructor DelphiString(const S: DelphiString);
 begin
-  inherited Create;
-  FString := S.ToString;
+  inherited constructor;
+
+  FString := S.ToString();
 end;
 
-class operator AnsiString.Add(const Left, Right: AnsiString): AnsiString; 
-begin
-  Result := new AnsiString(Left.ToString + Right.ToString);
-end;
-
-class operator AnsiString.Equal(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString = Right.ToString;
-end;
-
-class operator AnsiString.NotEqual(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString <> Right.ToString;
-end;
-
-class operator AnsiString.Less(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString < Right.ToString;
-end;
-
-class operator AnsiString.LessOrEqual(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString <= Right.ToString;
-end;
-
-class operator AnsiString.Greater(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString > Right.ToString;
-end;
-
-class operator AnsiString.GreaterOrEqual(const Left, Right: AnsiString): Boolean; 
-begin
-  Result := Left.ToString >= Right.ToString;
-end;
-
-class operator AnsiString.Implicit(const Value: String): AnsiString; 
-begin
-   Result := new AnsiString(Value);
-end;
-
-class operator AnsiString.Implicit(const Value: AnsiString): String; 
-begin
-  Result := Value.ToString;
-end;
-
-function AnsiString.ToString(Provider: IFormatProvider): String; 
-begin
-  Result := FString.ToString(Provider);
-end;
-
-function AnsiString.ToString: String; 
+method DelphiString.ToString(): String;
 begin
   Result := FString;
 end;
 
+method DelphiString.GetEncoding(): Encoding;
+begin
+  Result := System.Text.Encoding.Default;
+end;
+
+method DelphiString.GetChar(Index: Integer): Char;
+require
+  Index > 0;
+begin
+  Result := FString[Index - 1];
+end;
+
+method DelphiString.SetChar(Index: Int32; Value: Char);
+require
+  Index > 0;
+begin
+  FString := FString.Remove(Index - 1,1);
+  FString := FString.Insert(Index - 1,Value);
+end;
+
+method DelphiString.GetLength(): Integer;
+begin
+  Result := FString.Length - 1;
+end;
+
+class operator DelphiString.&Add(const Left, Right: DelphiString): DelphiString;
+begin
+  Result := new DelphiString(Left.ToString() + Right.ToString());
+end;
+
+class operator DelphiString.Equal(const Left, Right: DelphiString): Boolean;
+begin
+  Result := (String.Compare(Left.ToString(),Right.ToString()) = 0);
+end;
+
+class operator DelphiString.NotEqual(const Left, Right: DelphiString): Boolean;
+begin
+  Result := not (String.Compare(Left.ToString(),Right.ToString()) = 0);
+end;
+
+class operator DelphiString.Less(const Left, Right: DelphiString): Boolean;
+begin
+  Result := (String.Compare(Left.ToString(),Right.ToString()) < 0);
+end;
+
+class operator DelphiString.LessOrEqual(const Left, Right: DelphiString): Boolean;
+begin
+  Result := ((String.Compare(Left.ToString(),Right.ToString()) < 0) and (String.Compare(Left.ToString(),Right.ToString()) = 0));
+end;
+
+class operator DelphiString.Greater(const Left, Right: DelphiString): Boolean;
+begin
+  Result := (String.Compare(Left.ToString(),Right.ToString()) > 0);
+end;
+
+class operator DelphiString.GreaterOrEqual(const Left, Right: DelphiString): Boolean;
+begin
+  Result := ((String.Compare(Left.ToString(),Right.ToString()) < 0) and (String.Compare(Left.ToString(),Right.ToString()) = 0));
+end;
+
+class operator DelphiString.Implicit(const Value: String): DelphiString;
+begin
+  Result := new DelphiString(Value);
+end;
+
+// TODO: should we really allow implicit conversion from AnsiString to String? 
+// What happens when users call RTL String routines (i.e Pos) with AnsiString parameters?
+class operator DelphiString.Implicit(const Value: DelphiString): String;
+begin
+  Result := Value.ToString();
+end;
+
+{ AnsiString }
+
+class operator AnsiString.Implicit(const Value: String): AnsiString;
+begin
+  Result := new AnsiString(Value);
+end;
+
+method AnsiString.GetEncoding(): Encoding;
+begin
+  Result := System.Text.Encoding.Default;
+end;
+
+{ WideString }
+
+class operator WideString.Implicit(const Value: String): WideString;
+begin
+  Result := new WideString(Value);
+end;
+
+method WideString.GetEncoding: Encoding;
+begin
+  Result := System.Text.Encoding.Unicode;
+end;
+
 
 end.
+
+
