@@ -6,18 +6,13 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Registry.pas 79 2006-04-09 11:18:46Z msgclb $
+namespace ShineOn.Rtl.Win32;
 
-// History:
-//
-// 2006-04-09   :   Corwin Burgess  : changed TRegistry.ReadTime to match TDateTime record
-
-namespace ShineOn.RTL.Win32;
 // TODO: 
 // * handle relative paths (those not starting with a '\')
 // * map Access to System.Security.Permissions.RegistryPermission
 // * implement missing methods (marked with NotImplemented)
-// * put this into its own Win32 assembly (ShineOn.RTL.Win32) - DONE
+// * put this into its own Win32 assembly (ShineOn.Rtl.Win32) - DONE
 
 interface
 uses
@@ -149,7 +144,7 @@ type
 
   TRegIniFile = public class(TRegistry)
   private
-    FFilename:String;
+    FFileName:String;
   public
     constructor Create(const aFileName: String); 
     constructor Create(const aFileName: String; AAccess: LongWord); 
@@ -597,13 +592,13 @@ end;
 
 constructor TRegIniFile.Create(const aFileName: String); 
 begin
-  Create(aFilename, KEY_ALL_ACCESS);
+  Create(aFileName, KEY_ALL_ACCESS);
 end;
 
 constructor TRegIniFile.Create(const aFileName: String; AAccess: LongWord); 
 begin
   inherited Create(AAccess);
-  OpenKey(aFilename, true);
+  OpenKey(aFileName, true);
 end;
 
 function TRegIniFile.ReadString(const Section, Name, Default: String): String; 

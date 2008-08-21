@@ -1,9 +1,9 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{0D12830E-FF40-428B-A22D-B44134F3C472}</ProjectGuid>
-    <RootNamespace>ShineOn.VCL</RootNamespace>
+    <RootNamespace>ShineOn.Vcl</RootNamespace>
     <OutputType>library</OutputType>
-    <AssemblyName>ShineOn.VCL</AssemblyName>
+    <AssemblyName>ShineOn.Vcl</AssemblyName>
     <AllowGlobals>False</AllowGlobals>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
@@ -13,6 +13,7 @@
     <OutputPath>..\bin</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>

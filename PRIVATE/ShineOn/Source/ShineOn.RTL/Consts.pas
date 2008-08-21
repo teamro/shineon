@@ -6,11 +6,16 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Consts.pas 39 2005-06-13 20:22:04Z peter3 $
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
+
+var 
+  sLineBreak: String := System.Environment.NewLine;
+
+  sErrorLoadingPackage: String := 'Can''t load package {0}.'+sLineBreak+'{1}';
+  SException: String := 'Exception {0} in module {1} at {2}.' + sLineBreak + '{3}{4}' + sLineBreak;
+  SOSError: String := 'System Error.  Code: {0}.'+sLineBreak+'{1}';
 
 const
   { mh: maybe convert it into a global method that would call the NewLine property?
@@ -18,7 +23,7 @@ const
         the same will apply to stuff like path separaters, etc. }
   
   // wish I could use System.Environment.NewLine here...
-  sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
+  //sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
   
   SUnknown = '<unknown>';
   SInvalidFloat = '''{0}'' is not a valid floating point value';
@@ -56,7 +61,6 @@ const
   SQuit = 'Quit key hit';
   SPrivilege = 'Privileged instruction';
   SOperationAborted = 'Operation aborted';
-  SException = 'Exception {0} in module {1} at {2}.' + sLineBreak + '{3}{4}' + sLineBreak;
   SExceptTitle = 'Application Error';
 {$IFDEF LINUX}
   SSigactionFailed = 'sigaction call failed';
@@ -110,12 +114,10 @@ const
   SAbstractError = 'Abstract Error';
   SModuleAccessViolation = 'Access violation at address {0} in module ''{1}''. {2} of address {3}';
   SCannotReadPackageInfo = 'Cannot access package information for package ''{0}''';
-  sErrorLoadingPackage = 'Can''t load package {0}.'+sLineBreak+'{1}';
   SInvalidPackageFile = 'Invalid package file ''{0}''';
   SInvalidPackageHandle = 'Invalid package handle';
   SDuplicatePackageUnit = 'Cannot load package ''{0}.''  It contains unit ''{1},''' +
     'which is also contained in package ''{2}''';
-  SOSError = 'System Error.  Code: {0}.'+sLineBreak+'{1}';
   SUnkOSError = 'A call to an OS function failed';
   SNL = 'Application is not licensed to use this feature';
 

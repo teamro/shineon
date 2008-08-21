@@ -6,17 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: SysUtils.pas 84 2007-06-08 21:09:15Z loonquawl $
-
-// History:
-//
-// 2005-05-10   :   Jeroen Vandezande   :   Implemented StringReplace
-// 2005-06-04   :   Lloyd Kinsella      :   More complete implementation of TDateTime
-// 2005-06-05   :   Lloyd Kinsella      :   Moved NotImplemented to System
-//                                          Implemented a wad of routines...
-// 2007-06-08   :   Jeroen Vandezande   :   Started with implementing SysUtils.Format
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
 
@@ -930,19 +920,19 @@ begin
     while (baseIdx < baseTokens.Length) and 
           (destIdx < destTokens.Length) and 
           SameFileName(baseTokens[baseIdx], destTokens[destIdx]) do begin
-      inc(baseIdx);
-      inc(destIdx);
+      Inc(baseIdx);
+      Inc(destIdx);
     end;
     builder := new StringBuilder;
     while baseIdx < baseTokens.Length do begin
       builder.Append( '..' );
       builder.Append( System.IO.Path.DirectorySeparatorChar );
-      inc(baseIdx);
+      Inc(baseIdx);
     end;
     while destIdx < destTokens.Length do begin
       builder.Append( destTokens[destIdx] );
       builder.Append( System.IO.Path.DirectorySeparatorChar );
-      inc(destIdx);
+      Inc(destIdx);
     end;
     builder.Append( ExtractFileName(DestName) );
     result := builder.ToString;
@@ -1159,7 +1149,7 @@ begin
         var subStringIndex: Integer := 1;
         while not IsFormattingChar(aFormatting[stringIndex + subStringIndex]) do
         begin
-          inc(subStringIndex); 
+          Inc(subStringIndex); 
         end;
         var formattingSubstring: String := aFormatting.Substring(stringIndex, subStringIndex + 1);
         subStringIndex := 0; 
@@ -1176,502 +1166,502 @@ end;
 
 function UpperCase(const S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.UpperCase(S);
+  Result := ShineOn.Rtl.SysUtils.UpperCase(S);
 end;
 
 function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String;
 begin
-  Result := ShineOn.RTL.SysUtils.UpperCase(S,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.UpperCase(S,LocaleOptions);
 end;
 
 function LowerCase(const S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.LowerCase(S);
+  Result := ShineOn.Rtl.SysUtils.LowerCase(S);
 end;
 
 function LowerCase(const S: String; LocaleOptions: TLocaleOptions): String;
 begin
-  Result := ShineOn.RTL.SysUtils.LowerCase(S,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.LowerCase(S,LocaleOptions);
 end;
 
 function CompareStr(const S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.CompareStr(S1,S2);
+  Result := ShineOn.Rtl.SysUtils.CompareStr(S1,S2);
 end;
 
 function CompareStr(const S1, S2: String; LocaleOptions: TLocaleOptions): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.CompareStr(S1,S2,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.CompareStr(S1,S2,LocaleOptions);
 end;
 
 function SameStr(const S1, S2: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SameStr(S1,S2);
+  Result := ShineOn.Rtl.SysUtils.SameStr(S1,S2);
 end;
 
 function SameStr(const S1, S2: String; LocaleOptions: TLocaleOptions): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SameStr(S1,S2,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.SameStr(S1,S2,LocaleOptions);
 end;
 
 function CompareText(const S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.CompareText(S1,S2);
+  Result := ShineOn.Rtl.SysUtils.CompareText(S1,S2);
 end;
 
 function CompareText(const S1, S2: String; LocaleOptions: TLocaleOptions): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.CompareText(S1,S2,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.CompareText(S1,S2,LocaleOptions);
 end;
 
 function SameText(const S1, S2: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SameText(S1,S2);
+  Result := ShineOn.Rtl.SysUtils.SameText(S1,S2);
 end;
 
 function SameText(const S1, S2: String; LocaleOptions: TLocaleOptions): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SameText(S1,S2,LocaleOptions);
+  Result := ShineOn.Rtl.SysUtils.SameText(S1,S2,LocaleOptions);
 end;
 
 function AnsiUpperCase(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiUpperCase(S);
+  Result := ShineOn.Rtl.SysUtils.AnsiUpperCase(S);
 end;
   
 function AnsiLowerCase(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiLowerCase(S);
+  Result := ShineOn.Rtl.SysUtils.AnsiLowerCase(S);
 end;
   
 function AnsiCompareStr(S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiCompareStr(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiCompareStr(S1, S2);
 end;
   
 function AnsiSameStr(S1, S2: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiSameStr(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiSameStr(S1, S2);
 end;
   
 function AnsiCompareText(S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiCompareText(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiCompareText(S1, S2);
 end;
   
 function AnsiSameText(S1, S2: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiSameText(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiSameText(S1, S2);
 end;
   
 function AnsiStrComp(S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrComp(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrComp(S1, S2);
 end;
   
 function AnsiStrIComp(S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrIComp(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrIComp(S1, S2);
 end;
   
 function AnsiStrLComp(S1, S2: String; MaxLen: Cardinal): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrLComp(S1, S2, MaxLen);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrLComp(S1, S2, MaxLen);
 end;
   
 function AnsiStrLIComp(S1, S2: String; MaxLen: Cardinal): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrLIComp(S1, S2, MaxLen);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrLIComp(S1, S2, MaxLen);
 end;
   
 function AnsiStrLower(aStr: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrLower(aStr);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrLower(aStr);
 end;
   
 function AnsiStrUpper(aStr: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrUpper(aStr);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrUpper(aStr);
 end;
   
 function AnsiLastChar(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiLastChar(S);
+  Result := ShineOn.Rtl.SysUtils.AnsiLastChar(S);
 end;
   
 function AnsiStrLastChar(P: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrLastChar(P);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrLastChar(P);
 end;
   
 function WideUpperCase(S: WideString): WideString;
 begin
-  Result := ShineOn.RTL.SysUtils.WideUpperCase(S);
+  Result := ShineOn.Rtl.SysUtils.WideUpperCase(S);
 end;
   
 function WideLowerCase(S: WideString): WideString;
 begin
-  Result := ShineOn.RTL.SysUtils.WideLowerCase(S);
+  Result := ShineOn.Rtl.SysUtils.WideLowerCase(S);
 end;
   
 function WideCompareStr(S1, S2: WideString): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.WideCompareStr(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.WideCompareStr(S1, S2);
 end;
   
 function WideSameStr(S1, S2: WideString): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.WideSameStr(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.WideSameStr(S1, S2);
 end;
   
 function WideCompareText(S1, S2: WideString): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.WideCompareText(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.WideCompareText(S1, S2);
 end;
   
 function WideSameText(S1, S2: WideString): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.WideSameText(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.WideSameText(S1, S2);
 end;
   
 function Trim(S: String): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.Trim(S);
+  Result := ShineOn.Rtl.SysUtils.Trim(S);
 end;
   
 function TrimLeft(S: String): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.TrimLeft(S);
+  Result := ShineOn.Rtl.SysUtils.TrimLeft(S);
 end;
   
 function TrimRight(S: String): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.TrimRight(S);
+  Result := ShineOn.Rtl.SysUtils.TrimRight(S);
 end;
 
 function AnsiPos(const SubS, S: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiPos(SubS,S);
+  Result := ShineOn.Rtl.SysUtils.AnsiPos(SubS,S);
 end;
 
 function QuotedStr(const S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.QuotedStr(S);
+  Result := ShineOn.Rtl.SysUtils.QuotedStr(S);
 end;
 
 function QuotedStr(const S: String; QuoteChar: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.QuotedStr(S,QuoteChar);
+  Result := ShineOn.Rtl.SysUtils.QuotedStr(S,QuoteChar);
 end;
 
 function AnsiQuotedStr(const S: String; Quote: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiQuotedStr(S,Quote);
+  Result := ShineOn.Rtl.SysUtils.AnsiQuotedStr(S,Quote);
 end;
 
 function DequotedStr(const S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.DequotedStr(S);
+  Result := ShineOn.Rtl.SysUtils.DequotedStr(S);
 end;
 
 function DequotedStr(const S: String; QuoteChar: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.DequotedStr(S,QuoteChar);
+  Result := ShineOn.Rtl.SysUtils.DequotedStr(S,QuoteChar);
 end;
 
 function DequotedStr(const S: String; QuoteChar: Char; var p: Int32): String;
 begin
-  Result := ShineOn.RTL.SysUtils.DequotedStr(S,QuoteChar,P);
+  Result := ShineOn.Rtl.SysUtils.DequotedStr(S,QuoteChar,p);
 end;
 
 function AnsiDequotedStr(const S: String; Quote: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiDequotedStr(S,Quote);
+  Result := ShineOn.Rtl.SysUtils.AnsiDequotedStr(S,Quote);
 end;
 
 function AdjustLineBreaks(const S: String; Style: TTextLineBreakStyle): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AdjustLineBreaks(S,Style);
+  Result := ShineOn.Rtl.SysUtils.AdjustLineBreaks(S,Style);
 end;
 
 function IsValidIdent(const Ident: String; AllowDots: Boolean): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.IsValidIdent(Ident,AllowDots);
+  Result := ShineOn.Rtl.SysUtils.IsValidIdent(Ident,AllowDots);
 end;
 
 function IntToStr(Value: Integer): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.IntToStr(Value);
+  Result := ShineOn.Rtl.SysUtils.IntToStr(Value);
 end;
   
 function IntToHex(Value: Integer; Digits: Integer): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.IntToHex(Value, Digits);
+  Result := ShineOn.Rtl.SysUtils.IntToHex(Value, Digits);
 end;
   
 function StrToInt(S: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToInt(S);
+  Result := ShineOn.Rtl.SysUtils.StrToInt(S);
 end;
   
 function StrToIntDef(S: String; Default: Integer): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToIntDef(S, Default);
+  Result := ShineOn.Rtl.SysUtils.StrToIntDef(S, Default);
 end;
   
 function TryStrToInt(S: String; out Value: Integer): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.TryStrToInt(S, Value);
+  Result := ShineOn.Rtl.SysUtils.TryStrToInt(S, Value);
 end;
   
 function StrToInt64(S: String): Int64;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToInt64(S);
+  Result := ShineOn.Rtl.SysUtils.StrToInt64(S);
 end;
   
 function StrToInt64Def(S: String; Default: Int64): Int64;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToInt64Def(S, Default);
+  Result := ShineOn.Rtl.SysUtils.StrToInt64Def(S, Default);
 end;
   
 function TryStrToInt64(S: String; out Value: Int64): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.TryStrToInt64(S, Value);
+  Result := ShineOn.Rtl.SysUtils.TryStrToInt64(S, Value);
 end;
   
 function StrToBool(S:String):Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToBool(S);
+  Result := ShineOn.Rtl.SysUtils.StrToBool(S);
 end;
   
 function BoolToStr(B: Boolean; UseBoolStrs: Boolean): String;
 begin
-  Result := ShineOn.RTL.SysUtils.BoolToStr(B, UseBoolStrs);
+  Result := ShineOn.Rtl.SysUtils.BoolToStr(B, UseBoolStrs);
 end;
   
 function StrToDate(S:String):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToDate(S);
+  Result := ShineOn.Rtl.SysUtils.StrToDate(S);
 end;
   
 function StrToDateDef(S:String; Default:TDateTime):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToDateDef(S, Default);
+  Result := ShineOn.Rtl.SysUtils.StrToDateDef(S, Default);
 end;
   
 function StrToDateTime(S:String):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToDateTime(S);
+  Result := ShineOn.Rtl.SysUtils.StrToDateTime(S);
 end;
   
 function StrToDateTimeDef(S:String; Default:TDateTime):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToDateTimeDef(S, Default);
+  Result := ShineOn.Rtl.SysUtils.StrToDateTimeDef(S, Default);
 end;
   
 function StrToTime(S:String):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToTime(S);
+  Result := ShineOn.Rtl.SysUtils.StrToTime(S);
 end;
   
 function StrToTimeDef(S:String; Default:TDateTime):TDateTime;
 begin
-  Result := ShineOn.RTL.SysUtils.StrToTimeDef(S, Default);
+  Result := ShineOn.Rtl.SysUtils.StrToTimeDef(S, Default);
 end;
   
 function DateToStr(ADate:TDateTime):String;
 begin
-  Result := ShineOn.RTL.SysUtils.DateToStr(ADAte);
+  Result := ShineOn.Rtl.SysUtils.DateToStr(ADate);
 end;
   
 function DateTimeToStr(ADateTime:TDateTime):String;
 begin
-  Result := ShineOn.RTL.SysUtils.DateTimeToStr(ADAteTIme);
+  Result := ShineOn.Rtl.SysUtils.DateTimeToStr(ADateTime);
 end;
   
 function TimeToStr(ATime:TDateTime):String;
 begin
-  Result := ShineOn.RTL.SysUtils.TimeToStr(ATime);
+  Result := ShineOn.Rtl.SysUtils.TimeToStr(ATime);
 end;
   
 procedure FreeAndNil(var obj);
 begin
-  ShineOn.RTL.SysUtils.FreeAndNil(obj);
+  ShineOn.Rtl.SysUtils.FreeAndNil(obj);
 end;
   
 function FileExists(FileName: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.FileExists(FileName); 
+  Result := ShineOn.Rtl.SysUtils.FileExists(FileName); 
 end;
   
 function DirectoryExists(Directory: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.DirectoryExists(Directory);
+  Result := ShineOn.Rtl.SysUtils.DirectoryExists(Directory);
 end;
   
 function ForceDirectories(Dir: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.ForceDirectories(Dir);
+  Result := ShineOn.Rtl.SysUtils.ForceDirectories(Dir);
 end;
   
 function DeleteFile(FileName: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.DeleteFile(FileName)
+  Result := ShineOn.Rtl.SysUtils.DeleteFile(FileName)
 end;
   
 function RenameFile(OldName, NewName: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.RenameFile(OldName, NewName);
+  Result := ShineOn.Rtl.SysUtils.RenameFile(OldName, NewName);
 end;
   
 function ChangeFileExt(FileName, Extension: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ChangeFileExt(FileName, Extension);
+  Result := ShineOn.Rtl.SysUtils.ChangeFileExt(FileName, Extension);
 end;
   
 function ExtractFilePath(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractFilePath(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExtractFilePath(FileName)
 end;
   
 function ExtractFileDir(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractFileDir(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExtractFileDir(FileName)
 end;
   
 function ExtractFileDrive(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractFileDrive(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExtractFileDrive(FileName)
 end;
   
 function ExtractFileName(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractFileName(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExtractFileName(FileName)
 end;
   
 function ExtractFileExt(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractFileExt(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExtractFileExt(FileName)
 end;
   
 function ExpandFileName(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExpandFileName(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExpandFileName(FileName)
 end;
   
 function ExpandUNCFileName(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExpandUNCFileName(FileName)
+  Result := ShineOn.Rtl.SysUtils.ExpandUNCFileName(FileName)
 end;
   
 function ExtractRelativePath(BaseName, DestName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractRelativePath(BaseName, DestName);
+  Result := ShineOn.Rtl.SysUtils.ExtractRelativePath(BaseName, DestName);
 end;
   
 function ExtractShortPathName(FileName: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExtractShortPathName(FileName);
+  Result := ShineOn.Rtl.SysUtils.ExtractShortPathName(FileName);
 end;
   
 function GetCurrentDir: String;
 begin
-  Result := ShineOn.RTL.SysUtils.GetCurrentDir;
+  Result := ShineOn.Rtl.SysUtils.GetCurrentDir;
 end;
   
 function SetCurrentDir(Dir: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SetCurrentDir(Dir);
+  Result := ShineOn.Rtl.SysUtils.SetCurrentDir(Dir);
 end;
   
 function CreateDir(Dir: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.CreateDir(Dir);
+  Result := ShineOn.Rtl.SysUtils.CreateDir(Dir);
 end;
   
 function RemoveDir(Dir: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.RemoveDir(Dir);
+  Result := ShineOn.Rtl.SysUtils.RemoveDir(Dir);
 end;
   
 function IsPathDelimiter(S: String; Index: Integer): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.IsPathDelimiter(S, Index);
+  Result := ShineOn.Rtl.SysUtils.IsPathDelimiter(S, Index);
 end;
   
 function IsDelimiter(Delimiters, S: String; Index: Integer): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.IsDelimiter(Delimiters, S, Index);
+  Result := ShineOn.Rtl.SysUtils.IsDelimiter(Delimiters, S, Index);
 end;
   
 function IncludeTrailingPathDelimiter(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.IncludeTrailingPathDelimiter(S);
+  Result := ShineOn.Rtl.SysUtils.IncludeTrailingPathDelimiter(S);
 end;
   
 function IncludeTrailingBackslash(S: String): String; 
 begin
-  Result := ShineOn.RTL.SysUtils.IncludeTrailingPathDelimiter(S);
+  Result := ShineOn.Rtl.SysUtils.IncludeTrailingPathDelimiter(S);
 end;
   
 function ExcludeTrailingPathDelimiter(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExcludeTrailingPathDelimiter(S);
+  Result := ShineOn.Rtl.SysUtils.ExcludeTrailingPathDelimiter(S);
 end;
   
 function ExcludeTrailingBackslash(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.ExcludeTrailingPathDelimiter(S);
+  Result := ShineOn.Rtl.SysUtils.ExcludeTrailingPathDelimiter(S);
 end;
   
 function LastDelimiter(Delimiters, S: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.LastDelimiter(Delimiters, S);
+  Result := ShineOn.Rtl.SysUtils.LastDelimiter(Delimiters, S);
 end;
   
 function AnsiCompareFileName(S1, S2: String): Integer;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiCompareFileName(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.AnsiCompareFileName(S1, S2);
 end;
   
 function SameFileName(S1, S2: String): Boolean;
 begin
-  Result := ShineOn.RTL.SysUtils.SameFileName(S1, S2);
+  Result := ShineOn.Rtl.SysUtils.SameFileName(S1, S2);
 end;
   
 function AnsiLowerCaseFileName(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiLowerCaseFileName(S);
+  Result := ShineOn.Rtl.SysUtils.AnsiLowerCaseFileName(S);
 end;
   
 function AnsiUpperCaseFileName(S: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiUpperCaseFileName(S);
+  Result := ShineOn.Rtl.SysUtils.AnsiUpperCaseFileName(S);
 end;
 
 function AnsiStrPos(aStr, SubStr: String): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrPos(aStr, SubStr);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrPos(aStr, SubStr);
 end;
   
 function AnsiStrRScan(aStr: String; Chr: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrRScan(aStr, Chr);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrRScan(aStr, Chr);
 end;
   
 function AnsiStrScan(aStr: String; Chr: Char): String;
 begin
-  Result := ShineOn.RTL.SysUtils.AnsiStrScan(aStr, Chr);
+  Result := ShineOn.Rtl.SysUtils.AnsiStrScan(aStr, Chr);
 end;
   
 function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
 begin
-  Result := ShineOn.RTL.SysUtils.StringReplace(S, OldPattern, NewPattern, Flags);
+  Result := ShineOn.Rtl.SysUtils.StringReplace(S, OldPattern, NewPattern, Flags);
 end;
   
 function GetEnvironmentVariable(Name: String): String;   
 begin
-  Result := ShineOn.RTL.SysUtils.GetEnvironmentVariable(Name);
+  Result := ShineOn.Rtl.SysUtils.GetEnvironmentVariable(Name);
 end;
   
 

@@ -6,21 +6,10 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Classes.pas 83 2007-06-08 21:06:24Z loonquawl $
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 // TODO:
 // * implement all NotImplemented
 // * implement sorting and binary search in TStringList
-
-// HISTORY:
-// May 8 2005     :   Jeroen Vandezande   : Implemented TList.Assign
-// May 11 2005    :   Jeroen Vandezande   : Implemented IEnumerator on TList
-// March 16 2006  :   Jeroen Vandezande   : Fixed THandleStream.WriteLine
-// March 21 2006  :  Corwin Burgess : Fixed file not writing problem in THandleStream.WriteLine
-// March 21 2006  :  Corwin Burgess : Fixed truncating problem in TStrings.IndexOfObject
-// March 21 2006  :  Corwin Burgess : Fixed truncating problem in TStrings.GetName
-// June 0 2007    :  Jeroen Vandezande : Removed TObject.ClassParent implementation.
 
 interface
 
@@ -35,42 +24,6 @@ uses
   Microsoft.Win32.SafeHandles;
   
 type
-  TObject = public class(System.Object)
-  private
-  protected
-    class var _ClassType:TClass := nil;
-    class var _ClassInfo:System.Type := nil;
-  public
-    class function InitInstance(aInstance: Object): TObject;
-    procedure CleanupInstance;
-    function ClassType: TClass;
-    class function ClassName: String;
-    class function ClassNameIs(const Name: String): Boolean;
-    class function ClassParent: TClass;
-    class function ClassInfo: System.Type;
-    class function InstanceSize: LongInt;
-    class function InheritsFrom(AClass: TClass): Boolean;
-    class function MethodAddress(const Name: String): MemberInfo;
-    class function MethodName(Address: MemberInfo): String;
-    function FieldAddress(const Name: String): FieldInfo;
-    function GetInterface(const IID: TGUID; out Obj): Boolean;
-    class function GetInterfaceEntry(const IID: TGUID): Object;
-    class function GetInterfaceTable: Object;
-    function SafeCallException(ExceptObject: TObject; ExceptAddr: Object): HRESULT; virtual;
-    procedure AfterConstruction; virtual;
-    procedure BeforeDestruction; virtual;
-    procedure Dispatch(var Message); virtual;
-    procedure DefaultHandler(var Message); virtual;
-    class function NewInstance: TObject; virtual;
-    procedure FreeInstance; virtual;
-    
-    procedure Free; 
-    constructor Create;
-    procedure Destroy;virtual;
-  end;
-  
-  TClass = public class of TObject;
-
   TComponent = public class(TPersistent, IComponent, IDisposable)
   private
     FSite: ISite;
@@ -92,7 +45,6 @@ type
   public
 
     constructor Create(AOwner:TComponent);virtual;
-    procedure Destroy;override;
     method Dispose;
     method ToString:String;override;
 
@@ -387,7 +339,7 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
-  TStream = public abstract class(TObject)
+  TStream = public abstract class(TObject, IDisposable)
   private
     function GetPosition:Int64;
     procedure SetPosition(const Value:Int64);
@@ -416,6 +368,8 @@ type
     procedure ReadResHeader;
     property Position: Int64 read GetPosition write SetPosition;
     property Size: Int64 read GetSize write SetSize;
+
+    procedure Dispose; virtual; empty;
   end;
   
   [Guid('B8CD12A3-267A-11D4-83DA-00C04F60B2DD')]
@@ -438,7 +392,7 @@ type
     function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
     function Write(const Buffer:array of Byte; Count: LongInt): LongInt; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
-    procedure Destroy;override;
+    procedure Dispose; override;
     property Handle: SafeFileHandle read GetHandle;
   end;
   
@@ -462,7 +416,7 @@ type
     function Seek(Offset: Int64; Origin: TSeekOrigin): Int64; override;
     procedure SaveToStream(Stream: TStream);
     procedure SaveToFile(FileName: String);
-    procedure Destroy;override;
+    //procedure Destroy;override;
     property Memory: array of Byte read GetMemory;
   end;
   
@@ -639,173 +593,6 @@ begin
   end;
 end;
 
-{ TObject }
-
-class function TObject.InitInstance(aInstance: Object): TObject;
-begin
-  Result := aInstance as TObject;
-end;
-
-procedure TObject.CleanupInstance;
-begin
-  // 
-end;
-
-function TObject.ClassType: TClass;
-var
-  MetaClassType :System.Type;
-  MetaClassInstanceProperty :PropertyInfo;
-begin
-  if not assigned(_ClassType) then
-  begin
-    MetaClassType := GetType().GetNestedType('MetaClass');
-    MetaClassInstanceProperty := MetaClassType.GetProperty('Instance');
-    _ClassType := TClass(MetaClassInstanceProperty.GetValue(nil, nil));
-  end;
-  Result := _ClassType; 
-end;
-
-class function TObject.ClassName: String;
-begin
-  Result := ClassInfo.Name;
-end;
-
-class function TObject.ClassNameIs(const Name: String): Boolean;
-begin
-  Result := System.String.Compare(Name, self.ClassName, true) = 0;
-end;
-
-class function TObject.ClassParent: TClass;
-//var t:System.Type;
-begin
- { t := _ClassInfo.BaseType;
-  if t is TObject then
-    Result := TObject(t).ClassType
-  else
-    t := nil;}
-  NotImplemented;
-end;
-
-class function TObject.ClassInfo: System.Type;
-begin
-  if _ClassInfo = nil then
-    _ClassInfo := typeOf(self);
-  Result := _ClassInfo;
-end;
-
-class function TObject.InstanceSize: LongInt;
-begin
-  Result := 0; // TODO: find a way to get the instance size for classes
-end;
-
-class function TObject.InheritsFrom(AClass: TClass): Boolean;
-begin
-  if (AClass = nil) then
-    Result := false
-  else
-    Result := AClass.ActualType.IsAssignableFrom(Self.ClassInfo);
-end;
-
-class function TObject.MethodAddress(const Name: String): MemberInfo;
-var meminfo:array of MemberInfo;
-begin
-  meminfo := ClassInfo.GetMember(Name);
-  if meminfo.Length > 0 then
-    Result := meminfo[0]
-  else
-    Result := nil;
-end;
-
-class function TObject.MethodName(Address: MemberInfo): String;
-begin
-  Result := Address.Name;
-end;
-
-function TObject.FieldAddress(const Name: String): FieldInfo;
-begin
-  Result := ClassInfo.GetField(Name);
-end;
-
-function TObject.GetInterface(const IID: TGUID; out Obj): Boolean;
-begin
-  try
-    Obj := ClassInfo.GetTypeFromCLSID(IID);
-    Result := true;
-  except
-    Obj := nil;
-    Result := false;
-  end;   
-end;
-
-class function TObject.GetInterfaceEntry(const IID: TGUID): Object;
-begin
-  try
-    Result := ClassInfo.GetTypeFromCLSID(IID);
-  except
-    Result := nil;
-  end;   
-end;
-
-class function TObject.GetInterfaceTable: Object;
-begin
-  Result := ClassInfo.GetInterfaces;
-end;
-
-function TObject.SafeCallException(ExceptObject: TObject; ExceptAddr: Object): HRESULT; 
-begin
-  NotImplemented;
-end;
-
-procedure TObject.AfterConstruction;
-begin
-  // do nothing
-end;
-
-procedure TObject.BeforeDestruction; 
-begin
-  // do nothing
-end;
-
-procedure TObject.Dispatch(var Message); 
-begin
-  NotImplemented;
-end;
-
-procedure TObject.DefaultHandler(var Message); 
-begin
-  NotImplemented;
-end;
-
-class function TObject.NewInstance: TObject; 
-begin
-  Result := new TObject;
-end;
-
-procedure TObject.FreeInstance; 
-begin
-  // do nothing
-end;
-
-constructor TObject.Create;
-begin
-  inherited Create;
-  AfterConstruction;
-end;
-  
-procedure TObject.Destroy;
-begin
-  BeforeDestruction;
-  if Self is IDisposable then
-    IDisposable(Self).Dispose;
-end;
-
-procedure TObject.Free;
-begin
-  if Self <> nil then 
-    Destroy;
-end;    
-
-
 { TComponent }
 
 method TComponent.get_DesignMode: Boolean;
@@ -843,12 +630,6 @@ constructor TComponent.Create(AOwner:TComponent);
 begin
   inherited Create;
   if AOwner <> nil then AOwner.InsertComponent(self);
-end;
-
-procedure TComponent.Destroy; 
-begin
-  Dispose(false);
-  inherited Destroy; 
 end;
 
 method TComponent.Dispose(Disposing:Boolean); 
@@ -2235,7 +2016,7 @@ begin
   Result := FStream.Seek(Offset, System.IO.SeekOrigin(Origin));
 end;
 
-procedure THandleStream.Destroy;
+procedure THandleStream.Dispose;
 begin
   if FStream <> nil then
   begin
@@ -2244,7 +2025,7 @@ begin
     FHandle:Dispose;
     FStream := nil;
   end;
-  inherited Destroy;
+  inherited Dispose;
 end;
 
 function THandleStream.ReadLine: String; 
@@ -2364,12 +2145,6 @@ end;
 procedure TCustomMemoryStream.SetSize(const NewSize: Int64);
 begin
   FStream.SetLength(NewSize);
-end;
-
-procedure TCustomMemoryStream.Destroy;
-begin
-  FStream.Close;
-  inherited Destroy;
 end;
 
 { TMemoryStream }

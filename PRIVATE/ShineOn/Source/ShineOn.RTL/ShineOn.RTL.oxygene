@@ -1,9 +1,9 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{EADE7853-FDBE-4770-B0B2-5FF5FDD2DBF7}</ProjectGuid>
-    <RootNamespace>ShineOn.RTL</RootNamespace>
+    <RootNamespace>ShineOn.Rtl</RootNamespace>
     <OutputType>library</OutputType>
-    <AssemblyName>ShineOn.RTL</AssemblyName>
+    <AssemblyName>ShineOn.Rtl</AssemblyName>
     <AllowLegacyWith>True</AllowLegacyWith>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
@@ -13,6 +13,7 @@
     <OutputPath>..\bin</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>
@@ -26,6 +27,10 @@
     </Reference>
     <Reference Include="System">
       <HintPath>$(Framework)\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing">
       <HintPath>$(Framework)\System.Drawing.dll</HintPath>
@@ -45,6 +50,7 @@
     <Compile Include="Langs.pas" />
     <Compile Include="System.pas" />
     <Compile Include="SysUtils.pas" />
+    <Compile Include="TObject.pas" />
     <Compile Include="Types.pas" />
   </ItemGroup>
 </Project>

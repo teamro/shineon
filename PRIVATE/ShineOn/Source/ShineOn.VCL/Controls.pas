@@ -8,7 +8,7 @@
 
 // $Id: Controls.pas 17 2005-04-25 17:51:44Z peter3 $
 
-namespace ShineOn.VCL;
+namespace ShineOn.Vcl;
 
 interface
 

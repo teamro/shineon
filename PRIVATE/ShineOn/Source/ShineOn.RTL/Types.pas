@@ -6,15 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Types.pas 78 2006-04-09 11:16:43Z msgclb $
-
-// History:
-//
-// 2005-06-04   :   Lloyd Kinsella    : More complete implementation of TDateTime
-// 2006-03-16   :   Jeroen Vandezande : changed Integer to Word of some var's in TryEncodeDateTime & TryEncodeDate
-// 2006-04-09   :   Corwin Burgess  : changed TDateTime form class to record
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
 
@@ -669,7 +661,7 @@ end;
 
 class function TDateTime.TryEncodeDate(AYear, AMonth, ADay: Word; out Rslt: TDateTime): Boolean;
 var
-  Offset, DIM: word;
+  Offset, DIM: Word;
 begin
   Result := False;
   Rslt := default(TDateTime);
@@ -708,7 +700,7 @@ end;
 
 class function TDateTime.TryEncodeDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMSec: Word; out Rslt: TDateTime): Boolean;
 var
-  Offset, DIM: word;
+  Offset, DIM: Word;
 begin
   Result := False;
   Rslt := default(TDateTime);
@@ -787,17 +779,17 @@ end;
 
 class function TDateTime.Trunc(const AValue: TDateTime): Int64;
 begin
-  Result := ShineOn.RTL.System.Trunc(AValue);
+  Result := ShineOn.Rtl.SystemUnit.Trunc(AValue);
 end;
 
 class function TDateTime.Frac(const AValue: TDateTime): Double;
 begin
-  Result := ShineOn.RTL.System.Frac(AValue);
+  Result := ShineOn.Rtl.SystemUnit.Frac(AValue);
 end;
 
 class function TDateTime.Round(const AValue: TDateTime): Int64;
 begin
-  Result := ShineOn.RTL.System.Round(AValue);
+  Result := ShineOn.Rtl.SystemUnit.Round(AValue);
 end;
 
 class operator TDateTime.Minus(const AValue: TDateTime): TDateTime;

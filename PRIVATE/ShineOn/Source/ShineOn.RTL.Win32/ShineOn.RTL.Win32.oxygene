@@ -1,9 +1,9 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{574E35A9-E590-48A6-B154-35824FCF8856}</ProjectGuid>
-    <RootNamespace>ShineOn.RTL.Win32</RootNamespace>
+    <RootNamespace>ShineOn.Rtl.Win32</RootNamespace>
     <OutputType>library</OutputType>
-    <AssemblyName>ShineOn.RTL.Win32</AssemblyName>
+    <AssemblyName>ShineOn.Rrl.Win32</AssemblyName>
     <AllowLegacyWith>True</AllowLegacyWith>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
@@ -13,6 +13,7 @@
     <OutputPath>..\bin</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>

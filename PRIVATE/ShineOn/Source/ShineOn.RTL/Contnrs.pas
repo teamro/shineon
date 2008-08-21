@@ -6,9 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Contnrs.pas 49 2005-06-28 13:29:37Z peter3 $
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
   
@@ -18,22 +16,12 @@ type
     FOwnsObjects: Boolean;
   protected
     procedure Notify(Ptr: Object; Action: TListNotification); override;
-    function GetItem(Index: Integer): TObject;
-    procedure SetItem(Index: Integer; AObject: TObject);
   public
     constructor Create; 
     constructor Create(AOwnsObjects: Boolean); 
 
-    function Add(AObject: TObject): Integer;
-    function Extract(Item: TObject): TObject;
-    function Remove(AObject: TObject): Integer;
-    function IndexOf(AObject: TObject): Integer;
     function FindInstanceOf(AClass: TClass; AExact: Boolean := True; AStartAt: Integer := 0): Integer;
-    procedure Insert(Index: Integer; AObject: TObject);
-    function First: TObject;reintroduce;
-    function Last: TObject;reintroduce;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
-    property Items[Index: Integer]: TObject read GetItem write SetItem; default;reintroduce;
   end;
 
 { TComponentList class }
@@ -102,12 +90,7 @@ type
 
 { TObjectStack class }
 
-  TObjectStack = public class(TStack)
-  public
-    function Push(AObject: TObject): TObject;
-    function Pop: TObject;reintroduce;
-    function Peek: TObject;reintroduce;
-  end;
+  TObjectStack = public TStack;
 
 { TQueue class }
 
@@ -118,12 +101,7 @@ type
 
 { TObjectQueue class }
 
-  TObjectQueue = public class(TQueue)
-  public
-    function Push(AObject: TObject): TObject;
-    function Pop: TObject;reintroduce;
-    function Peek: TObject;reintroduce;
-  end;
+  TObjectQueue = public TQueue;
 
 { TBucketList, Hashed associative list }
 
@@ -162,26 +140,12 @@ type
 
 { TObjectBucketList }
 
-  TObjectBucketList = public class(TBucketList)
-  protected
-    function GetData(AItem: TObject): TObject;
-    procedure SetData(AItem: TObject; const AData: TObject);
-  public
-    function Add(AItem, AData: TObject): TObject;
-    function Remove(AItem: TObject): TObject;
-
-    property Data[AItem: TObject]: TObject read GetData write SetData; default;
-  end;
+  TObjectBucketList = public TBucketList;
 
 implementation
 
 
 { TObjectList }
-
-function TObjectList.Add(AObject: TObject): Integer;
-begin
-  Result := inherited Add(AObject);
-end;
 
 constructor TObjectList.Create;
 begin
@@ -193,11 +157,6 @@ constructor TObjectList.Create(AOwnsObjects: Boolean);
 begin
   inherited Create;
   FOwnsObjects := AOwnsObjects;
-end;
-
-function TObjectList.Extract(Item: TObject): TObject;
-begin
-  Result := TObject(inherited Extract(Item));
 end;
 
 function TObjectList.FindInstanceOf(AClass: TClass; AExact: Boolean;
@@ -216,31 +175,6 @@ begin
     end;
 end;
 
-function TObjectList.First: TObject;
-begin
-  Result := TObject(inherited First);
-end;
-
-function TObjectList.GetItem(Index: Integer): TObject;
-begin
-  Result := inherited Items[Index] as TObject;
-end;
-
-function TObjectList.IndexOf(AObject: TObject): Integer;
-begin
-  Result := inherited IndexOf(AObject);
-end;
-
-procedure TObjectList.Insert(Index: Integer; AObject: TObject);
-begin
-  inherited Insert(Index, AObject);
-end;
-
-function TObjectList.Last: TObject;
-begin
-  Result := TObject(inherited Last);
-end;
-
 procedure TObjectList.Notify(Ptr: Object; Action: TListNotification);
 begin
   if OwnsObjects then
@@ -248,17 +182,6 @@ begin
       TObject(Ptr).Free;
   inherited Notify(Ptr, Action);
 end;
-
-function TObjectList.Remove(AObject: TObject): Integer;
-begin
-  Result := inherited Remove(AObject);
-end;
-
-procedure TObjectList.SetItem(Index: Integer; AObject: TObject);
-begin
-  inherited Items[Index] := AObject;
-end;
-
 
 { TComponentList }
 
@@ -429,45 +352,11 @@ begin
   List.Add(AItem);
 end;
 
-{ TObjectStack }
-
-function TObjectStack.Peek: TObject;
-begin
-  Result := TObject(inherited Peek);
-end;
-
-function TObjectStack.Pop: TObject;
-begin
-  Result := TObject(inherited Pop);
-end;
-
-function TObjectStack.Push(AObject: TObject): TObject;
-begin
-  Result := TObject(inherited Push(AObject));
-end;
-
 { TQueue }
 
 procedure TQueue.PushItem(AItem: Object);
 begin
   List.Insert(0, AItem);
-end;
-
-{ TObjectQueue }
-
-function TObjectQueue.Peek: TObject;
-begin
-  Result := TObject(inherited Peek);
-end;
-
-function TObjectQueue.Pop: TObject;
-begin
-  Result := TObject(inherited Pop);
-end;
-
-function TObjectQueue.Push(AObject: TObject): TObject;
-begin
-  Result := TObject(inherited Push(AObject));
 end;
 
 { TCustomBucketList }
@@ -569,27 +458,5 @@ begin
   inherited Create;
   FBuckets := new System.Collections.Hashtable(ABucketSizes[Byte(ABuckets)] + 1);
 end;  
-
-{ TObjectBucketList }
-
-function TObjectBucketList.Add(AItem, AData: TObject): TObject;
-begin
-  Result := TObject(inherited Add(AItem, AData));
-end;
-
-function TObjectBucketList.GetData(AItem: TObject): TObject;
-begin
-  Result := TObject(inherited Data[AItem]);
-end;
-
-function TObjectBucketList.Remove(AItem: TObject): TObject;
-begin
-  Result := TObject(inherited Remove(AItem));
-end;
-
-procedure TObjectBucketList.SetData(AItem: TObject; const AData: TObject);
-begin
-  inherited Data[AItem] := AData;
-end;
 
 end.

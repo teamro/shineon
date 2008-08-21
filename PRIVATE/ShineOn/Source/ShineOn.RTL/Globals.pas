@@ -6,9 +6,10 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Globals.pas 56 2005-07-18 13:28:16Z peter3 $
+namespace ShineOn.Rtl;
 
-namespace ShineOn.RTL;
+// ToDo: not worth changing just for the sake of it, but these methids should just be defined globally, 
+// instead of relying on the System class. it's just dupe work. making the class internal for now. mh.
 
 // NOTES FOR THIS UNIT:
 // This unit should only contain global variables and constants (except String constants used in messages which
@@ -26,7 +27,7 @@ uses
   System.Windows.Forms;
 
 type
-  Globals = public sealed class
+  Globals = assembly sealed class
   public
     class var ApplicationMainForm:Form := nil; // used by TThread.Synchronize();
   public

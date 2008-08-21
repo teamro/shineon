@@ -8,7 +8,7 @@
 
 // $Id: AssemblyInfo.pas 17 2005-04-25 17:51:44Z peter3 $
 
-namespace ShineOn.RTL.Win32;
+namespace ShineOn.Rtl.Win32;
 
 interface
 
@@ -16,7 +16,7 @@ uses
   System.Reflection;
 
 [assembly: AssemblyTitle('')]
-[assembly: AssemblyDescription('Chrome Shine On RTL Win32 Assembly')]
+[assembly: AssemblyDescription('ShineOn RTL Win32 Assembly')]
 [assembly: AssemblyConfiguration('')]
 [assembly: AssemblyCompany('')]
 [assembly: AssemblyProduct('')]

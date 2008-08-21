@@ -6,15 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: IniFiles.pas 76 2006-03-27 01:20:58Z msgclb $
-
-// History:
-//
-// 2005-06-04   :   Lloyd Kinsella    : Modifications to support newer TDateTime implementation
-// 2006-03-21   :   Corwin Burgess  : Fixed index outofbounds in TMemIniFile.SetStrings
-// 2006-03-26   :   Corwin Burgess  : Corrected transposed code in TMemIniFile.ReadSections
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 // TODO: 
 // * implement all NotImplemented
@@ -23,7 +15,7 @@ interface
 type
   EIniFileException = public class(Exception);
 
-  TCustomIniFile = public abstract class(TObject)
+  TCustomIniFile = public abstract class(TObject, IDisposable)
   protected
     FFileName: String;
   public
@@ -53,6 +45,7 @@ type
     procedure UpdateFile; virtual; abstract;
     function ValueExists(Section, Name: String): Boolean;
     property FileName: String read FFileName;
+    procedure Dispose; virtual; empty;
   end;
   
   { TMemIniFile - loads an entire INI file into memory and allows all
@@ -66,7 +59,7 @@ type
     procedure LoadValues;
   public
     constructor Create(FileName: String);
-    procedure Destroy;override;
+    procedure Dispose; override;
     procedure Clear;
     procedure DeleteKey(Section, Name: String); override;
     procedure EraseSection(Section: String); override;
@@ -228,10 +221,10 @@ begin
   LoadValues;
 end;
 
-procedure TMemIniFile.Destroy; 
+procedure TMemIniFile.Dispose; 
 begin
   UpdateFile; // flush to disk
-  inherited Destroy;
+  inherited Dispose;
 end;
 
 procedure TMemIniFile.Clear; 

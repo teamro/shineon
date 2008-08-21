@@ -6,9 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: Langs.pas 43 2005-06-16 15:07:38Z lloydkinsella $
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
   

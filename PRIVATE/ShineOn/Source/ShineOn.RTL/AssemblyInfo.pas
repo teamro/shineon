@@ -6,9 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-// $Id: AssemblyInfo.pas 17 2005-04-25 17:51:44Z peter3 $
-
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 interface
 
@@ -16,7 +14,7 @@ uses
   System.Reflection;
 
 [assembly: AssemblyTitle('')]
-[assembly: AssemblyDescription('Chrome Shine On RTL Assembly')]
+[assembly: AssemblyDescription('ShineOn RTL Assembly')]
 [assembly: AssemblyConfiguration('')]
 [assembly: AssemblyCompany('')]
 [assembly: AssemblyProduct('')]
