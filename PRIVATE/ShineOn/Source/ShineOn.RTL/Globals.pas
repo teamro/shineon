@@ -389,9 +389,8 @@ const
   bl256 = Globals.bl256;
  
 var
-  ApplicationMainForm:Form := Globals.ApplicationMainForm;
-  MaxDateTime:TDateTime := Globals.MaxDateTime;
-  MinDateTime:TDateTime := Globals.MinDateTime;
+  MaxDateTime:TDateTime := Globals.MaxDateTime; readonly;
+  MinDateTime:TDateTime := Globals.MinDateTime; readonly;
   
 
 implementation

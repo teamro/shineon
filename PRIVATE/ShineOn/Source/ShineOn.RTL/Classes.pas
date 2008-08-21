@@ -129,7 +129,6 @@ type
   
   TThreadList = public class(TObject)
   private
-    FLocked:Boolean;
     FList:TList;
     FDuplicates:TDuplicates;
   public
@@ -359,11 +358,6 @@ type
     procedure Dispose; virtual; empty;
   end;
   
-  [Guid('B8CD12A3-267A-11D4-83DA-00C04F60B2DD')]
-  IStreamPersist = public interface
-    procedure LoadFromStream(Stream: TStream);
-    procedure SaveToStream(Stream: TStream);
-  end;
   
   THandleStream = public class(TStream)
   protected
@@ -459,41 +453,7 @@ type
     function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
   end;
 
-(*  
-  TStreamOwnership = (soReference, soOwned);
-
-  TStreamAdapter = class(TInterfacedObject, IStream)
-  public
-    constructor Create(Stream: TStream; Ownership: TStreamOwnership = soReference);
-    function Read(pv: Object; cb: LongInt;
-      pcbRead: PLongint): HRESULT; virtual; stdcall;
-    function Write(pv: Object; cb: LongInt;
-      pcbWritten: PLongint): HRESULT; virtual; stdcall;
-    function Seek(dlibMove: Largeint; dwOrigin: LongInt;
-      out libNewPosition: Largeint): HRESULT; virtual; stdcall;
-    function SetSize(libNewSize: Largeint): HRESULT; virtual; stdcall;
-    function CopyTo(stm: IStream; cb: Largeint; out cbRead: Largeint;
-      out cbWritten: Largeint): HRESULT; virtual; stdcall;
-    function Commit(grfCommitFlags: LongInt): HRESULT; virtual; stdcall;
-    function Revert: HRESULT; virtual; stdcall;
-    function LockRegion(libOffset: Largeint; cb: Largeint;
-      dwLockType: LongInt): HRESULT; virtual; stdcall;
-    function UnlockRegion(libOffset: Largeint; cb: Largeint;
-      dwLockType: LongInt): HRESULT; virtual; stdcall;
-    function Stat(out statstg: TStatStg;
-      grfStatFlag: LongInt): HRESULT; virtual; stdcall;
-    function Clone(out stm: IStream): HRESULT; virtual; stdcall;
-    property Stream: TStream read FStream;
-    property StreamOwnership: TStreamOwnership read FOwnership write FOwnership;
-  end;
-  *)
-  
-  [Guid('E28B1858-EC86-4559-8FCD-6B4F824151ED')]
-  IInterfaceComponentReference = public interface
-    function GetComponent: TComponent;
-  end;
-  
-  
+ 
   EThread = public class(Exception);
 
   TThreadMethod = public procedure of object;
@@ -1025,7 +985,6 @@ constructor TThreadList.Create;
 begin
   inherited Create;
   FList := new TList;
-  FLocked := false;
 end;
 
 procedure TThreadList.Add(Item: Object);
@@ -2350,7 +2309,7 @@ begin
     FSynchForm.Invoke(AMethod)
   else 
   begin
-    AForm := ApplicationMainForm;
+    AForm := nil;
     if AForm = nil then
       AForm := Form.ActiveForm; // user hasn't set the global ApplicationMainForm variable, so check if there is another active form
     if AForm = nil then
@@ -2410,7 +2369,8 @@ end;
 
 function TThread.WaitFor: LongWord;
 begin
-  NotImplemented;
+  FThread.Join;
+  result := 0;
 end;
 
 
