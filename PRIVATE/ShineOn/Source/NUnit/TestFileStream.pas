@@ -617,7 +617,7 @@ begin
             NUnit.Framework.Assert.AreEqual(typeof (System.Exception), E.GetType, 'SaveToFile#01');
         end;
     finally
-        SL.free;                
+        SL.Free;                
     end;
         
 end;

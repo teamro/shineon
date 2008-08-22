@@ -14,8 +14,8 @@ uses
   System,
   System.Globalization,
   System.IO,
-  System.Runtime.InteropServices, // for guid attribute and FILETIME
-  System.Text;
+  System.Text,
+  System.Runtime.InteropServices; // for guid attribute and FILETIME
   
 type
 { TStream seek origins }
@@ -267,6 +267,52 @@ type
   end;
   
   TDayTable = public array [1..12] of Word;
+type
+  DelphiString = public class
+  private
+    FString: String;
+
+    method GetChar(Index: Integer): Char;
+    method SetChar(Index: Integer; Value: Char);
+    method GetLength(): Integer;
+  protected
+    method GetEncoding(): Encoding; virtual;
+  public
+    constructor(const S: String);
+    constructor(const S: DelphiString);
+
+    method ToString(): String; override;
+
+    class operator &Add(const Left, Right: DelphiString): DelphiString;
+    class operator Equal(const Left, Right: DelphiString): Boolean;
+    class operator NotEqual(const Left, Right: DelphiString): Boolean;
+    class operator Less(const Left, Right: DelphiString): Boolean;
+    class operator LessOrEqual(const Left, Right: DelphiString): Boolean;
+    class operator Greater(const Left, Right: DelphiString): Boolean;
+    class operator GreaterOrEqual(const Left, Right: DelphiString): Boolean;
+
+    class operator Implicit(const Value: String): DelphiString;
+    class operator Implicit(const Value: DelphiString): String;
+
+    property Chars[Index: Integer]: Char read GetChar write SetChar; default;
+    property Encoding: System.Text.Encoding read GetEncoding;
+    property Length: Integer read GetLength;
+  end;
+
+  AnsiString = public sealed class(DelphiString)
+  protected
+    method GetEncoding(): Encoding; override;
+  public
+    class operator Implicit(const Value: String): AnsiString;
+  end;
+
+  WideString = public sealed class(DelphiString)
+  protected
+    method GetEncoding(): Encoding; override;
+  public
+    class operator Implicit(const Value: String): WideString;
+  end;
+
 
 const
   SDateOutOfRangeError = 'Value given is out of TDateTime range';
@@ -321,53 +367,7 @@ const
 
   MinDateTimeAsDouble:Double = -657434.0;     //  1/01/0100  0:00:00.000 AM
   MaxDateTimeAsDouble:Double = 2958465.99999; // 12/31/9999 11:59:59.999 PM
-
-type
-  DelphiString = public class
-  private
-    FString: String;
-
-    method GetChar(Index: Integer): Char;
-    method SetChar(Index: Integer; Value: Char);
-    method GetLength(): Integer;
-  protected
-    method GetEncoding(): Encoding; virtual;
-  public
-    constructor(const S: String);
-    constructor(const S: DelphiString);
-
-    method ToString(): String; override;
-
-    class operator &Add(const Left, Right: DelphiString): DelphiString;
-    class operator Equal(const Left, Right: DelphiString): Boolean;
-    class operator NotEqual(const Left, Right: DelphiString): Boolean;
-    class operator Less(const Left, Right: DelphiString): Boolean;
-    class operator LessOrEqual(const Left, Right: DelphiString): Boolean;
-    class operator Greater(const Left, Right: DelphiString): Boolean;
-    class operator GreaterOrEqual(const Left, Right: DelphiString): Boolean;
-
-    class operator Implicit(const Value: String): DelphiString;
-    class operator Implicit(const Value: DelphiString): String;
-
-    property Chars[Index: Integer]: Char read GetChar write SetChar; default;
-    property Encoding: System.Text.Encoding read GetEncoding;
-    property Length: Integer read GetLength;
-  end;
-
-  AnsiString = public sealed class(DelphiString)
-  protected
-    method GetEncoding(): Encoding; override;
-  public
-    class operator Implicit(const Value: String): AnsiString;
-  end;
-
-  WideString = public sealed class(DelphiString)
-  protected
-    method GetEncoding(): Encoding; override;
-  public
-    class operator Implicit(const Value: String): WideString;
-  end;
-
+  
 function EqualRect(const R1, R2: TRect): Boolean;
 function Rect(Left, Top, Right, Bottom: Integer): TRect;
 function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect;
@@ -478,8 +478,6 @@ begin
     end;
 end;
 
-{}
-
 function DelphiEpoch: DateTime;
 begin
   Result := new DateTime(1899,12,30,0,0,0,0);
@@ -503,19 +501,16 @@ end;
 
 constructor TDateTime.Create(const AValue: Double);
 begin
-  inherited Create;
   FValue := DoubleToDateTime(AValue);
 end;
 
 constructor TDateTime.Create(const ADays: Integer);
 begin
-  inherited Create;
   FValue := DoubleToDateTime(ADays);
 end;
 
 constructor TDateTime.Create(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMSec: Word);
 begin
-  inherited Create;
   FValue := new DateTime(AYear,AMonth,ADay,AHour,AMinute,ASecond,AMSec);
 end;
 
@@ -1120,7 +1115,6 @@ begin
   Result := Convert.ChangeType(FValue, Typ, Provider);
 end;
 
-
 { DelphiString }
 
 constructor DelphiString(const S: String);
@@ -1242,3 +1236,4 @@ end;
 end.
 
 
+>>>>>>> .r110
