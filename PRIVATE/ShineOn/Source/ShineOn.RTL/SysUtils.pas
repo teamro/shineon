@@ -858,16 +858,13 @@ begin
   Result := System.IO.Directory.GetCurrentDirectory;
 end;
 
-{TODO: These following methods shouldn't catch ALL exceptions, but only the /expected/
-       exceptions that will be thrown if the IO operation failed. }
-
 class function SysUtils.SetCurrentDir(Dir: String): Boolean;
 begin
   Result := true;
   try
     System.IO.Directory.SetCurrentDirectory(Dir);
   except
-    Result := false;
+    on IOException do result := false;
   end;
 end;
 
@@ -877,7 +874,7 @@ begin
   try
     System.IO.Directory.CreateDirectory(Dir);
   except
-    Result := false;
+    on IOException do result := false;
   end;
 end;
 
@@ -887,7 +884,7 @@ begin
   try
     System.IO.Directory.Delete(Dir);
   except
-    Result := false;
+    on IOException do result := false;
   end;
 end;
 
