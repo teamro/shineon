@@ -737,40 +737,37 @@ begin
   Result := System.IO.Directory.Exists(Directory);
 end;
 
-{TODO: These following methods shouldn't catch ALL exceptions, but only the /expected/
-       exceptions that will be thrown if the IO operation failed. }
-
 class function SysUtils.ForceDirectories(Dir: String): Boolean;
 begin
-  Result := true;
+  result := true;
   try
     System.IO.Directory.CreateDirectory(Dir);
   except
-    Result := false;
+    on e: IOException do result := false;
   end;
 end;
 
 class function SysUtils.DeleteFile(FileName: String): Boolean;
 begin
-  Result := System.IO.File.Exists(FileName);
+  result := System.IO.File.Exists(FileName);
   if Result then
   try
     System.IO.File.Delete(FileName);
     Result := not System.IO.File.Exists(FileName);
   except
-    Result := false;
+    on IOException do result := false;
   end;
 end;
 
 class function SysUtils.RenameFile(OldName, NewName: String): Boolean;
 begin
   Result := System.IO.File.Exists(OldName);
-  if Result then
+  if result then
   try
     System.IO.File.Move(OldName, NewName);
-    Result := System.IO.File.Exists(NewName);
+    result := System.IO.File.Exists(NewName);
   except
-    Result := false;
+    on IOException do result := false;
   end;
 end;
 
