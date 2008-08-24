@@ -119,9 +119,19 @@ begin
   WriteInteger(Section, Name, ord(Value));
 end;
 
+//TODO: test this method
 function TCustomIniFile.ReadBinaryStream(Section, Name: String; Value: TStream): Integer; 
 begin
-  NotImplemented;
+  var s := ReadString(Section, Name, '');
+  if (s.Length mod 2) <> 0 then raise new EIniFileException('the hex string is not of an even length.');
+  var tempBuffer := new Byte[s.Length / 2];
+  for i: Int32 := 0 to s.Length - 1  step 2 do
+  begin
+    var subStr := s.Substring(i, 2);
+    tempBuffer[i / 2] := Byte.Parse(subStr, System.Globalization.NumberStyles.AllowHexSpecifier);
+  end;
+  Value.ReadBuffer(tempBuffer, tempBuffer.Length);
+  result := tempBuffer.Length;
 end;
 
 function TCustomIniFile.ReadDate(Section, Name: String; Default: TDateTime): TDateTime; 
