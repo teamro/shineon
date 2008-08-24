@@ -164,9 +164,17 @@ begin
   Result := StrToDateTimeDef(ReadString(Section, Name, ''), Default);
 end;
 
+//TODO: Test this method
 procedure TCustomIniFile.WriteBinaryStream(Section, Name: String; Value: TStream); 
 begin
-  NotImplemented;
+  var sb := new System.Text.StringBuilder;
+  var buffer := new Byte[Value.Size];
+  Value.ReadBuffer(buffer, Value.Size);
+  for each i in buffer do
+  begin
+    sb.AppendFormat("{0:x2}", i);
+  end;
+  self.WriteString(Section, Name, sb.ToString);
 end;
 
 procedure TCustomIniFile.WriteDate(Section, Name: String; Value: TDateTime); 
