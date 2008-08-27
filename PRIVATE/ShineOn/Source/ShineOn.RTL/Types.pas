@@ -14,8 +14,11 @@ uses
   System,
   System.Globalization,
   System.IO,
+  System.Reflection.Emit,
+  System.Runtime.Remoting.Activation,
   System.Text,
-  System.Runtime.InteropServices; // for guid attribute and FILETIME
+  System.Runtime.InteropServices, 
+  System.Windows.Forms; // for guid attribute and FILETIME
   
 type
 { TStream seek origins }
@@ -268,21 +271,16 @@ type
   
   TDayTable = public array [1..12] of Word;
 type
-  DelphiString = public class
+  DelphiString = public sealed class
   private
-    FString: String;
-
-    method GetChar(Index: Integer): Char;
-    method SetChar(Index: Integer; Value: Char);
-    method GetLength(): Integer;
-  protected
-    method GetEncoding(): Encoding; virtual;
+    fChars: Array of Char;
   public
-    constructor(const S: String);
-    constructor(const S: DelphiString);
-
-    method ToString(): String; override;
-
+    constructor;
+    constructor (aEncoding: Encoding := nil; aData: Array of Byte);
+    constructor (aOriginal: DelphiString);
+    constructor (aChars: Array of Char);
+    constructor (aOriginal: String);
+    
     class operator &Add(const Left, Right: DelphiString): DelphiString;
     class operator Equal(const Left, Right: DelphiString): Boolean;
     class operator NotEqual(const Left, Right: DelphiString): Boolean;
@@ -291,26 +289,41 @@ type
     class operator Greater(const Left, Right: DelphiString): Boolean;
     class operator GreaterOrEqual(const Left, Right: DelphiString): Boolean;
 
+    class operator &Add(const Left: String; Right: DelphiString): DelphiString;
+    class operator Equal(const Left: String; Right: DelphiString): Boolean;
+    class operator NotEqual(const Left: String; Right: DelphiString): Boolean;
+    class operator Less(const Left: String; Right: DelphiString): Boolean;
+    class operator LessOrEqual(const Left: String; Right: DelphiString): Boolean;
+    class operator Greater(const Left: String; Right: DelphiString): Boolean;
+    class operator GreaterOrEqual(const Left: String; Right: DelphiString): Boolean;
+
+    class operator &Add(const Left: DelphiString; aRight: String): DelphiString;
+    class operator Equal(const Left: DelphiString; aRight: String): Boolean;
+    class operator NotEqual(const Left: DelphiString; aRight: String): Boolean;
+    class operator Less(const Left: DelphiString; aRight: String): Boolean;
+    class operator LessOrEqual(const Left: DelphiString; aRight: String): Boolean;
+    class operator Greater(const Left: DelphiString; aRight: String): Boolean;
+    class operator GreaterOrEqual(const Left: DelphiString; aRight: String): Boolean;
+
     class operator Implicit(const Value: String): DelphiString;
     class operator Implicit(const Value: DelphiString): String;
 
-    property Chars[Index: Integer]: Char read GetChar write SetChar; default;
-    property Encoding: System.Text.Encoding read GetEncoding;
-    property Length: Integer read GetLength;
-  end;
+    class operator Implicit(const Value: Array of Char): DelphiString;
+    class operator Implicit(const Value: DelphiString): Array of Char;
 
-  AnsiString = public sealed class(DelphiString)
-  protected
-    method GetEncoding(): Encoding; override;
-  public
-    class operator Implicit(const Value: String): AnsiString;
-  end;
+    class operator Implicit(const Value: Array of Byte): DelphiString;
+    class operator Implicit(const Value: DelphiString): Array of Byte;
 
-  WideString = public sealed class(DelphiString)
-  protected
-    method GetEncoding(): Encoding; override;
-  public
-    class operator Implicit(const Value: String): WideString;
+    method ToBytes(aEncoding: Encoding := nil): Array of Byte;
+
+    method Duplicate: DelphiString;
+
+    method SetLength(aNewLength: Integer);
+    property Length: Integer read RemObjects.Oxygene.System.Length(fChars);
+    property Chars[i: Integer]: Char read fChars[i+1] write fChars[i+1]; default;
+    property CharData: Array of Char read fChars write fChars; 
+
+    method ToString: String; override;
   end;
 
 
@@ -374,12 +387,12 @@ function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect;
 function Point(X, Y: Integer): TPoint;
 function SmallPoint(X, Y: Integer): TSmallPoint;
 function SmallPoint(XY: LongWord): TSmallPoint;
-function PtInRect(const Rect: TRect; const P: TPoint): Boolean;
-function IntersectRect(out Rect: TRect; const R1, R2: TRect): Boolean;
-function UnionRect(out Rect: TRect; const R1, R2: TRect): Boolean;
-function IsRectEmpty(const Rect: TRect): Boolean;
-function OffsetRect(var Rect: TRect; DX: Integer; DY: Integer): Boolean;
-function CenterPoint(const Rect: TRect): TPoint;
+function PtInRect(const aRect: TRect; const P: TPoint): Boolean;
+function IntersectRect(out aRect: TRect; const R1, R2: TRect): Boolean;
+function UnionRect(out aRect: TRect; const R1, R2: TRect): Boolean;
+function IsRectEmpty(const aRect: TRect): Boolean;
+function OffsetRect(var aRect: TRect; DX: Integer; DY: Integer): Boolean;
+function CenterPoint(const aRect: TRect): TPoint;
   
 implementation
 
@@ -413,55 +426,55 @@ begin
   Result := new TSmallPoint(XY);
 end;
 
-function PtInRect(const Rect: TRect; const P: TPoint): Boolean;
+function PtInRect(const aRect: TRect; const P: TPoint): Boolean;
 begin
-  Result :=  ((P.X >= Rect.Left) and (P.X <= Rect.Right) and (P.Y >= Rect.Top) and (P.Y <= Rect.Bottom));
+  Result :=  ((P.X >= aRect.Left) and (P.X <= aRect.Right) and (P.Y >= aRect.Top) and (P.Y <= aRect.Bottom));
 end;
 
-function IntersectRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+function IntersectRect(out aRect: TRect; const R1, R2: TRect): Boolean;
 begin
-  Rect := R1;
+  aRect := R1;
 
-  if R2.Left > R1.Left then Rect.X := R2.X;
-  if R2.Top > R1.Top then Rect.Y := R2.Y;
-  if R2.Right < R1.Right then Rect.Width := (R2.Right - R2.Left);
-  if R2.Bottom < R1.Bottom then Rect.Height := (R2.Bottom - R2.Top);
+  if R2.Left > R1.Left then aRect.X := R2.X;
+  if R2.Top > R1.Top then aRect.Y := R2.Y;
+  if R2.Right < R1.Right then aRect.Width := (R2.Right - R2.Left);
+  if R2.Bottom < R1.Bottom then aRect.Height := (R2.Bottom - R2.Top);
 
-  Result := not IsRectEmpty(Rect);
+  Result := not IsRectEmpty(aRect);
 
-  if not Result then Rect := new TRect(0,0,0,0);
+  if not Result then aRect := new TRect(0,0,0,0);
 end;
 
-function UnionRect(out Rect: TRect; const R1, R2: TRect): Boolean;
+function UnionRect(out aRect: TRect; const R1, R2: TRect): Boolean;
 begin
-  Rect := R1;
+  aRect := R1;
 
   if not IsRectEmpty(R2) then
     begin
-      if R2.Left < R1.Left then Rect.X := R2.X;
-      if R2.Top < R1.Top then Rect.Y := R2.Y;
-      if R2.Right > R1.Right then Rect.Width := (R2.Right - R2.Left);
-      if R2.Bottom > R1.Bottom then Rect.Height := (R2.Bottom - R2.Top);
+      if R2.Left < R1.Left then aRect.X := R2.X;
+      if R2.Top < R1.Top then aRect.Y := R2.Y;
+      if R2.Right > R1.Right then aRect.Width := (R2.Right - R2.Left);
+      if R2.Bottom > R1.Bottom then aRect.Height := (R2.Bottom - R2.Top);
     end;
 
-  Result := not IsRectEmpty(Rect);
+  Result := not IsRectEmpty(aRect);
 
-  if not Result then Rect := new TRect(0,0,0,0);
+  if not Result then aRect := new TRect(0,0,0,0);
 end;
 
-function IsRectEmpty(const Rect: TRect): Boolean;
+function IsRectEmpty(const aRect: TRect): Boolean;
 begin
-  Result := (Rect.Right <= Rect.Left) or (Rect.Bottom <= Rect.Top);
+  Result := (aRect.Right <= aRect.Left) or (aRect.Bottom <= aRect.Top);
 end;
 
-function OffsetRect(var Rect: TRect; DX: Integer; DY: Integer): Boolean;
+function OffsetRect(var aRect: TRect; DX: Integer; DY: Integer): Boolean;
 begin
-  if Rect <> nil then
+  if aRect <> nil then
     begin
-      Rect.X := Rect.X + DX;
-      Rect.Width := Rect.Right + DX;
-      Rect.Y := Rect.Y + DY;
-      Rect.Height := Rect.Bottom + DY;
+      aRect.X := aRect.X + DX;
+      aRect.Width := aRect.Right + DX;
+      aRect.Y := aRect.Y + DY;
+      aRect.Height := aRect.Bottom + DY;
 
       Result := True;
     end
@@ -469,9 +482,9 @@ begin
     Result := False;
 end;
 
-function CenterPoint(const Rect: TRect): TPoint;
+function CenterPoint(const aRect: TRect): TPoint;
 begin
-  with Rect do
+  with aRect do
     begin
       Result.X := (Right - Left) div 2 + Left;
       Result.Y := (Bottom - Top) div 2 + Top;
@@ -1115,125 +1128,252 @@ begin
   Result := Convert.ChangeType(FValue, Typ, Provider);
 end;
 
-{ DelphiString }
-
-constructor DelphiString(const S: String);
+constructor DelphiString;
 begin
-  inherited constructor;
-
-  FString := S;
 end;
 
-constructor DelphiString(const S: DelphiString);
+constructor DelphiString(aEncoding: Encoding := nil; aData: Array of Byte);
 begin
-  inherited constructor;
-
-  FString := S.ToString();
+  if aData <> nil then begin 
+    if aEncoding = nil then aEncoding := Encoding.Default;
+    fChars := aEncoding.GetChars(aData, 0, aData.Length);
+  end;
 end;
 
-method DelphiString.ToString(): String;
+constructor DelphiString(aOriginal: DelphiString);
 begin
-  Result := FString;
+  if assigned(aOriginal) then begin
+    if aOriginal.fChars <> nil then begin
+      fChars := new Char[aOriginal.fChars.Length];
+      Array.Copy(aOriginal.fChars, 0, fChars, 0, fChars.Length);
+    end;
+  end;
 end;
 
-method DelphiString.GetEncoding(): Encoding;
+constructor DelphiString(aOriginal: String);
 begin
-  Result := System.Text.Encoding.Default;
+  if assigned(aOriginal) then fChars := aOriginal.ToCharArray;
 end;
 
-method DelphiString.GetChar(Index: Integer): Char;
-require
-  Index > 0;
+
+constructor DelphiString(aChars: Array of Char);
 begin
-  Result := FString[Index - 1];
+  if aChars <> nil then begin
+    fChars := new Char[aChars.Length];
+    Array.Copy(aChars, 0, fChars, 0, aChars.Length);
+  end;
 end;
 
-method DelphiString.SetChar(Index: Int32; Value: Char);
-require
-  Index > 0;
+class operator DelphiString.Add(const Left, Right: DelphiString): DelphiString;
 begin
-  FString := FString.Remove(Index - 1,1);
-  FString := FString.Insert(Index - 1,Value);
-end;
-
-method DelphiString.GetLength(): Integer;
-begin
-  Result := FString.Length - 1;
-end;
-
-class operator DelphiString.&Add(const Left, Right: DelphiString): DelphiString;
-begin
-  Result := new DelphiString(Left.ToString() + Right.ToString());
+  result := new DelphiString;
+  result.SetLength(valueOrDefault(Left:Length)+valueOrDefault(Right:Length));
+  if (Left <> nil) and (Left.CharData <> nil) then 
+    Array.Copy(Left.CharData, 0, result.CharData, 0, Left.CharData.Length);
+  if (Right <> nil) and (Right.CharData <> nil) then 
+    Array.Copy(Right.CharData, 0, result.CharData, valueOrDefault(Right:Length), Right.CharData.Length);
 end;
 
 class operator DelphiString.Equal(const Left, Right: DelphiString): Boolean;
 begin
-  Result := (String.Compare(Left.ToString(),Right.ToString()) = 0);
+  var lLeft := Left:CharData;
+  var lRight := Right:CharData;
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(true);
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) or 
+    (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
+  for i: Integer := 0 to Math.Max(lLeft.Length, lRight.Length) -1 do begin
+    if i >= lLeft.Length then exit(false);
+    if i >= lRight.Length then exit(false);
+    if lRight[i] <> lLeft[i] then exit false;
+  end;
+  exit true;
 end;
 
 class operator DelphiString.NotEqual(const Left, Right: DelphiString): Boolean;
 begin
-  Result := not (String.Compare(Left.ToString(),Right.ToString()) = 0);
+  result := not (Left = Right);
 end;
 
 class operator DelphiString.Less(const Left, Right: DelphiString): Boolean;
 begin
-  Result := (String.Compare(Left.ToString(),Right.ToString()) < 0);
+  var lLeft := Left:CharData;
+  var lRight := Right:CharData;
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) then exit(true); 
+  if (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
+
+  for i: Integer := 0 to Math.Max(lLeft.Length, lRight.Length) -1 do begin
+    if i >= lLeft.Length then exit(true);
+    if i >= lRight.Length then exit(false);
+    if lRight[i] < lLeft[i] then exit true;
+    if lRight[i] > lLeft[i] then exit false;
+  end;
+  exit true;
 end;
 
 class operator DelphiString.LessOrEqual(const Left, Right: DelphiString): Boolean;
 begin
-  Result := ((String.Compare(Left.ToString(),Right.ToString()) < 0) and (String.Compare(Left.ToString(),Right.ToString()) = 0));
+  result := not (Left > Right);
 end;
 
 class operator DelphiString.Greater(const Left, Right: DelphiString): Boolean;
 begin
-  Result := (String.Compare(Left.ToString(),Right.ToString()) > 0);
+  var lLeft := Left:CharData;
+  var lRight := Right:CharData;
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
+  if (RemObjects.Oxygene.System.length(lLeft) = 0) then exit(false); 
+  if (RemObjects.Oxygene.System.length(lRight) = 0) then exit(true);
+
+  for i: Integer := 0 to Math.Max(lLeft.Length, lRight.Length) -1 do begin
+    if i >= lLeft.Length then exit(false);
+    if i >= lRight.Length then exit(true);
+    if lRight[i] < lLeft[i] then exit false;
+    if lRight[i] > lLeft[i] then exit true;
+  end;
+  exit true;
 end;
 
 class operator DelphiString.GreaterOrEqual(const Left, Right: DelphiString): Boolean;
 begin
-  Result := ((String.Compare(Left.ToString(),Right.ToString()) < 0) and (String.Compare(Left.ToString(),Right.ToString()) = 0));
+  result := not (Left < Right);
+end;
+
+class operator DelphiString.Add(const Left: String; Right: DelphiString): DelphiString;
+begin
+  result := DelphiString(Left + String(Right));
+end;
+
+class operator DelphiString.Equal(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left = String(Right);
+end;
+
+class operator DelphiString.NotEqual(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left <> String(Right);
+end;
+
+class operator DelphiString.Less(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left < String(Right);
+end;
+
+class operator DelphiString.LessOrEqual(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left <= String(Right);
+end;
+
+class operator DelphiString.Greater(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left > String(Right);
+end;
+
+class operator DelphiString.GreaterOrEqual(const Left: String; Right: DelphiString): Boolean;
+begin
+  result := Left >= String(Right);
+end;
+
+class operator DelphiString.Add(const Left: DelphiString; aRight: String): DelphiString;
+begin
+  Result := DelphiString(String(Left) + aRight);
+end;
+
+class operator DelphiString.Equal(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) = aRight;
+end;
+
+class operator DelphiString.NotEqual(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) <> aRight;
+end;
+
+class operator DelphiString.Less(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) < aRight;
+end;
+
+class operator DelphiString.LessOrEqual(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) <= aRight;
+end;
+
+class operator DelphiString.Greater(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) > aRight;
+end;
+
+class operator DelphiString.GreaterOrEqual(const Left: DelphiString; aRight: String): Boolean;
+begin
+  result := String(Left) >= aRight;
 end;
 
 class operator DelphiString.Implicit(const Value: String): DelphiString;
 begin
-  Result := new DelphiString(Value);
+  result := new DelphiString(Value);
 end;
 
-// TODO: should we really allow implicit conversion from AnsiString to String? 
-// What happens when users call RTL String routines (i.e Pos) with AnsiString parameters?
 class operator DelphiString.Implicit(const Value: DelphiString): String;
 begin
-  Result := Value.ToString();
+  if (Value = nil) then exit(nil);
+  if Value.fChars = nil then exit('');
+  result := new String(Value.fChars);
 end;
 
-{ AnsiString }
-
-class operator AnsiString.Implicit(const Value: String): AnsiString;
+class operator DelphiString.Implicit(const Value: Array of Char): DelphiString;
 begin
-  Result := new AnsiString(Value);
+  result := new DelphiString(Value);
 end;
 
-method AnsiString.GetEncoding(): Encoding;
+class operator DelphiString.Implicit(const Value: DelphiString): Array of Char;
 begin
-  Result := System.Text.Encoding.Default;
+  if Value = nil then 
+     result := new Char[0] 
+  else 
+    result := Value.Duplicate().fChars;
 end;
 
-{ WideString }
-
-class operator WideString.Implicit(const Value: String): WideString;
+class operator DelphiString.Implicit(const Value: Array of Byte): DelphiString;
 begin
-  Result := new WideString(Value);
+  result := new DelphiString(Value);
 end;
 
-method WideString.GetEncoding: Encoding;
+class operator DelphiString.Implicit(const Value: DelphiString): Array of Byte;
 begin
-  Result := System.Text.Encoding.Unicode;
+  if Value = nil then result := new Byte[0] else
+  result := Value.ToBytes;
 end;
 
+method DelphiString.ToBytes(aEncoding: Encoding := nil): Array of Byte;
+begin
+  if aEncoding = nil then aEncoding := Encoding.Default;
+  if fChars = nil then 
+    result := new Byte[0] 
+  else 
+    result := aEncoding.GetBytes(fChars);
+end;
+
+method DelphiString.Duplicate: DelphiString;
+begin
+  result := new DelphiString(self);
+end;
+
+method DelphiString.SetLength(aNewLength: Integer);
+begin
+  if RemObjects.Oxygene.System.length(fChars) = aNewLength then exit;
+  if fChars = nil then fChars := new Char[aNewLength] else begin
+    var lNewChars := new Char[aNewLength];
+    var lCopyLength := Math.Min(fChars.Length, aNewLength);
+    if lCopyLength > 0 then Array.Copy(fChars, 0, lNewChars, 0, lCopyLength);
+    fChars := lNewChars;
+  end;
+end;
+
+method DelphiString.ToString: String;
+begin
+  result := String(self);
+end;
 
 end.
 
 
->>>>>>> .r110

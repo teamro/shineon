@@ -6,7 +6,7 @@
 // ANY KIND, either express or implied. See the License for the specificlanguage governing rights and 
 // limitations under the License.
 
-namespace ShineOn.RTL;
+namespace ShineOn.Rtl;
 
 // ToDo: not worth changing just for the sake of it, but these methids should just be defined globally, 
 // instead of relying on the SystemUnit class. it's just dupe work. making the class internal for now. mh.
@@ -14,8 +14,13 @@ namespace ShineOn.RTL;
 interface
 
 uses
+  System.Diagnostics,
+  System.Reflection.Emit,
+  System.Runtime.InteropServices,
   System.Text,
-  System.Globalization;
+  System.Globalization, 
+  System.Windows.Forms, 
+  System.Windows.Forms.VisualStyles;
     
 type
   EShineOnError = public class(Exception);
@@ -23,7 +28,14 @@ type
   SystemUnit = assembly sealed class 
   public
     class procedure NotImplemented;
-    
+
+    class procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:DelphiString);
+    class function Pos(SubStr, aStr:DelphiString):Int32;
+    class function Concat(S1, S2:DelphiString):DelphiString;
+    class procedure Delete(var S: DelphiString; Index, Count:Integer);
+    class procedure Insert(Source: DelphiString; var S: DelphiString; Index: Integer);
+    class function Copy(Source:DelphiString; StartIndex, length: Integer):DelphiString;
+
     class function Pos(SubStr, aStr:String):Int32;
     class function Concat(S1, S2:String):String;
     class procedure Delete(var S: String; Index, Count:Integer);
@@ -85,6 +97,17 @@ procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:String);public;
 procedure Val(S:String; var V:Double; var Code: Integer);public;
 procedure Val(S:String; var V:Integer; var Code: Integer);public;
 procedure Val(S:String; var V:Int64; var Code: Integer);public;
+procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:DelphiString);
+
+function Pos(SubStr, aStr:DelphiString):Int32; public;
+function Pos(SubStr: String; aStr:DelphiString):Int32; public;
+function Pos(SubStr: DelphiString; aStr:String):Int32; public;
+function Concat(S1, S2:DelphiString):DelphiString; public;
+procedure Delete(var S: DelphiString; Index, Count:Integer); public;
+procedure Insert(Source: DelphiString; var S: DelphiString; Index: Integer); public;
+procedure Insert(Source: String; var S: DelphiString; Index: Integer); public;
+function Copy(Source:DelphiString; StartIndex, length: Integer):DelphiString; public;
+
 
 function Pred(Value:Integer):Integer;public;
 function Pred(Value:Char):Char;public;
@@ -167,17 +190,17 @@ end;
 
 class function SystemUnit.UpCase ( Letter : Char ) : Char; 
 begin
-  Result := Letter.ToString.ToUpper[0];
+  Result :=  Char.ToUpperInvariant(Letter);
 end;
 
 class function SystemUnit.LoCase ( Letter : Char ) : Char; 
 begin
-  Result := Letter.ToString.ToLower[0];
+  Result := Char.ToLowerInvariant(Letter);
 end;
 
 class function SystemUnit.StringOfChar ( RepeatCharacter : Char; RepeatCount : Integer ) : String; 
 begin
-  Result := ''.PadLeft(RepeatCount, RepeatCharacter);
+  Result := new String(RepeatCharacter, RepeatCount);
 
 { 
   // This is a lot slower:
@@ -367,6 +390,10 @@ require
   assigned(S);
 begin
   case S type of
+    DelphiString:
+      begin
+        DelphiString(S).SetLength(length);
+      end;
     System.Array: 
       with aArray := System.Array(S) do 
       begin
@@ -413,6 +440,68 @@ begin
   P := Console.ReadLine;
 end;
 
+
+class procedure SystemUnit.Str(X:Double; Width:Int32;Decimals:Int32;var S:DelphiString);
+begin
+  var lTemp: String;
+  Str(X,Width,Decimals, lTemp);
+  S := lTemp;
+end;
+
+function CompareChars(aLeft: Array of Char; aLeftStart: Integer; aRight: Array of Char; aRightStart, aCount: Integer): Boolean;
+begin
+  for i: Integer := 0 to aCount -1 do begin
+    if aLeft[i+aLeftStart] <> aRight[i+aRightStart] then exit false;
+  end;
+  exit true;
+end;
+
+class function SystemUnit.Pos(SubStr, aStr:DelphiString): Int32;
+begin
+  if (SubStr = nil) or (aStr = nil) or (SubStr.Length = 0) or (aStr.Length = 0) or (SubStr.Length > aStr.Length) then exit(0);
+  for i: Integer := 0 to aStr.Length - SubStr.Length do begin
+    if CompareChars(SubStr.CharData, 0, aStr, i, SubStr.Length) then exit(i+1);
+  end;
+end;
+
+class function SystemUnit.Concat(S1, S2:DelphiString): DelphiString;
+begin
+  result := S1 + S2;
+end;
+
+class procedure SystemUnit.Delete(var S: DelphiString; &Index, Count:Integer);
+begin
+  if S = nil then exit;
+  if &Index > S.Length then begin S := ''; exit; end;
+  if &Index + Count > S.Length then Count := S.Length - &Index +1;
+  if Count = 0 then begin S := ''; exit; end;
+  S := DelphiString(String(S).Substring(0, &Index -1) + String(S).Substring(&Index + Count- 1));
+end;
+
+class procedure SystemUnit.Insert(Source: DelphiString; var S: DelphiString; &Index: Integer);
+begin
+  if (Source = nil) or (Source.Length = 0) then exit;
+  if S = nil then begin S := Source.Duplicate;exit; end;
+  if &Index > S.Length then S.SetLength(&Index);
+  var lNewString := new DelphiString;
+  lNewString.SetLength(S.Length + Source.Length);
+  Array.Copy(S.CharData, 0, lNewString.CharData, 0, &Index -1);
+  Array.Copy(Source.CharData, 0, lNewString.CharData, &Index -1, Source.CharData.Length);
+  Array.Copy(S.CharData, &Index-1, lNewString.CharData, &Index -1 + Source.CharData.Length, 
+  S.CharData.Length - &Index +1);
+  S := lNewString;
+end;
+
+class function SystemUnit.Copy(Source:DelphiString; StartIndex, length: Integer): DelphiString;
+begin
+  if Source = nil then exit('');
+  if StartIndex > Source.Length then exit('');
+  if (StartIndex + length > Source.Length) or (StartIndex + length < 0) then length := Source.Length - StartIndex +1;
+  if length = 0 then begin result  := ''; exit; end;
+  result := new DelphiString;
+  result.SetLength(length);
+  Array.Copy(Source.CharData, StartIndex-1, result.CharData, 0, length);
+end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
 
@@ -607,6 +696,46 @@ begin
   ShineOn.Rtl.SystemUnit.ReadLn(P);
 end;
   
+procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:DelphiString);
+begin
+  ShineOn.Rtl.SystemUnit.Str(X,Width, Decimals, S);
+end;
+function Pos(SubStr, aStr:DelphiString):Int32;
+begin
+  result :=ShineOn.Rtl.SystemUnit.Pos(SubStr, aStr);
+end;
+function Concat(S1, S2:DelphiString):DelphiString;
+begin
+  result :=ShineOn.Rtl.SystemUnit.Concat(S1,S2);
+end;
+procedure Delete(var S: DelphiString; Index, Count:Integer);
+begin
+  ShineOn.Rtl.SystemUnit.Delete(S, &Index, Count);
+end;
+procedure Insert(Source: DelphiString; var S: DelphiString; Index: Integer);
+begin
+  ShineOn.Rtl.SystemUnit.Insert(Source, S, &Index);
+end;
+
+procedure Insert(Source: String; var S: DelphiString; Index: Integer); 
+begin
+  ShineOn.Rtl.SystemUnit.Insert(DelphiString(Source), S, &Index);
+end;
+
+function Copy(Source:DelphiString; StartIndex, length: Integer):DelphiString;
+begin
+  result := ShineOn.Rtl.SystemUnit.Copy(Source, StartIndex, length);
+end;
+
+function Pos(SubStr: String; aStr:DelphiString):Int32; 
+begin
+  result :=ShineOn.Rtl.SystemUnit.Pos(DelphiString(SubStr), aStr);
+end;
+function Pos(SubStr: DelphiString; aStr:String):Int32; 
+begin
+  result :=ShineOn.Rtl.SystemUnit.Pos(SubStr, DelphiString(aStr));
+end;
+
 end.
 
 
