@@ -51,12 +51,13 @@
     <Compile Include="Classes.pas" />
     <Compile Include="Consts.pas" />
     <Compile Include="Contnrs.pas" />
+    <Compile Include="DelphiString.pas" />
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
     <None Include="Direct Ports\ConvUtils.pas" />
     <None Include="Direct Ports\StdConvs.pas" />
-    <Compile Include="Direct Ports\SyncObjects.pas" />
+    <None Include="Direct Ports\SyncObjects.pas" />
     <Compile Include="Direct Ports\TFormatSettings (SysUtils).pas" />
     <Compile Include="Direct Ports\TMultiReadExclusiveWriteSynchonizer.pas" />
     <Compile Include="Dates\Date Functions (SysUtils).pas" />

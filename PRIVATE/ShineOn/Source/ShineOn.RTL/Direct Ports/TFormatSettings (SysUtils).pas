@@ -2,9 +2,9 @@ namespace ShineOn.Rtl;
 
 { *********************************************************************** }
 {                                                                         }
-{ Delphi Visual Component Library                                         }
+{ Based on the Delphi Visual Component Library                            }
 {                                                                         }
-{ Copyright (c) 1997-2005 Borland Software Corporation                    }
+{ Copyright (c) CodeGear and RemObjects Software                          }
 {                                                                         }
 { *********************************************************************** }
 
