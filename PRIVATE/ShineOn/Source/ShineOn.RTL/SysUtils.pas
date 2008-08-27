@@ -22,9 +22,6 @@ type
   TReplaceFlags = public set of (ReplaceAll, IgnoreCase);
   
 type
-  TLocaleOptions = public (InvariantLocale, UserLocale);
-  
-type
   SysUtils = public sealed class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
@@ -226,9 +223,9 @@ function StrToDateTime(S:String):TDateTime;public;
 function StrToDateTimeDef(S:String; Default:TDateTime):TDateTime;public;
 function StrToTime(S:String):TDateTime;public;
 function StrToTimeDef(S:String; Default:TDateTime):TDateTime;public;
-function DateToStr(ADate:TDateTime):String;public;
+{function DateToStr(ADate:TDateTime):String;public;
 function DateTimeToStr(ADateTime:TDateTime):String;public;
-function TimeToStr(ATime:TDateTime):String;public;
+function TimeToStr(ATime:TDateTime):String;public;}
 procedure FreeAndNil(var obj);public;
 function FileExists(FileName: String): Boolean;public;
 function DirectoryExists(Directory: String): Boolean;public;
@@ -268,6 +265,8 @@ function AnsiStrScan(aStr: String; Chr: Char): String;public;
 function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;public;
 function GetEnvironmentVariable(Name: String): String;   public;
 
+function Format (Const aFormatting: String; Const aData: array of Object ) : String;
+
 implementation
 
 uses
@@ -289,7 +288,7 @@ begin
     begin
       Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
       
-      if LocaleOptions = TLocaleOptions.UserLocale then
+      if LocaleOptions = TLocaleOptions.loUserLocale then
         Result := S.ToUpper
       else
         Result := S.ToUpper(Culture.InvariantCulture)
@@ -314,7 +313,7 @@ begin
     begin
       Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-      if LocaleOptions = TLocaleOptions.UserLocale then
+      if LocaleOptions = TLocaleOptions.loUserLocale then
         Result := S.ToLower
       else
         Result := S.ToLower(Culture.InvariantCulture)
@@ -334,7 +333,7 @@ var
 begin
   Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-  if LocaleOptions = TLocaleOptions.UserLocale then
+  if LocaleOptions = TLocaleOptions.loUserLocale then
     Result := System.String.Compare(S1, S2, False)
   else
     Result := System.String.Compare(S1,S2,False,Culture.InvariantCulture);
@@ -388,7 +387,7 @@ var
 begin
   Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-  if LocaleOptions = TLocaleOptions.UserLocale then
+  if LocaleOptions = TLocaleOptions.loUserLocale then
     Result := _CompareText(S1,S2,Culture)
   else
     Result := _CompareText(S1,S2,Culture.InvariantCulture);
@@ -1041,7 +1040,7 @@ class function SysUtils.Format (Const aFormatting: String; Const aData: array of
   end;
   method IsNumericChar(aChar: Char): Boolean;
   begin
-    var asciiVal := Convert.ToInt32(aChar);
+    var asciiVal := System.Convert.ToInt32(aChar);
     result := ((asciiVal > 47) and (asciiVal < 58));
   end;
 begin
@@ -1069,6 +1068,11 @@ begin
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
+
+function Format (Const aFormatting: String; Const aData: array of Object ) : String;
+begin
+  result := ShineOn.Rtl.SysUtils.Format(aFormatting, aData);
+end;
 
 function UpperCase(const S: String): String;
 begin

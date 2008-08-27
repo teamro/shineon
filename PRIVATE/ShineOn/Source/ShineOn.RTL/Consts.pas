@@ -18,13 +18,8 @@ var
   SOSError: String := 'System Error.  Code: {0}.'+sLineBreak+'{1}';
 
 const
-  { mh: maybe convert it into a global method that would call the NewLine property?
-        note that the ifdef will not work when running the same .exe on Mono and .NET,
-        the same will apply to stuff like path separaters, etc. }
-  
-  // wish I could use System.Environment.NewLine here...
-  //sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
-  
+  HexDisplayPrefix = '$';
+
   SUnknown = '<unknown>';
   SInvalidFloat = '''{0}'' is not a valid floating point value';
   SInvalidCurrency = '''{0}'' is not a valid currency value';
@@ -280,6 +275,226 @@ const
   sSocketRead = 'Read';
   sSocketWrite = 'Write';
   sFmtSetLengthError = 'SetLength does not support the type {0}';
+
+  {RTLConsts}
+  SInvalidMethodPropertyDelegate = 'Invalid property: [%s] Could not create delegate';
+  SInvalidMethodPropertyAccessor = 'Invalid property: [%s] Could not find method accessor';
+  SMethodNotFoundError = 'Method (%s) not found';
+
+    SCmplxCouldNotParseImaginary = 'Could not parse imaginary portion';
+  SCmplxCouldNotParseSymbol = 'Could not parse required ''%s'' symbol';
+  SCmplxCouldNotParsePlus = 'Could not parse required ''+'' (or ''-'') symbol';
+  SCmplxCouldNotParseReal = 'Could not parse real portion';
+  SCmplxUnexpectedEOS = 'Unexpected end of string [%s]';
+  SCmplxUnexpectedChars = 'Unexpected characters';
+  SCmplxErrorSuffix = '%s [%s<?>%s]';
+
+  hNoSystem = 'No Help Manager installed.';
+  hNoTopics = 'No topic-based help installed.';
+  hNoContext = 'No context-sensitive help installed.';
+  hNoContextFound = 'No help found for context %d.';
+  hNothingFound = 'No help found for "%s"';
+  hNoTableOfContents = 'No Table of Contents found.';
+
+  { ************************************************************************* }
+  { Distance's family type }
+  SDistanceDescription = 'Distance';
+
+  { Distance's various conversion types }
+  SMicromicronsDescription = 'Micromicrons';
+  SAngstromsDescription = 'Angstroms';
+  SMillimicronsDescription = 'Millimicrons';
+  SMicronsDescription = 'Microns';
+  SMillimetersDescription = 'Millimeters';
+  SCentimetersDescription = 'Centimeters';
+  SDecimetersDescription = 'Decimeters';
+  SMetersDescription = 'Meters';
+  SDecametersDescription = 'Decameters';
+  SHectometersDescription = 'Hectometers';
+  SKilometersDescription = 'Kilometers';
+  SMegametersDescription = 'Megameters';
+  SGigametersDescription = 'Gigameters';
+  SInchesDescription = 'Inches';
+  SFeetDescription = 'Feet';
+  SYardsDescription = 'Yards';
+  SMilesDescription = 'Miles';
+  SNauticalMilesDescription = 'NauticalMiles';
+  SAstronomicalUnitsDescription = 'AstronomicalUnits';
+  SLightYearsDescription = 'LightYears';
+  SParsecsDescription = 'Parsecs';
+  SCubitsDescription = 'Cubits';
+  SFathomsDescription = 'Fathoms';
+  SFurlongsDescription = 'Furlongs';
+  SHandsDescription = 'Hands';
+  SPacesDescription = 'Paces';
+  SRodsDescription = 'Rods';
+  SChainsDescription = 'Chains';
+  SLinksDescription = 'Links';
+  SPicasDescription = 'Picas';
+  SPointsDescription = 'Points';
+
+  { ************************************************************************* }
+  { Area's family type }
+  SAreaDescription = 'Area';
+
+  { Area's various conversion types }
+  SSquareMillimetersDescription = 'SquareMillimeters';
+  SSquareCentimetersDescription = 'SquareCentimeters';
+  SSquareDecimetersDescription = 'SquareDecimeters';
+  SSquareMetersDescription = 'SquareMeters';
+  SSquareDecametersDescription = 'SquareDecameters';
+  SSquareHectometersDescription = 'SquareHectometers';
+  SSquareKilometersDescription = 'SquareKilometers';
+  SSquareInchesDescription = 'SquareInches';
+  SSquareFeetDescription = 'SquareFeet';
+  SSquareYardsDescription = 'SquareYards';
+  SSquareMilesDescription = 'SquareMiles';
+  SAcresDescription = 'Acres';
+  SCentaresDescription = 'Centares';
+  SAresDescription = 'Ares';
+  SHectaresDescription = 'Hectares';
+  SSquareRodsDescription = 'SquareRods';
+
+  { ************************************************************************* }
+  { Volume's family type }
+  SVolumeDescription = 'Volume';
+
+  { Volume's various conversion types }
+  SCubicMillimetersDescription = 'CubicMillimeters';
+  SCubicCentimetersDescription = 'CubicCentimeters';
+  SCubicDecimetersDescription = 'CubicDecimeters';
+  SCubicMetersDescription = 'CubicMeters';
+  SCubicDecametersDescription = 'CubicDecameters';
+  SCubicHectometersDescription = 'CubicHectometers';
+  SCubicKilometersDescription = 'CubicKilometers';
+  SCubicInchesDescription = 'CubicInches';
+  SCubicFeetDescription = 'CubicFeet';
+  SCubicYardsDescription = 'CubicYards';
+  SCubicMilesDescription = 'CubicMiles';
+  SMilliLitersDescription = 'MilliLiters';
+  SCentiLitersDescription = 'CentiLiters';
+  SDeciLitersDescription = 'DeciLiters';
+  SLitersDescription = 'Liters';
+  SDecaLitersDescription = 'DecaLiters';
+  SHectoLitersDescription = 'HectoLiters';
+  SKiloLitersDescription = 'KiloLiters';
+  SAcreFeetDescription = 'AcreFeet';
+  SAcreInchesDescription = 'AcreInches';
+  SCordsDescription = 'Cords';
+  SCordFeetDescription = 'CordFeet';
+  SDecisteresDescription = 'Decisteres';
+  SSteresDescription = 'Steres';
+  SDecasteresDescription = 'Decasteres';
+
+  { American Fluid Units }
+  SFluidGallonsDescription = 'FluidGallons';
+  SFluidQuartsDescription = 'FluidQuarts';
+  SFluidPintsDescription = 'FluidPints';
+  SFluidCupsDescription = 'FluidCups';
+  SFluidGillsDescription = 'FluidGills';
+  SFluidOuncesDescription = 'FluidOunces';
+  SFluidTablespoonsDescription = 'FluidTablespoons';
+  SFluidTeaspoonsDescription = 'FluidTeaspoons';
+
+  { American Dry Units }
+  SDryGallonsDescription = 'DryGallons';
+  SDryQuartsDescription = 'DryQuarts';
+  SDryPintsDescription = 'DryPints';
+  SDryPecksDescription = 'DryPecks';
+  SDryBucketsDescription = 'DryBuckets';
+  SDryBushelsDescription = 'DryBushels';
+
+  { English Imperial Fluid/Dry Units }
+  SUKGallonsDescription = 'UKGallons';
+  SUKPottlesDescription = 'UKPottle';
+  SUKQuartsDescription = 'UKQuarts';
+  SUKPintsDescription = 'UKPints';
+  SUKGillsDescription = 'UKGill';
+  SUKOuncesDescription = 'UKOunces';
+  SUKPecksDescription = 'UKPecks';
+  SUKBucketsDescription = 'UKBuckets';
+  SUKBushelsDescription = 'UKBushels';
+
+  { ************************************************************************* }
+  { Mass's family type }
+  SMassDescription = 'Mass';
+
+  { Mass's various conversion types }
+  SNanogramsDescription = 'Nanograms';
+  SMicrogramsDescription = 'Micrograms';
+  SMilligramsDescription = 'Milligrams';
+  SCentigramsDescription = 'Centigrams';
+  SDecigramsDescription = 'Decigrams';
+  SGramsDescription = 'Grams';
+  SDecagramsDescription = 'Decagrams';
+  SHectogramsDescription = 'Hectograms';
+  SKilogramsDescription = 'Kilograms';
+  SMetricTonsDescription = 'MetricTons';
+  SDramsDescription = 'Drams';
+  SGrainsDescription = 'Grains';
+  STonsDescription = 'Tons';
+  SLongTonsDescription = 'LongTons';
+  SOuncesDescription = 'Ounces';
+  SPoundsDescription = 'Pounds';
+  SStonesDescription = 'Stones';
+
+  { ************************************************************************* }
+  { Temperature's family type }
+  STemperatureDescription = 'Temperature';
+
+  { Temperature's various conversion types }
+  SCelsiusDescription = 'Celsius';
+  SKelvinDescription = 'Kelvin';
+  SFahrenheitDescription = 'Fahrenheit';
+  SRankineDescription = 'Rankine';
+  SReaumurDescription = 'Reaumur';
+
+  { ************************************************************************* }
+  { Time's family type }
+  STimeDescription = 'Time';
+
+  { Time's various conversion types }
+  SMilliSecondsDescription = 'MilliSeconds';
+  SSecondsDescription = 'Seconds';
+  SMinutesDescription = 'Minutes';
+  SHoursDescription = 'Hours';
+  SDaysDescription = 'Days';
+  SWeeksDescription = 'Weeks';
+  SFortnightsDescription = 'Fortnights';
+  SMonthsDescription = 'Months';
+  SYearsDescription = 'Years';
+  SDecadesDescription = 'Decades';
+  SCenturiesDescription = 'Centuries';
+  SMillenniaDescription = 'Millennia';
+  SDateTimeDescription = 'DateTime';
+  SJulianDateDescription = 'JulianDate';
+  SModifiedJulianDateDescription = 'ModifiedJulianDate';
+
+  // The following strings are now found in SysConsts.pas
+  //SInvalidDate = '''''%s'''' is not a valid date' 
+  //SInvalidDateTime = '''''%s'''' is not a valid date and time' 
+  //SInvalidInteger = '''''%s'''' is not a valid integer value' 
+  //SInvalidTime = '''''%s'''' is not a valid time' 
+  //STimeEncodeError = 'Invalid argument to time encode' 
+
+  // Added in VCL.NET
+  SCouldNotParseImaginary = 'Could not parse imaginary portion';
+  SCouldNotParseSymbol = 'Could not parse required ''%s'' symbol';
+  SCouldNotParsePlus = 'Could not parse required ''+'' (or ''-'') symbol';
+  SCouldNotParseReal = 'Could not parse real portion';
+  SUnexpectedChars = 'Unexpected characters';
+  SErrorSuffix = '%s [%s<?>%s]';
+  SImaginaryNotZero = 'Could not simplify, imaginary part is non-zero [%s]';
+
+  SUnknownEnumName = 'Enumeration does not contain %s';
+  SUnknownEnumValue = 'Enumeration does not contain 0x%.8x';
+  SInvalidPropInfoType = 'Invalid property info type';
+  SInvalidTypeInfoType = 'Invalid property typeinfo type';
+
+  SNoConstructorFound = 'No suitiable constructor found';
+  SItemNotFoundWithPrefix = 'Item not found (%s%x)';
+
+  SNotAConversionString = 'string does not represent a valid Conversion type value.';
 
 implementation
 

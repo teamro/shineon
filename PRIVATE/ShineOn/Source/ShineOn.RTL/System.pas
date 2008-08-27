@@ -299,7 +299,7 @@ end;
 
 class function SystemUnit.Round(Value:Double):Integer;
 begin
-  Result := Convert.ToInt32(Value);
+  Result := System.Convert.ToInt32(Value);
 end;
 
 class function SystemUnit.Round(Value: TDateTime): Integer;
@@ -460,7 +460,7 @@ class function SystemUnit.Pos(SubStr, aStr:DelphiString): Int32;
 begin
   if (SubStr = nil) or (aStr = nil) or (SubStr.Length = 0) or (aStr.Length = 0) or (SubStr.Length > aStr.Length) then exit(0);
   for i: Integer := 0 to aStr.Length - SubStr.Length do begin
-    if CompareChars(SubStr.CharData, 0, aStr, i, SubStr.Length) then exit(i+1);
+    if CompareChars(SubStr.CharData, 0, aStr.CharData, i, SubStr.Length) then exit(i+1);
   end;
 end;
 

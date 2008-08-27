@@ -32,12 +32,18 @@
       <HintPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Data">
+      <HintPath>$(Framework)\System.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing">
       <HintPath>$(Framework)\System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>$(Framework)\System.Windows.Forms.dll</HintPath>
       <Name>System.Windows.Forms.dll</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>$(Framework)\System.Xml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -48,9 +54,18 @@
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
+    <None Include="Direct Ports\ConvUtils.pas" />
+    <None Include="Direct Ports\StdConvs.pas" />
+    <Compile Include="Direct Ports\SyncObjects.pas" />
+    <Compile Include="Direct Ports\TFormatSettings (SysUtils).pas" />
+    <Compile Include="Direct Ports\TMultiReadExclusiveWriteSynchonizer.pas" />
+    <Compile Include="Dates\Date Functions (SysUtils).pas" />
+    <Compile Include="Dates\DateUtils.pas" />
+    <Compile Include="Dates\TDateTime.pas" />
     <Compile Include="System.pas" />
     <Compile Include="SysUtils.pas" />
     <Compile Include="TObject.pas" />
+    <Compile Include="TypeAliases.pas" />
     <Compile Include="Types.pas" />
   </ItemGroup>
 </Project>

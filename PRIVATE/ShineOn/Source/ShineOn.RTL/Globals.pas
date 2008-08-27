@@ -117,8 +117,8 @@ type
     class const bl64 = TBucketListSizes.BucketSize64;
     class const bl128 = TBucketListSizes.BucketSize128;
     class const bl256 = TBucketListSizes.BucketSize256;
-    class const loInvariantLocale = TLocaleOptions.InvariantLocale;
-    class const loUserLocale = TLocaleOptions.UserLocale;
+    class const loInvariantLocale = TLocaleOptions.loInvariantLocale;
+    class const loUserLocale = TLocaleOptions.loUserLocale;
     
     class const LANG_NEUTRAL: Word = TPrimaryLanguage.Neutral;
     class const LANG_AFRIKAANS: Word = TPrimaryLanguage.Afrikaans;
@@ -388,10 +388,10 @@ const
   bl128 = Globals.bl128;
   bl256 = Globals.bl256;
  
-var
+{var
   MaxDateTime:TDateTime := Globals.MaxDateTime; readonly;
   MinDateTime:TDateTime := Globals.MinDateTime; readonly;
-  
+ } 
 
 implementation
 
