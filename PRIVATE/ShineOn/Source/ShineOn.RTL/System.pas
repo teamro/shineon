@@ -26,6 +26,9 @@ type
   EShineOnError = public class(Exception);
   
   SystemUnit = assembly sealed class 
+  private
+    class var fParams: array of String;
+    class procedure PrepareParams;
   public
     class procedure NotImplemented;
 
@@ -55,10 +58,10 @@ type
     class function Succ(Value:Integer):Integer;
     class function Succ(Value:Char):Char;
 
-    class function Round(Value:Double):Integer;
-    class function Round(Value:TDateTime):Integer;
-    class function Trunc(Value:Double):Integer;
-    class function Trunc(Value:TDateTime):Integer;
+    class function Round(Value:Double):Int64;
+    class function Round(Value:TDateTime):Int64;
+    class function Trunc(Value:Double):Int64;
+    class function Trunc(Value:TDateTime):Int64;
     class function Int(X: Double): Double;
     class function Int(X: TDateTime): Double;
     class function Frac(Value:Double):Double;
@@ -78,8 +81,13 @@ type
     class procedure SetLength(var S; length: Int32);
     class procedure Write(S:String);
     class procedure WriteLn(S:String);
+    class procedure Write(params S: Array of Object);
+    class procedure WriteLn(params S: Array of Object);
     class procedure Read(var P);
     class procedure ReadLn(var P);
+    class function ParamCount: Integer;
+    class function ParamStr(i: Integer): String;
+    class function GetDir: String;
   end;
   
 
@@ -99,6 +107,7 @@ procedure Val(S:String; var V:Integer; var Code: Integer);public;
 procedure Val(S:String; var V:Int64; var Code: Integer);public;
 procedure Str(X:Double; Width:Int32;Decimals:Int32;var S:DelphiString);
 
+function GetDir: String; public;
 function Pos(SubStr, aStr:DelphiString):Int32; public;
 function Pos(SubStr: String; aStr:DelphiString):Int32; public;
 function Pos(SubStr: DelphiString; aStr:String):Int32; public;
@@ -113,10 +122,10 @@ function Pred(Value:Integer):Integer;public;
 function Pred(Value:Char):Char;public;
 function Succ(Value:Integer):Integer;public;
 function Succ(Value:Char):Char;public;
-function Round(Value:Double):Integer;public;
-function Round(Value:TDateTime):Integer;public;
-function Trunc(Value:Double):Integer;public;
-function Trunc(Value:TDateTime):Integer;public;
+function Round(Value:Double):Int64;public;
+function Round(Value:TDateTime):Int64;public;
+function Trunc(Value:Double):Int64;public;
+function Trunc(Value:TDateTime):Int64;public;
 function Int(X: Double): Double;public;
 function Int(X: TDateTime): Double;public;
 function Frac(Value:Double):Double;public;
@@ -131,10 +140,14 @@ function Abs(X:Double):Double;public;
 function Abs(X:TDateTime):TDateTime;public;
 function Exp(X: Double): Double;public;
 procedure SetLength(var S; length: Int32);public;
-procedure Write(S:String);public;
+procedure &Write(S:String);public;
 procedure WriteLn(S:String);public;
+procedure &Write(params S: Array of Object); public;
+procedure WriteLn(params S: Array of Object); public;
 procedure Read(var P);public;
 procedure ReadLn(var P);public;
+function ParamCount: Integer; public;
+function ParamStr(i: Integer): String; public;
 
 
 implementation
@@ -150,6 +163,7 @@ class function SystemUnit.Pos(SubStr, aStr:String):Int32;
 begin
   //TODO: Should this function return 0 or -1 if substr not found?
   Result := aStr.IndexOf(SubStr);
+
 end;
 
 class function SystemUnit.Concat(S1, S2:String):String;
@@ -297,27 +311,27 @@ begin
   Result := Char(Integer(Value) + 1);
 end;
 
-class function SystemUnit.Round(Value:Double):Integer;
+class function SystemUnit.Round(Value:Double):Int64;
 begin
-  Result := System.Convert.ToInt32(Value);
+  Result := System.Convert.ToInt64(Math.Round(Value));
 end;
 
-class function SystemUnit.Round(Value: TDateTime): Integer;
+class function SystemUnit.Round(Value: TDateTime): Int64;
 begin
-  Result := Integer(Math.Round(Value));
+  Result := Int64(Math.Round(Value));
 end;
   
-class function SystemUnit.Trunc(Value:Double):Integer;
+class function SystemUnit.Trunc(Value:Double):Int64;
 begin
-  Result := Integer(Value);
+  Result := Int64(Value);
 end;
 
-class function SystemUnit.Trunc(Value: TDateTime): Integer;
+class function SystemUnit.Trunc(Value: TDateTime): Int64;
 var
   Buffer: Double;
 begin
   Buffer := Value;
-  Result := Integer(Buffer);
+  Result := Int64(Buffer);
 end;
 
 class function SystemUnit.Int(X: Double): Double;
@@ -426,6 +440,19 @@ begin
   Console.Write(S);
 end;
 
+class procedure SystemUnit.Write(params S: Array of Object);
+begin
+  for i: Integer := 0 to length(S) -1 do begin
+    Console.Write(S[i]);
+  end;
+end;
+
+class procedure SystemUnit.WriteLn(params S: Array of Object);
+begin
+  Write(S);
+  Write(#13#10);
+end;
+
 class procedure SystemUnit.Read(var P);
 begin
   var i:Int32 := Console.Read;
@@ -503,8 +530,38 @@ begin
   Array.Copy(Source.CharData, StartIndex-1, result.CharData, 0, length);
 end;
 
-// DELPHI COMPATIBLE GLOBAL METHODS
+class function SystemUnit.ParamCount: Integer;
+begin
+  PrepareParams;
+  result := length(fParams);
+end;
 
+class function SystemUnit.ParamStr(i: Integer): String;
+begin
+  if i = 0 then begin
+    exit System.Reflection.Assembly.GetEntryAssembly:Location;
+  end;
+
+  PrepareParams;
+  if (i < 0) or (i >= length(fParams)) then 
+    result := fParams[i]
+  else
+    result := '';
+end;
+
+class procedure SystemUnit.PrepareParams;
+begin
+  if fParams = nil then exit;
+  fParams := Environment.GetCommandLineArgs;
+  if fParams = nil then fParams := new String[0];
+end;
+
+class function SystemUnit.GetDir: String;
+begin
+  result := Environment.CurrentDirectory;
+end;
+
+// DELPHI COMPATIBLE GLOBAL METHODS
 procedure NotImplemented;
 begin
   ShineOn.Rtl.SystemUnit.NotImplemented;
@@ -591,22 +648,22 @@ begin
   Result := ShineOn.Rtl.SystemUnit.Succ(Value);
 end;
 
-function Round(Value:Double):Integer;
+function Round(Value:Double):Int64;
 begin
   Result := ShineOn.Rtl.SystemUnit.Round(Value);
 end;
   
-function Round(Value:TDateTime):Integer;
+function Round(Value:TDateTime):Int64;
 begin
   Result := ShineOn.Rtl.SystemUnit.Round(Value);
 end;
   
-function Trunc(Value:Double):Integer;
+function Trunc(Value:Double):Int64;
 begin
   Result := ShineOn.Rtl.SystemUnit.Trunc(Value);
 end;
   
-function Trunc(Value:TDateTime):Integer;
+function Trunc(Value:TDateTime):Int64;
 begin
   Result := ShineOn.Rtl.SystemUnit.Trunc(Value);
 end;
@@ -685,6 +742,17 @@ procedure WriteLn(S:String);
 begin
   ShineOn.Rtl.SystemUnit.WriteLn(S);
 end;
+
+procedure &Write(params S: Array of Object); 
+begin
+  ShineOn.Rtl.SystemUnit.Write(S);
+end;
+
+procedure WriteLn(params S: Array of Object); 
+begin
+  ShineOn.Rtl.SystemUnit.WriteLn(S);
+end;
+
   
 procedure Read(var P);
 begin
@@ -727,6 +795,7 @@ begin
   result := ShineOn.Rtl.SystemUnit.Copy(Source, StartIndex, length);
 end;
 
+
 function Pos(SubStr: String; aStr:DelphiString):Int32; 
 begin
   result :=ShineOn.Rtl.SystemUnit.Pos(DelphiString(SubStr), aStr);
@@ -734,6 +803,21 @@ end;
 function Pos(SubStr: DelphiString; aStr:String):Int32; 
 begin
   result :=ShineOn.Rtl.SystemUnit.Pos(SubStr, DelphiString(aStr));
+end;
+
+function ParamCount: Integer; 
+begin
+  result :=ShineOn.Rtl.SystemUnit.ParamCount;
+end;
+
+function ParamStr(i: Integer): String; 
+begin
+  result := ShineOn.Rtl.SystemUnit.ParamStr(i);
+end;
+
+function GetDir: String; 
+begin
+  result := ShineOn.Rtl.SystemUnit.GetDir;
 end;
 
 end.

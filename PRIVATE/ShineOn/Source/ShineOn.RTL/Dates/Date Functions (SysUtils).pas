@@ -107,7 +107,7 @@ method SystemTimeToDateTime(const SystemTime: TSystemTime): TDateTime;
   integer between 1 and 7, corresponding to Sunday through Saturday.
   This function is not ISO 8601 compliant, for that see the DateUtils unit. }
 
-method DayOfWeek(const ADateTime: TDateTime): Word; 
+//method DayOfWeek(const ADateTime: TDateTime): Word; 
 
 { Date returns the current date. }
 
@@ -554,12 +554,12 @@ begin
       Result := Result - EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
   end;
 end;
-
+(*
 method DayOfWeek(const ADateTime: TDateTime): Word; 
 begin
   Result := ADateTime.DayOfWeek;
 end;
-
+*)
 method Date: TDateTime; 
 begin
   Result := TDateTime.TheDate;

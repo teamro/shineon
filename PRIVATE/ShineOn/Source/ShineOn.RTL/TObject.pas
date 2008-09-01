@@ -29,7 +29,7 @@ type
 
     [Extension] procedure AfterConstruction(o: Object); 
     [Extension] procedure BeforeDestruction(o: Object);
-    [Extension] procedure Dispatch(o: Object; var Message);
+    //[Extension] procedure Dispatch(o: Object; var Message);
     
     [Extension] procedure Free(o: Object); 
     [Extension] procedure Destroy(o: Object);
@@ -92,21 +92,15 @@ begin
   // do nothing
 end;
 
-procedure TObjectExtender.Dispatch(o: Object; var Message); 
-begin
-  NotImplemented;
-end;
-
 procedure TObjectExtender.Destroy(o: Object);
 begin
   // dispose, if necessary. noop, otherwise.
-  var d := IDisposable(o);
-  d:Dispose;
+  IDisposable(o):Dispose;
 end;
 
 procedure TObjectExtender.Free(o: Object);
 begin
-  o:Destroy;
+  o.Destroy;
 end;    
 
 end.

@@ -144,7 +144,8 @@ type
     class function AnsiStrRScan(Str: String; Chr: Char): String;
     class function AnsiStrScan(Str: String; Chr: Char): String;
     class function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
-    class function GetEnvironmentVariable(Name: String): String;   
+    class function GetEnvironmentVariable(Name: String): String;
+    class procedure Sleep(val: Integer);
   end;
   
 function UpperCase(const S: String): String;public;
@@ -264,6 +265,7 @@ function AnsiStrRScan(aStr: String; Chr: Char): String;public;
 function AnsiStrScan(aStr: String; Chr: Char): String;public;
 function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;public;
 function GetEnvironmentVariable(Name: String): String;   public;
+procedure Sleep(aVal: Integer);public;
 
 function Format (Const aFormatting: String; Const aData: array of Object ) : String;
 
@@ -1067,7 +1069,17 @@ begin
     end;
 end;
 
+class procedure SysUtils.Sleep(val: Integer);
+begin
+  Thread.Sleep(val);
+end;
+
 // DELPHI COMPATIBLE GLOBAL METHODS
+
+procedure Sleep(aVal: Integer);
+begin
+  ShineOn.Rtl.SysUtils.Sleep(aVal);
+end;
 
 function Format (Const aFormatting: String; Const aData: array of Object ) : String;
 begin
