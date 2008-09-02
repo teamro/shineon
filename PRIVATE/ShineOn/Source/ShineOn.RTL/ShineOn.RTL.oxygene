@@ -54,6 +54,7 @@
     <Compile Include="Dates\Date Functions (SysUtils).pas" />
     <Compile Include="Dates\DateUtils.pas" />
     <Compile Include="Dates\TDateTime.pas" />
+    <Compile Include="DB.pas" />
     <Compile Include="DelphiString.pas" />
     <None Include="Direct Ports\ConvUtils.pas" />
     <None Include="Direct Ports\StdConvs.pas" />
@@ -69,5 +70,6 @@
     <Compile Include="TObject.pas" />
     <Compile Include="TypeAliases.pas" />
     <Compile Include="Types.pas" />
+    <Compile Include="Variants.pas" />
   </ItemGroup>
 </Project>
