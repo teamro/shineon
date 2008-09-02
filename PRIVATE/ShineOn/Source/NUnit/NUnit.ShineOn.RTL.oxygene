@@ -23,7 +23,7 @@
       <HintPath>$(Framework)\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>$(ProgramFiles)\NUnit 2.4.6\bin\nunit.framework.dll</HintPath>
+      <HintPath>$(ProgramFiles)\NUnit 2.4.8\bin\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <ProjectReference Include="..\ShineOn.RTL\ShineOn.RTL.oxygene">

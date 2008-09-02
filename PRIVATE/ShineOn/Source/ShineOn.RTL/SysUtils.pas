@@ -1029,44 +1029,109 @@ begin
   Result := System.Environment.GetEnvironmentVariable(Name);
 end;
 
-{The general format of each formatting substring is as follows: 
-%[Index:][-][Width][.Precision]Type 
-where the square brackets refer to optional parameters, and the : . - characters are literals, 
-the first 2 of which are used to identify two of the optional arguments. }
 
 class function SysUtils.Format (Const aFormatting: String; Const aData: array of Object ) : String; 
-  method IsFormattingChar(aChar: Char): Boolean;
-  begin
-    result := (aChar = 'd') or (aChar = 'e') or (aChar = 'f') or (aChar = 'g') or (aChar = 'm') or 
-     (aChar = 'n') or (aChar = 'p') or (aChar = 's') or (aChar = 'u') or (aChar = 'x'); 
-  end;
-  method IsNumericChar(aChar: Char): Boolean;
-  begin
-    var asciiVal := System.Convert.ToInt32(aChar);
-    result := ((asciiVal > 47) and (asciiVal < 58));
-  end;
+var
+  sb: StringBuilder := new StringBuilder;
+  lIndex,
+  lWidth,
+  lPrecision: Integer;
+  lCurrIndex: Integer;
+  lLeft: Boolean;
 begin
-  if assigned(aData) then
-    if aData.Length > 0 then
-    begin
-      result := String.Format(aFormatting.Replace('%d', '{0:d}'), aData);
-      var stringIndex: Integer := aFormatting.IndexOf('%', 0);
-      while stringIndex <> -1 do
-      begin
-        var subStringIndex: Integer := 1;
-        while not IsFormattingChar(aFormatting[stringIndex + subStringIndex]) do
-        begin
-          inc(subStringIndex); 
+  if aFormatting = nil then exit('');
+  var i: Integer := 0;
+  lCurrIndex := -1;
+  while i < aFormatting.Length do begin
+    case aFormatting[i] of
+      '%': begin
+        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '%') then begin
+          sb.Append('%');
+          i := i +2;
+          break;
         end;
-        var formattingSubstring: String := aFormatting.Substring(stringIndex, subStringIndex + 1);
-        subStringIndex := 0; 
-        stringIndex := aFormatting.IndexOf('%', stringIndex + 1);  
+
+        var lStart: Integer := i+1;
+        lLeft := false;
+        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '-') then begin
+          inc(lStart);
+          inc(i);
+          lLeft := true;
+        end;
+
+        while i +1 < aFormatting.Length do begin
+          if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
+        end;
+        
+        if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) and (aFormatting[i+1] = ':') and not lLeft then begin 
+          Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lIndex);
+          inc(i);
+          if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '-') then begin
+            lLeft := true;
+            inc(i);
+          end;
+          lStart := i+1;
+          while i +1 < aFormatting.Length do begin
+            if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
+          end;
+          if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) then begin
+            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lWidth);
+          end else
+            lWidth := -1;
+        end else begin
+          //lLeft := false;
+          lIndex := -1;
+          if (i + 1 < aFormatting.Length) then 
+            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lWidth)
+          else
+            lWidth := -1;
+        end;
+        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '.') then begin
+          lStart := i+1;
+          while i +1 < aFormatting.Length do begin
+            if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
+          end;
+          if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) then 
+            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lPrecision)
+          else
+            lPrecision := -1;
+        end else lPrecision := -1;
+        if i +1 < aFormatting.Length then begin
+          inc(i);
+          if lIndex <> -1 then lCurrIndex := lIndex else inc(lCurrIndex);
+          if (lCurrIndex < 0) or (lCurrIndex >= length(aData)) then raise new EConvertError(String.Format('No argument for format {0}', lCurrIndex));
+          var lVal: String;
+          case aFormatting[i] of 
+            'd', 'u': 
+              begin
+                lVal := aData[lCurrIndex].ToString; 
+                if lVal.Length < lPrecision then begin 
+                  if lVal.StartsWith('-') then 
+                    lVal := '-'+new String('-', lPrecision-lVal.Length)+lVal.Substring(1)
+                  else 
+                    lVal := new String('-', lPrecision-lVal.Length)+lVal;
+                  //lVal := '0'+lVal;
+                end;
+              end;
+            'x': lVal := System.Convert.ToInt64(aData[lCurrIndex]).ToString('X' + iif(lPrecision > 0, lPrecision.ToString, ''));
+            {'s':} else lVal := aData[lCurrIndex].ToString; 
+          end; // case
+          if lWidth > 0 then begin
+            if not lLeft then  begin 
+              if lVal.Length < lWidth then lVal := new String(' ', lWidth-lVal.Length)+lVal;
+            end else begin
+              if lVal.Length < lWidth then lVal :=lVal+new String(' ', lWidth-lVal.Length);
+            end;
+          end;
+          sb.Append(lVal);
+        end;
       end;
-    end
     else
-    begin
-      result := aFormatting; //if no items in array, just return input String.
-    end;
+      sb.Append(aFormatting[i]);
+    end; // case
+    inc(i);
+  end;
+  result := sb.ToString;
 end;
 
 class procedure SysUtils.Sleep(val: Integer);
