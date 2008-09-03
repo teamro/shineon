@@ -61,6 +61,7 @@
     <None Include="Direct Ports\SyncObjects.pas" />
     <Compile Include="Direct Ports\TFormatSettings (SysUtils).pas" />
     <Compile Include="Direct Ports\TMultiReadExclusiveWriteSynchonizer.pas" />
+    <Compile Include="Files.pas" />
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
