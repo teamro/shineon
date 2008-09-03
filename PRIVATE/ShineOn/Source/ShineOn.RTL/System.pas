@@ -24,6 +24,7 @@ uses
     
 type
   EShineOnError = public class(Exception);
+  EAbort = public class(Exception) constructor; empty; end;
   
   SystemUnit = assembly sealed class 
   private
@@ -88,11 +89,13 @@ type
     class function ParamCount: Integer;
     class function ParamStr(i: Integer): String;
     class function GetDir: String;
+    class procedure Abort;
   end;
   
 
 procedure NotImplemented;public;
- 
+
+procedure Abort; public;
 function Pos(SubStr, aStr:String):Int32;public;
 function Concat(S1, S2:String):String;public;
 procedure Delete(var S: String; Index, Count:Integer);public;
@@ -561,6 +564,11 @@ begin
   result := Environment.CurrentDirectory;
 end;
 
+class procedure SystemUnit.Abort;
+begin
+  raise new EAbort();
+end;
+
 // DELPHI COMPATIBLE GLOBAL METHODS
 procedure NotImplemented;
 begin
@@ -818,6 +826,11 @@ end;
 function GetDir: String; 
 begin
   result := ShineOn.Rtl.SystemUnit.GetDir;
+end;
+
+procedure Abort;
+begin
+  ShineOn.Rtl.SystemUnit.Abort;
 end;
 
 end.
