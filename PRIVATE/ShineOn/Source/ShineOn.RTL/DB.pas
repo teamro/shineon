@@ -3,6 +3,7 @@ namespace ShineOn.Rtl;
 interface
 
 uses
+  System.ComponentModel,
   ShineOn.Rtl;
 
 type
@@ -27,72 +28,39 @@ type
 
   TUpdateKind = public (ukModify, ukInsert, ukDelete);
 
-  TCustomConnection = public class(TComponent)
-  private
-    FLoginPrompt: Boolean;
-    protected
-    method GetConnected: Boolean; virtual;
-    method SetConnected(Value: Boolean); virtual;
-    public
-    property Connected: Boolean read GetConnected write SetConnected;
-    property LoginPrompt: Boolean read FLoginPrompt write FLoginPrompt;
-    end;
-
-  TNamedItem = public class(TCollectionItem)
-  private
-    protected
-    public
-    end;
-
-  TDefCollection = public class(TCollection)
-  private
-    protected
-    public
-    method IndexOf(const AName: WideString): Integer;
-    end;
-
-  TFieldDefs = public class(TDefCollection)
-  private
-    protected
-    public
-    end;
-
-  TIndexDef = public class(TNamedItem)
-  private
-    method GetFields: WideString;
-    method SetFields(const Value: WideString);
-    protected
-    public
-    public
-    property Fields: WideString read GetFields write SetFields;
-    end;
-
-  TIndexDefs = public class(TDefCollection)
-  private
-    method GetIndexDef(Index: Integer): TIndexDef;
-    method SetIndexDef(Index: Integer; Value: TIndexDef);
-  public
-    property Items[Index: Integer]: TIndexDef read GetIndexDef write SetIndexDef; default; reintroduce;
-  end;
-
   TFieldKind = public (fkData, fkCalculated, fkLookup, fkInternalCalc, fkAggregate);
 
   TFields = public class(TObject)
   private
-    protected
-    method GetField(Index: Integer): TField;
-    method SetField(Index: Integer; Value: TField);
-    public
-    method Clear;
-    property Fields[Index: Integer]: TField read GetField write SetField; default;
+    FList: System.Collections.Generic.List<TField>;
+    FDataSet: TDataSet;
+    FOnChange: TNotifyEvent;
+  protected
+    procedure Changed;
+    procedure SetFieldIndex(Field: TField; Value: Integer);
+    event OnChange: TNotifyEvent delegate FOnChange;
+  public
+    constructor Create(ADataSet: TDataSet);
+    procedure Add(Field: TField);
+    procedure Clear;
+    function FindField(const FieldName: String): TField;
+    function FieldByName(const FieldName: String): TField;
+    procedure GetFieldNames(List: TStrings);
+    function IndexOf(Field: TField): Integer;
+    procedure Remove(Field: TField);
+    property Count: Integer read FList.Count;
+    property DataSet: TDataSet read FDataSet;
+    property Fields[Index: Integer]: TField read FList[&Index] write FList[&Index]; default;
   end;
 
   TEditMask = public String;
 
-  TField = public class(TComponent)
+  TField = public class(Component)
+  assembly
+    FFields: TFields;
   private
-    FDataSet: TDataSet;
     FFieldName: WideString;
+    FDataSet: TDataSet;
     FDataType: TFieldType;
     FFieldKind: TFieldKind;
     FVisible: Boolean;
@@ -117,7 +85,6 @@ type
     method GetAsInteger: LongInt; virtual;
     method GetAsString: WideString; virtual;
     method GetAsVariant: Variant; virtual;
-    method GetDataSize: Integer; virtual;
     method GetIsNull: Boolean; virtual;
     method GetSize: Integer; virtual;
     method SetAsBoolean(aValue: Boolean); virtual;
@@ -129,6 +96,7 @@ type
     method SetFieldKind(aValue: TFieldKind); virtual;
     method SetSize(aValue: Integer); virtual;
   public
+    constructor Create(AOwner: TComponent); virtual;
     method Clear; virtual;
     //method SetData(Buffer: Pointer; NativeFormat: Boolean := True);
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
@@ -136,7 +104,6 @@ type
     property AsInteger: LongInt read GetAsInteger write SetAsInteger;
     property AsString: WideString read GetAsString write SetAsString;
     property DataSet: TDataSet read FDataSet write SetDataSet;
-    property DataSize: Integer read GetDataSize;
     property DataType: TFieldType read FDataType;
     property EditMask: TEditMask read FEditMask write SetEditMask;
     property IsNull: Boolean read GetIsNull;
@@ -151,7 +118,8 @@ type
     property FieldName: WideString read FFieldName write SetFieldName;
     property Index: Integer read GetIndex write SetIndex;
     property Visible: Boolean read FVisible write SetVisible;
-    end;
+    property Fields: TFields read FFields;
+  end;
 
   TStringField = public class(TField)
   private
@@ -184,27 +152,6 @@ type
     method SaveToStream(Stream: TStream);
   end;
 
-  TParam = public class(TCollectionItem)
-  private
-    FName: WideString;
-    protected
-    method GetAsString: WideString;
-    method SetAsString(const Value: WideString);
-    public
-    property AsString: WideString read GetAsString write SetAsString;
-    public
-    property Name: WideString read FName write FName;
-    end;
-
-  TParams = public class(TCollection)
-  private
-    method GetItem(Index: Integer): TParam;
-    method SetItem(Index: Integer; Value: TParam);
-  protected
-    public
-    property Items[Index: Integer]: TParam read GetItem write SetItem; default; reintroduce;
-    end;
-
   TBookmark = public Object;
 
   TBookmarkStr = public WideString;
@@ -228,20 +175,40 @@ type
   TDataSetErrorEvent = public delegate(DataSet: TDataSet; E: EDatabaseError;
     var Action: TDataAction) ;
 
-  TDataSet = public class(TComponent)
+  TFilterRecordEvent = public delegate(DataSet: TDataSet; var Accept: Boolean) of object;
+
+
+  TDataSet = public abstract class(Component)
   private
     FFields: TFields;
-    FFieldDefs: TFieldDefs;
-    FBufferCount: Integer;
     FRecordCount: Integer;
     FActiveRecord: Integer;
-    FBookmarkSize: Integer;
     FFilterText: WideString;
     FState: TDataSetState;
     FBOF: Boolean;
     FEOF: Boolean;
     FModified: Boolean;
     FFiltered: Boolean;
+    
+    FOnFilterRecord: TFilterRecordEvent;
+    FBeforeClose: TDataSetNotifyEvent;
+    FBeforeOpen: TDataSetNotifyEvent;
+    FBeforeCancel: TDataSetNotifyEvent;
+    FBeforeDelete: TDataSetNotifyEvent;
+    FAfterDelete: TDataSetNotifyEvent;
+    FBeforeScroll: TDataSetNotifyEvent;
+    FAfterScroll: TDataSetNotifyEvent;
+    FBeforeRefresh: TDataSetNotifyEvent;
+    FAfterRefresh: TDataSetNotifyEvent;
+    FOnCalcFields: TDataSetNotifyEvent;
+    FOnEditError: TDataSetErrorEvent;
+    FOnNewRecord: TDataSetNotifyEvent;
+    FAfterClose: TDataSetNotifyEvent;
+    FBeforeInsert: TDataSetNotifyEvent;
+    FAfterInsert: TDataSetNotifyEvent;
+    FBeforeEdit: TDataSetNotifyEvent;
+    FAfterEdit: TDataSetNotifyEvent;
+    FAfterPost: TDataSetNotifyEvent;
     FAfterOpen: TDataSetNotifyEvent;
     FBeforePost: TDataSetNotifyEvent;
     FAfterCancel: TDataSetNotifyEvent;
@@ -254,22 +221,30 @@ type
     method GetActive: Boolean;
     method GetFieldCount: Integer;
     method MoveBuffer(CurIndex, NewIndex: Integer);
-    method SetFieldDefs(Value: TFieldDefs);
-    protected
     protected
     method BookmarkAvailable: Boolean;
     method CheckActive; virtual;
     method CheckBiDirectional;
     method ClearBuffers; virtual;
     method DataEvent(&Event: TDataEvent; Info: LongInt); virtual;
-    method DoAfterDelete; virtual;
-    method DoAfterPost; virtual;
-    method DoAfterRefresh; virtual;
-    method DoAfterScroll; virtual;
-    method DoBeforeDelete; virtual;
-    method DoBeforePost; virtual;
-    method DoBeforeRefresh; virtual;
-    method DoBeforeScroll; virtual;
+    procedure DoAfterCancel; virtual;
+    procedure DoAfterClose; virtual;
+    procedure DoAfterDelete; virtual;
+    procedure DoAfterEdit; virtual;
+    procedure DoAfterInsert; virtual;
+    procedure DoAfterOpen; virtual;
+    procedure DoAfterPost; virtual;
+    procedure DoAfterRefresh; virtual;
+    procedure DoAfterScroll; virtual;
+    procedure DoBeforeCancel; virtual;
+    procedure DoBeforeClose; virtual;
+    procedure DoBeforeDelete; virtual;
+    procedure DoBeforeEdit; virtual;
+    procedure DoBeforeInsert; virtual;
+    procedure DoBeforeOpen; virtual;
+    procedure DoBeforePost; virtual;
+    procedure DoBeforeRefresh; virtual;
+    procedure DoBeforeScroll; virtual;
     method FreeFieldBuffers; virtual;
     method GetBookmarkStr: TBookmarkStr; virtual;
     method GetPriorRecords: Integer; virtual;
@@ -286,8 +261,12 @@ type
     method InternalDelete; virtual;
     method InternalLast; virtual;
     method InternalPost; virtual;
+  assembly or protected
+    method IntGetFieldValue(FieldNo: Integer): Object; abstract;
+    method IntSetFieldValue(FieldNo: Integer; Value: Object); abstract;
   protected     
   public
+    constructor Create;
     method Append;
     method Cancel; virtual;
     method CheckBrowseMode;
@@ -315,7 +294,6 @@ type
     property Bof: Boolean read FBOF;
     property Bookmark: TBookmarkStr read GetBookmarkStr write SetBookmarkStr;
     property Eof: Boolean read FEOF;     property FieldCount: Integer read GetFieldCount;
-    property FieldDefs: TFieldDefs read FFieldDefs write SetFieldDefs;
     property Fields: TFields read FFields;
     property Modified: Boolean read FModified;
     property RecordCount: Integer read GetRecordCount;
@@ -323,9 +301,30 @@ type
     property Filter: WideString read FFilterText write SetFilterText;
     property Filtered: Boolean read FFiltered write SetFiltered;
     property Active: Boolean read GetActive write SetActive ;
+    property BeforeOpen: TDataSetNotifyEvent read FBeforeOpen write FBeforeOpen;
     property AfterOpen: TDataSetNotifyEvent read FAfterOpen write FAfterOpen;
+    property BeforeClose: TDataSetNotifyEvent read FBeforeClose write FBeforeClose;
+    property AfterClose: TDataSetNotifyEvent read FAfterClose write FAfterClose;
+    property BeforeInsert: TDataSetNotifyEvent read FBeforeInsert write FBeforeInsert;
+    property AfterInsert: TDataSetNotifyEvent read FAfterInsert write FAfterInsert;
+    property BeforeEdit: TDataSetNotifyEvent read FBeforeEdit write FBeforeEdit;
+    property AfterEdit: TDataSetNotifyEvent read FAfterEdit write FAfterEdit;
     property BeforePost: TDataSetNotifyEvent read FBeforePost write FBeforePost;
+    property AfterPost: TDataSetNotifyEvent read FAfterPost write FAfterPost;
+    property BeforeCancel: TDataSetNotifyEvent read FBeforeCancel write FBeforeCancel;
     property AfterCancel: TDataSetNotifyEvent read FAfterCancel write FAfterCancel;
+    property BeforeDelete: TDataSetNotifyEvent read FBeforeDelete write FBeforeDelete;
+    property AfterDelete: TDataSetNotifyEvent read FAfterDelete write FAfterDelete;
+    property BeforeScroll: TDataSetNotifyEvent read FBeforeScroll write FBeforeScroll;
+    property AfterScroll: TDataSetNotifyEvent read FAfterScroll write FAfterScroll;
+    property BeforeRefresh: TDataSetNotifyEvent read FBeforeRefresh write FBeforeRefresh;
+    property AfterRefresh: TDataSetNotifyEvent read FAfterRefresh write FAfterRefresh;
+    property OnCalcFields: TDataSetNotifyEvent read FOnCalcFields write FOnCalcFields;
+    property OnDeleteError: TDataSetErrorEvent read FOnDeleteError write FOnDeleteError;
+    property OnEditError: TDataSetErrorEvent read FOnEditError write FOnEditError;
+    property OnFilterRecord: TFilterRecordEvent read FOnFilterRecord write FOnFilterRecord;
+    property OnNewRecord: TDataSetNotifyEvent read FOnNewRecord write FOnNewRecord;
+    property OnPostError: TDataSetErrorEvent read FOnPostError write FOnPostError;
     end;
 const
   dsEditModes: TDataSetStates = [TDataSetState.dsEdit, TDataSetState.dsInsert, TDataSetState.dsSetKey]; 
@@ -343,58 +342,117 @@ implementation
 
 method DatabaseError(const Message: WideString; Component: TComponent := nil);
 begin
+//  if assigned(Component) and (Component.Name <> '') then
+//    raise EDatabaseError.Create(Format('%s: %s', [Component.Name, Message])) else
+    raise EDatabaseError.Create(Message);
 end;
 
-method TCustomConnection.SetConnected(Value: Boolean);
-begin
-end;
-
-method TCustomConnection.GetConnected: Boolean;
-begin
-end;
-
-method TDefCollection.IndexOf(const AName: WideString): Integer;
-begin
-end;
 
 method TFields.Clear;
 begin
+  FList.Clear;
 end;
 
-method TFields.GetField(Index: Integer): TField;
+procedure TFields.Changed;
 begin
+  if FOnChange <> nil then FOnChange(self);
 end;
 
-method TFields.SetField(Index: Integer; Value: TField);
+procedure TFields.SetFieldIndex(Field: TField; Value: Integer);
+var
+  CurIndex, lCount: Integer;
 begin
+  CurIndex := FList.IndexOf(Field);
+  if CurIndex >= 0 then
+  begin
+    lCount := FList.Count;
+    if Value < 0 then Value := 0;
+    if Value >= lCount then Value := Count - 1;
+    if Value <> CurIndex then
+    begin
+      FList.RemoveAt(CurIndex);
+      FList.Insert(Value, Field);
+//      Field.PropertyChanged(True);
+      Changed;
+    end;
+  end;
+end;
+
+constructor TFields.Create(ADataSet: TDataSet);
+begin
+  FList := new System.Collections.Generic.List<TField>;;
+  FDataSet := ADataSet;
+end;
+
+procedure TFields.Add(Field: TField);
+begin
+  FList.Add(Field);
+  Field.FFields := Self;
+  Changed;
+end;
+
+function TFields.FindField(const FieldName: String): TField;
+var
+  I: Integer;
+begin
+  for I := 0 to FList.Count - 1 do
+  begin
+    Result := FList[I];
+    if AnsiCompareText(Result.FieldName, FieldName) = 0 then Exit;
+  end;
+  Result := nil;
+end;
+
+function TFields.FieldByName(const FieldName: String): TField;
+begin
+  Result := FindField(FieldName);
+  if Result = nil then DatabaseError('Field not found: '+FieldName);
+end;
+
+procedure TFields.GetFieldNames(List: TStrings);
+begin
+  for i: Integer := 0 to FList.Count -1 do
+    List.Add(FList[i].FieldName);
+end;
+
+function TFields.IndexOf(Field: TField): Integer;
+begin
+  result := FList.IndexOf(Field);
+end;
+
+procedure TFields.Remove(Field: TField);
+begin
+  FList.Remove(Field);
 end;
 
 method TField.Clear;
 begin
+  FFields.Clear;
 end;
 
 method TField.GetAsBoolean: Boolean;
 begin
+  Result := Convert.ToBoolean(FDataSet.IntGetFieldValue(Index));
 end;
 
 method TField.GetAsDateTime: TDateTime;
 begin
+  Result := Convert.ToDateTime(FDataSet.IntGetFieldValue(Index));
 end;
 
 method TField.GetAsInteger: LongInt;
 begin
+  Result := Convert.ToInt32(FDataSet.IntGetFieldValue(Index));
 end;
 
 method TField.GetAsString: WideString;
 begin
+  Result := Convert.ToString(FDataSet.IntGetFieldValue(Index));
 end;
 
 method TField.GetAsVariant: Variant;
 begin
-end;
-
-method TField.GetDataSize: Integer;
-begin
+  result := FDataSet.IntSetFieldValue(Index);
 end;
 
 method TField.GetDisplayLabel: WideString;
@@ -493,6 +551,11 @@ method TField.SetVisible(aValue: Boolean);
 begin
 end;
 
+constructor TField.Create(AOwner: TComponent);
+begin
+
+end;
+
 constructor TStringField.Create(AOwner: TComponent);
 begin
 end;
@@ -509,37 +572,6 @@ method TBlobField.SaveToStream(Stream: TStream);
 begin
 end;
 
-method TIndexDef.GetFields: WideString;
-begin
-end;
-
-method TIndexDef.SetFields(const Value: WideString);
-begin
-end;
-
-method TIndexDefs.GetIndexDef(Index: Integer): TIndexDef;
-begin
-end;
-
-method TIndexDefs.SetIndexDef(Index: Integer; Value: TIndexDef);
-begin
-end;
-
-method TParams.GetItem(Index: Integer): TParam;
-begin
-end;
-
-method TParams.SetItem(Index: Integer; Value: TParam);
-begin
-end;
-
-method TParam.SetAsString(const Value: WideString);
-begin
-end;
-
-method TParam.GetAsString: WideString;
-begin
-end;
 
 method TDataSet.SetState(Value: TDataSetState);
 begin
@@ -566,10 +598,6 @@ begin
 end;
 
 method TDataSet.SetActive(Value: Boolean);
-begin
-end;
-
-method TDataSet.SetFieldDefs(Value: TFieldDefs);
 begin
 end;
 
@@ -778,6 +806,52 @@ end;
 
 method TDataSet.DoBeforeScroll;
 begin
+end;
+
+procedure TDataSet.DoAfterCancel;
+begin
+
+end;
+
+procedure TDataSet.DoAfterClose;
+begin
+end;
+
+procedure TDataSet.DoAfterEdit;
+begin
+end;
+
+procedure TDataSet.DoAfterInsert;
+begin
+end;
+
+procedure TDataSet.DoAfterOpen;
+begin
+end;
+
+procedure TDataSet.DoBeforeCancel;
+begin
+end;
+
+procedure TDataSet.DoBeforeClose;
+begin
+end;
+
+procedure TDataSet.DoBeforeEdit;
+begin
+end;
+
+procedure TDataSet.DoBeforeInsert;
+begin
+end;
+
+procedure TDataSet.DoBeforeOpen;
+begin
+end;
+
+constructor TDataSet.Create;
+begin
+  FFields := TFields.Create(self);
 end;
 
 end.

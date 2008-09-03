@@ -24,46 +24,18 @@ uses
   Microsoft.Win32.SafeHandles;
   
 type
-  TComponent = public class(TPersistent, IComponent, IDisposable)
+  (*class(Component, IComponent, IDisposable)
   private
-    FSite: ISite;
     FOwner:TComponent;
-    FComponents:ArrayList;
-    method get_DesignMode: Boolean;
-    method get_Container: IContainer;
-    method get_Component(Index:Int32):TComponent;
-    method get_ComponentCount:Int32;
   protected
-    method InsertComponent(AComponent:TComponent);
-    method RemoveComponent(AComponent:TComponent);
-    method DestroyComponents;
-    method Dispose(Disposing:Boolean);virtual;
-    method GetService(Service:System.Type):Object;virtual;
-
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property DesignMode:Boolean read get_DesignMode;
   public
 
     constructor Create(AOwner:TComponent);virtual;
-    method Dispose;
     method ToString:String;override;
-
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property Components[Index: Integer]: TComponent read get_Component;
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property ComponentCount: Integer read get_ComponentCount;
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property Owner: TComponent read FOwner;
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property Site:ISite read FSite write FSite;
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-    property Container:IContainer read get_Container;
-    
-    [EditorBrowsable(EditorBrowsableState.Advanced), Browsable(false)]
-    event Disposed:EventHandler;
-  end;
+  end;*)
   
   TListSortCompare = public function (Item1, Item2: Object): Integer;
+  TComponent = public Component;
   
   TListNotification = public (Added, Extracted, Deleted);
   
@@ -540,114 +512,6 @@ begin
   end;
 end;
 
-{ TComponent }
-
-method TComponent.get_DesignMode: Boolean;
-begin
-  if Site <> nil then
-    Result := Site.DesignMode
-  else
-    Result := false;
-end;
-
-method TComponent.get_Component(Index:Int32): TComponent; 
-begin
-  if FComponents = nil then
-    raise new EListError(String.Format(SListIndexError, Index));
-  Result := TComponent(FComponents[Index]);
-end;
-
-method TComponent.get_ComponentCount: Int32; 
-begin
-  if FComponents <> nil then
-    Result := FComponents.Count
-  else
-    Result := 0;
-end;
-
-method TComponent.get_Container: IContainer;
-begin
-  if FSite <> nil then
-    Result := FSite.Container
-  else
-    Result := nil;
-end;
-
-constructor TComponent.Create(AOwner:TComponent); 
-begin
-  inherited Create;
-  if AOwner <> nil then AOwner.InsertComponent(self);
-end;
-
-method TComponent.Dispose(Disposing:Boolean); 
-begin
-  if Disposing then
-    locking Self do
-    begin
-      DestroyComponents;
-      if FOwner <> nil then
-        FOwner.RemoveComponent(Self);
-      if Container <> nil then
-        Container.Remove(Self);
-      if Disposed <> nil then
-        Disposed.Invoke(self, EventArgs.Empty);
-    end;
-end;
-
-method TComponent.GetService(Service:System.Type):Object;
-begin
-  if Site <> nil then
-    Result := Site.GetService(Service)
-  else
-    Result := nil;
-end;
-  
-method TComponent.Dispose; 
-begin
-  Dispose(true);
-  GC.SuppressFinalize(self);
-end;
-
-method TComponent.ToString: String; 
-begin
-  if Site <> nil then
-    Result := Site.Name + ' [' + inherited GetType.FullName + ']'
-  else
-    Result := inherited GetType.FullName;
-end;
-
-method TComponent.InsertComponent(AComponent:TComponent); 
-begin
-  if AComponent <> nil then
-  begin
-    if FComponents = nil then
-      FComponents := new ArrayList();
-    AComponent.FOwner := Self;
-    FComponents.Add(AComponent);
-  end;
-end;
-
-method TComponent.RemoveComponent(AComponent:TComponent); 
-begin
-  if (FComponents <> nil) and (AComponent <> nil) then
-  begin
-    AComponent.FOwner := nil;
-    FComponents.Remove(AComponent);
-    if FComponents.Count = 0 then
-      FComponents := nil;
-  end;
-end;
-
-method TComponent.DestroyComponents; 
-begin
-  if FComponents <> nil then
-    for i:Int32 := 0 to FComponents.Count -1 do
-    begin
-      TComponent(FComponents[i]).FOwner := nil;
-//      TComponent(FComponents[i]).Free;
-    end;
-  FComponents := nil;
-end;
 
 { TListSortCompareWrapper }
 

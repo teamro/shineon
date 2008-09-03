@@ -49,12 +49,13 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.pas" />
     <Compile Include="Classes.pas" />
+    <Compile Include="ClientDataSet.pas" />
     <Compile Include="Consts.pas" />
     <Compile Include="Contnrs.pas" />
     <Compile Include="Dates\Date Functions (SysUtils).pas" />
     <Compile Include="Dates\DateUtils.pas" />
     <Compile Include="Dates\TDateTime.pas" />
-    <Compile Include="DB.pas" />
+    <None Include="DB.pas" />
     <Compile Include="DelphiString.pas" />
     <None Include="Direct Ports\ConvUtils.pas" />
     <None Include="Direct Ports\StdConvs.pas" />
