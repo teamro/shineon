@@ -65,6 +65,7 @@
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
+    <Compile Include="StrUtils.pas" />
     <Compile Include="System.pas" />
     <Compile Include="SysUtils.pas" />
     <Compile Include="TCollection.pas" />
