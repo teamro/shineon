@@ -25,6 +25,7 @@ type
   SysUtils = public sealed class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
+    class function FormatBuf(Buffer: System.Text.StringBuilder; const aFormat: String; const Args: array of Object; Provider: IFormatProvider): Cardinal;
   public
     class function UpperCase(const S: String): String; 
     class function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String; 
@@ -1030,108 +1031,187 @@ begin
 end;
 
 
+
+class function SysUtils.FormatBuf(Buffer: System.Text.StringBuilder; const aFormat: String; const Args: array of Object; Provider: IFormatProvider): Cardinal;
+
+   procedure Error;
+   begin
+     raise new FormatException('Invalid Format String');
+   end;
+
+var
+   s, srclen: Cardinal;
+   argIndex: Cardinal;
+   precisionStart: Cardinal;
+   precisionLen: Integer;
+   fmtSpec: System.Text.StringBuilder;
+   argStr: String;
+begin
+   s := 0;
+   argIndex := 0;
+   srclen := length(aFormat);
+   fmtSpec := System.Text.StringBuilder.Create;
+
+   while s < srclen do
+   begin
+     if aFormat[s] = '%' then
+     begin
+       inc(s);
+       if s >= srclen then break;
+       if aFormat[s] = '%' then
+       begin
+         Buffer.Append(aFormat[s]);
+         inc(s);
+         Continue;
+       end;
+
+       fmtSpec.Length := 0;
+       fmtSpec.Append('{0,');
+
+       if aFormat[s] = '-' then   // width might be first
+       begin
+         fmtSpec.Append(Char('-'));
+         inc(s);
+       end;
+
+       if aFormat[s] = '*' then
+       begin
+         fmtSpec.Append(Args[argIndex]);
+         inc(argIndex);
+         inc(s);
+       end
+       else
+       begin
+         while (s+1 < srclen) and System.Char.IsDigit(aFormat[s]) do
+         begin
+           fmtSpec.Append(aFormat[s]);
+           inc(s);
+         end;
+       end;
+
+       if s >= srclen then Error;
+
+       if aFormat[s] = ':' then
+       begin
+         inc(s);
+
+         // something got added, it must be the index
+         if fmtSpec.Length > 3 then
+         begin
+           argStr := fmtSpec.ToString(3, fmtSpec.Length - 3);
+           argIndex := Int32.Parse(argStr);
+           fmtSpec.Length := 3;
+         end
+
+         // nothing got added, the index then defaults to zero
+         else
+           argIndex := 0;
+
+         //  width follows argIndex
+         if aFormat[s] = '-' then
+         begin
+           fmtSpec.Append(Char('-'));
+           inc(s);
+         end;
+
+         if aFormat[s] = '*' then
+         begin
+           fmtSpec.Append(Args[argIndex]);
+           inc(argIndex);
+           inc(s);
+         end
+         else
+         begin
+           while (s+1 < srclen) and System.Char.IsDigit(aFormat[s]) do
+           begin
+             fmtSpec.Append(aFormat[s]);
+             inc(s);
+           end;
+         end;
+       end;
+
+       if fmtSpec.Length = 3 then
+         fmtSpec.Length := 2;    // remove comma if no width spec was found
+
+       if s >= srclen then Error;
+
+       if aFormat[s] = '.' then
+       begin
+         inc(s);
+         if aFormat[s] = '*' then
+         begin
+           precisionStart := Convert.ToUInt32(Args[argIndex]);
+           precisionLen := -1;
+           inc(argIndex);
+           inc(s);
+         end
+         else
+         begin
+           precisionStart := s - 1;
+           while (s +1 < srclen) and System.Char.IsDigit(aFormat[s]) do
+             inc(s);
+           precisionLen := s - precisionStart - 1;
+         end;
+       end
+       else
+       begin
+         precisionStart := 0;
+         precisionLen := 0;
+       end;
+
+       fmtSpec.Append(Char(':'));
+       case aFormat[s] of
+         'd', 'D',
+         'u', 'U': fmtSpec.Append(Char('d'));
+         'e', 'E',
+         'f', 'F',
+         'g', 'G',
+         'n', 'N': fmtSpec.Append(Char(aFormat[s]));
+         'x', 'X': fmtSpec.Append('X');
+         'm', 'M': fmtSpec.Append(Char('c'));
+         'p', 'P': fmtSpec.Append(Char('X'));
+         's', 'S': ;   // no format spec needed for strings
+       else
+         Error;
+       end;
+
+       if precisionLen > 0 then
+         fmtSpec.Append(aFormat, precisionStart, precisionLen)
+       else if precisionLen < 0 then
+         fmtSpec.Append(precisionStart);
+
+       fmtSpec.Append(Char('}'));
+       // With THandle being an IntPtr we need to special case
+       // IntPtr, since AppendFormat treats an IntPtr as a string.
+       if not (Args[argIndex] is IntPtr) then
+         Buffer.AppendFormat(Provider, fmtSpec.ToString,
+[Args[argIndex]])
+       else
+       begin
+         // If running a 32-bit platform, treat it as an Int32,
+         // otherwise as an Int64.
+         if IntPtr.Size = 4 then
+           Buffer.AppendFormat(Provider, fmtSpec.ToString,[IntPtr(Args[argIndex]).ToInt32])
+         else
+           Buffer.AppendFormat(Provider, fmtSpec.ToString,[IntPtr(Args[argIndex]).ToInt64]);
+       end;
+       inc(argIndex);
+     end
+     else
+       Buffer.Append(aFormat[s]);
+
+     inc(s);
+   end;
+   Result := Buffer.Length;
+end;
+
 class function SysUtils.Format (Const aFormatting: String; Const aData: array of Object ) : String; 
 var
-  sb: StringBuilder := new StringBuilder;
-  lIndex,
-  lWidth,
-  lPrecision: Integer;
-  lCurrIndex: Integer;
-  lLeft: Boolean;
+  fsb: StringBuilder;
 begin
-  if aFormatting = nil then exit('');
-  var i: Integer := 0;
-  lCurrIndex := -1;
-  while i < aFormatting.Length do begin
-    case aFormatting[i] of
-      '%': begin
-        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '%') then begin
-          sb.Append('%');
-          i := i +2;
-          break;
-        end;
-
-        var lStart: Integer := i+1;
-        lLeft := false;
-        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '-') then begin
-          inc(lStart);
-          inc(i);
-          lLeft := true;
-        end;
-
-        while i +1 < aFormatting.Length do begin
-          if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
-        end;
-        
-        if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) and (aFormatting[i+1] = ':') and not lLeft then begin 
-          Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lIndex);
-          inc(i);
-          if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '-') then begin
-            lLeft := true;
-            inc(i);
-          end;
-          lStart := i+1;
-          while i +1 < aFormatting.Length do begin
-            if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
-          end;
-          if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) then begin
-            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lWidth);
-          end else
-            lWidth := -1;
-        end else begin
-          //lLeft := false;
-          lIndex := -1;
-          if (i + 1 < aFormatting.Length) then 
-            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lWidth)
-          else
-            lWidth := -1;
-        end;
-        if (i +1 < aFormatting.Length) and (aFormatting[i+1] = '.') then begin
-          lStart := i+1;
-          while i +1 < aFormatting.Length do begin
-            if aFormatting[i+1] in ['0'..'9'] then inc(i) else break;
-          end;
-          if (i - lStart +1 > 0) and (i + 1 < aFormatting.Length) then 
-            Int32.TryParse(aFormatting.Substring(lStart, i - lStart +1), lPrecision)
-          else
-            lPrecision := -1;
-        end else lPrecision := -1;
-        if i +1 < aFormatting.Length then begin
-          inc(i);
-          if lIndex <> -1 then lCurrIndex := lIndex else inc(lCurrIndex);
-          if (lCurrIndex < 0) or (lCurrIndex >= length(aData)) then raise new EConvertError(String.Format('No argument for format {0}', lCurrIndex));
-          var lVal: String;
-          case aFormatting[i] of 
-            'd', 'u': 
-              begin
-                lVal := aData[lCurrIndex].ToString; 
-                if lVal.Length < lPrecision then begin 
-                  if lVal.StartsWith('-') then 
-                    lVal := '-'+new String('-', lPrecision-lVal.Length)+lVal.Substring(1)
-                  else 
-                    lVal := new String('-', lPrecision-lVal.Length)+lVal;
-                  //lVal := '0'+lVal;
-                end;
-              end;
-            'x': lVal := System.Convert.ToInt64(aData[lCurrIndex]).ToString('X' + iif(lPrecision > 0, lPrecision.ToString, ''));
-            {'s':} else lVal := aData[lCurrIndex].ToString; 
-          end; // case
-          if lWidth > 0 then begin
-            if not lLeft then  begin 
-              if lVal.Length < lWidth then lVal := new String(' ', lWidth-lVal.Length)+lVal;
-            end else begin
-              if lVal.Length < lWidth then lVal :=lVal+new String(' ', lWidth-lVal.Length);
-            end;
-          end;
-          sb.Append(lVal);
-        end;
-      end;
-    else
-      sb.Append(aFormatting[i]);
-    end; // case
-    inc(i);
-  end;
-  result := sb.ToString;
+  fsb := new StringBuilder(length(aFormatting) * 2);
+  FormatBuf(fsb, aFormatting, aData, System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone as IFormatProvider);
+  result := fsb.ToString;
 end;
 
 class procedure SysUtils.Sleep(val: Integer);

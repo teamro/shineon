@@ -90,7 +90,7 @@ end;
 method TSearchRec.SetIndex(i: Integer);
 begin
   fIndex := i;
-  if fIndex >= Length(fInfo) then exit;
+  if fIndex >= length(fInfo) then exit;
   var lItem := fInfo[fIndex];
 
   Name :=  lItem.Name;
