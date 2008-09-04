@@ -52,6 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.pas" />
+    <Compile Include="Dataset1.Designer.pas">
+      <Subtype>Component</Subtype>
+      <DesignableClassName>NUnit.ShineOn.RTL.Dataset1</DesignableClassName>
+    </Compile>
+    <Compile Include="TestCDS.pas" />
     <Compile Include="TestClasses.pas" />
     <Compile Include="TestContnrs.pas" />
     <Compile Include="TestDelphiString.pas" />

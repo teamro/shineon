@@ -96,6 +96,7 @@ type
     fOnEditError: TDataSetErrorEvent;
     fOnNewRecord: TDataSetNotifyEvent;
     fOnPostError: TDataSetErrorEvent;
+    method get_Row: DataRow;
     method fBindingSource_PositionChanged(sender: Object; e: EventArgs);
     method fDataTable_TableNewRow(sender: Object; e: DataTableNewRowEventArgs);
     //method fDataTable_RowDeleting(sender: Object; e: DataRowChangeEventArgs);
@@ -111,7 +112,7 @@ type
   assembly 
     //FActiveDataView: DataView;
 //    FBOF: Boolean;
-//    FEOF: Boolean;
+    FEOF: Boolean;
     FFilter: String;
     FFiltered: Boolean;
     fDataTable: DataTable;
@@ -128,7 +129,7 @@ type
     //FLastInsertID: Int32;
     //FRowsAffected: Int32;
     //InternalRecNo: Int32;
-    property Row: DataRow read fBindingSource.Current as DataRow;
+    property Row: DataRow read get_Row;
     //SavedRow: DataRow;
   protected
     method SetDataTable(value: System.Data.DataTable); virtual;
@@ -168,7 +169,7 @@ type
     method Cancel; virtual;
     method Delete; virtual;
     method Edit; virtual;
-    property Eof: Boolean read fBindingSource.Current = nil;
+    property Eof: Boolean read (fBindingSource.Current = nil) or FEOF;
     method FieldByName(FieldName: String): TCDSField;
     property FieldCount: Int32 read FFields.Count;
     method First; virtual;
@@ -326,7 +327,7 @@ method TCustomClientDataSet.Edit;
 begin
   CheckBrowseMode;
   if fBindingSource.Current = nil then raise new EDatsetException('No current record');
-  (fBindingSource.Current as DataRow).BeginEdit;
+  (Row).BeginEdit;
 end;
 
 method TCustomClientDataSet.FieldByName(FieldName: String): TCDSField;
@@ -337,6 +338,7 @@ end;
 method TCustomClientDataSet.First;
 begin
   fBindingSource.MoveFirst;
+  FEOF := false;
 end;
 
 method TCustomClientDataSet.Insert;
@@ -421,7 +423,11 @@ end;
 
 method TCustomClientDataSet.Next;
 begin
+  var lPosition := fBindingSource.Position;
   fBindingSource.MoveNext;
+  if fBindingSource.Position = lPosition then begin
+    fEOF := true;
+  end;
 end;
 
 method TCustomClientDataSet.Post;
@@ -431,6 +437,11 @@ end;
 
 method TCustomClientDataSet.Prior;
 begin
+  if FEOF then begin
+    fEOF := false;
+    exit; // already on the last one
+  end;
+
   fBindingSource.MovePrevious;
 end;
 
@@ -654,6 +665,16 @@ begin
   if assigned(fAfterCancel) then fAfterCancel(self);
 end;
 
+method TCustomClientDataSet.get_Row: DataRow;
+begin
+  if FEOF then raise new EDatsetException('EOF');
+  var lView := DataRowView(fBindingSource.Current);
+  if lView <> nil then 
+   result := lView.Row
+ else 
+   result :=fBindingSource.Current as DataRow;
+end;
+
 method TCDSField.Row: DataRow;
 begin
   Result := FDataset.Row;
@@ -682,15 +703,17 @@ end;
 
 method TCDSFields.Invalidate;
 begin
-  if FItems.Count = FDataSet.fDataTable.Columns.Count then begin
-    for i: Integer := 0 to FItems.Count -1 do begin
-      FItems[i].IntColumn := FDataSet.fDataTable.Columns[i];
+  if FDataSet.fDataTable = nil then fItems.Clear else begin
+    if FItems.Count = FDataSet.fDataTable.Columns.Count then begin
+      for i: Integer := 0 to FItems.Count -1 do begin
+        FItems[i].IntColumn := FDataSet.fDataTable.Columns[i];
+      end;
     end;
-  end;
 
-  FItems.Clear;
-  for i: Integer := 0 to FDataSet.fDataTable.Columns.Count -1 do begin
-    FItems.Add(new TCDSField(FDataSet, FDataSet.fDataTable.Columns[i]));
+    FItems.Clear;
+    for i: Integer := 0 to FDataSet.fDataTable.Columns.Count -1 do begin
+      FItems.Add(new TCDSField(FDataSet, FDataSet.fDataTable.Columns[i]));
+    end;
   end;
 end;
 
