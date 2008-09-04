@@ -157,6 +157,8 @@ type
     fOnEditError: TDataSetErrorEvent;
     fOnNewRecord: TDataSetNotifyEvent;
     fOnPostError: TDataSetErrorEvent;
+    method set_IndexFieldNames(value: String);
+    method get_IndexFieldNames: String;
     method set_Readonly(value: Boolean);
     method get_Readonly: Boolean;
     method set_CommandText(value: String);
@@ -310,6 +312,7 @@ type
     property CommandText: String read fCommandText write set_CommandText;
     method RefreshParams;
     property &Params: TParams read fParams;
+    property IndexFieldNames: String read get_IndexFieldNames write set_IndexFieldNames;
 
     method ParamByName(aName: String): TParam;
     property &Readonly: Boolean read get_Readonly write set_Readonly;
@@ -322,7 +325,7 @@ type
 
 
 // Todo:Aggregates, FieldDefs, IndexFields, IndexFieldNames, OnCalcFields
-// Todo:Default implementation
+// Todo:Default implementation(MSSQL ?)
 
 
 // DEFAULT/STORED
@@ -917,6 +920,19 @@ end;
 method TCustomClientDataSet.SetBookmarkStr(s: String);
 begin
   fBindingSource.Position := Int32.Parse(s);
+end;
+
+method TCustomClientDataSet.get_IndexFieldNames: String;
+begin
+  if fBindingSource.Sort  = nil then exit('');
+  result := fBindingSource.Sort.Replace(',', ';');
+end;
+
+method TCustomClientDataSet.set_IndexFieldNames(value: String);
+begin
+  if length(value) = 0 then fBindingSource.Sort := nil else begin
+    fBindingSource.Sort := value.Replace(';', ',');
+  end;
 end;
 
 method TField.Row: DataRow;
