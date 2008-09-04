@@ -66,6 +66,7 @@ procedure Append(var fs: TextFile); public;
 procedure ReadLine(var fs: TextFile; var s: String); public;
 procedure WriteLine(var fs: TextFile; s: String); public;
 procedure WriteLine(var fs: TextFile; params s: array of String); public;
+function EOF(var fs: TextFile): Boolean; public;
 
 implementation
 
@@ -242,6 +243,11 @@ begin
   for i: Integer := 0 to length(s) -1 do begin 
     fs.fWriter.Write(s[i]);
   end;
+end;
+
+function EOF(var fs: TextFile): Boolean; 
+begin
+  result := fs.fReader.EndOfStream;
 end;
 
 end.

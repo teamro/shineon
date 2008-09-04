@@ -911,9 +911,7 @@ end;
 
 method TCustomClientDataSet.GetBookmarkStr: String;
 begin
-  if lRow <> nil then begin
-    result := fBindingSource.Position.ToString;
-  end else exit(nil);
+  result := fBindingSource.Position.ToString;
 end;
 
 method TCustomClientDataSet.SetBookmarkStr(s: String);
