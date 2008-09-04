@@ -324,7 +324,7 @@ type
   end;
 
 
-// Todo:Aggregates, FieldDefs, IndexFields,IndexName, OnCalcFields
+// Todo:Aggregates, FieldDefs, {IndexFields,IndexName,} OnCalcFields
 // Todo:Default implementation(MSSQL ?)
 
 
@@ -881,11 +881,13 @@ end;
 
 method TCustomClientDataSet.get_Readonly: Boolean;
 begin
+  if FDataView = nil then exit false;
   result := not FDataView.AllowEdit and not FDataView.AllowNew and not FDataView.AllowDelete;
 end;
 
 method TCustomClientDataSet.set_Readonly(value: Boolean);
 begin
+  if FDataView = nil then exit;
   if value then begin
     FDataView.AllowDelete := false;
     FDataView.AllowNew := false;
