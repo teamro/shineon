@@ -324,7 +324,7 @@ type
   end;
 
 
-// Todo:Aggregates, FieldDefs, IndexFields, IndexFieldNames, OnCalcFields
+// Todo:Aggregates, FieldDefs, IndexFields,IndexName, OnCalcFields
 // Todo:Default implementation(MSSQL ?)
 
 
@@ -914,12 +914,32 @@ end;
 
 method TCustomClientDataSet.GetBookmarkStr: String;
 begin
-  result := fBindingSource.Position.ToString;
+  if length(fDataTable.PrimaryKey) = 0 then begin
+    result := fBindingSource.Position.ToString;
+  end else begin
+    result := '';
+    var lRow := Row;
+    for each el in fDataTable.PrimaryKey do begin
+      Result := Result + Convert.ToString(Row[el]) + #0;
+    end;
+  end;
 end;
 
 method TCustomClientDataSet.SetBookmarkStr(s: String);
 begin
-  fBindingSource.Position := Int32.Parse(s);
+  if length(fDataTable.PrimaryKey) = 0 then begin
+    fBindingSource.Position := Int32.Parse(s);
+  end else begin
+    var lValues := s.Split(#0);
+    var lNames := '';
+    for each el in fDataTable.PrimaryKey do begin
+      if lNames = '' then 
+        lNames := lNames + el.ColumnName
+      else
+        lNames := lNames + ';' + el.ColumnName;
+    end;
+    Locate(lNames, lValues);
+  end;
 end;
 
 method TCustomClientDataSet.get_IndexFieldNames: String;
