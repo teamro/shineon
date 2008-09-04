@@ -62,5 +62,6 @@
     <Compile Include="TestSystem.pas" />
     <Compile Include="TestSysUtils.pas" />
     <Compile Include="TestTDateTime.pas" />
+    <Compile Include="TestVariants.pas" />
   </ItemGroup>
 </Project>

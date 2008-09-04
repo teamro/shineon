@@ -4,6 +4,7 @@ interface
 
 uses
   System.Collections.Generic,
+  System.Collections,
   System.Text;
 
 type
@@ -12,7 +13,7 @@ type
   EVariantInvalidOpError = public class(EVariantError) end;
   TVarType = public Word;
   TBinOperator = (otAdd = 0, otSub = 1, otMul = 2,otIntDiv = 3,otDiv = 4,otMod = 5,otShl = 6,otShr = 7,otAnd = 8,otOr = 9,otXor = 10,otGreaterEqual = 11,otLessEqual = 12,otGreater = 13,otLess = 14,otEqual = 15,otNotEqual = 16);
-  Variant = public record
+  Variant = public record(IList)
   private
     fValue: Object; readonly;
     class method IsIntType(b: TVarType): Boolean;
@@ -23,6 +24,8 @@ type
   public
     constructor (aValue: Object);
     property Value: Object read fValue;
+    property AsList: Array of Object read Array of Object(fValue); implements IList;
+    property Item[I: Integer]: Object read AsList[I]; default;
     class property Null: Variant := new Variant(nil); readonly;
     class property Unassigned: Variant := new Variant(DBNull.Value);readonly;
     // unary:
@@ -79,27 +82,28 @@ type
   end;
 
 const
-  varEmpty    = $0000; { vt_empty        0 }
-  varNull     = $0001; { vt_null         1 }
-  varSmallint = $0002; { vt_i2           2 }
-  varInteger  = $0003; { vt_i4           3 }
-  varSingle   = $0004; { vt_r4           4 }
-  varDouble   = $0005; { vt_r8           5 }
-  varCurrency = $0006; { vt_cy           6 }
-  varDate     = $0007; { vt_date         7 }
-  varOleStr   = $0008; { vt_bstr         8 }
-  varDispatch = $0009; { vt_dispatch     9 }
-  varError    = $000A; { vt_error       10 }
-  varBoolean  = $000B; { vt_bool        11 }
-  varVariant  = $000C; { vt_variant     12 }
-  varUnknown  = $000D; { vt_unknown     13 }
-  varDecimal  = $000E; { vt_decimal     14 } 
-  varShortInt = $0010; { vt_i1          16 }
-  varByte     = $0011; { vt_ui1         17 }
-  varWord     = $0012; { vt_ui2         18 }
-  varLongWord = $0013; { vt_ui4         19 }
-  varInt64    = $0014; { vt_i8          20 }
-  varWord64   = $0015; { vt_ui8         21 } 
+  varEmpty    : Word = $0000; { vt_empty        0 }
+  varNull     : Word = $0001; { vt_null         1 }
+  varSmallint : Word = $0002; { vt_i2           2 }
+  varInteger  : Word = $0003; { vt_i4           3 }
+  varSingle   : Word = $0004; { vt_r4           4 }
+  varDouble   : Word = $0005; { vt_r8           5 }
+  varCurrency : Word = $0006; { vt_cy           6 }
+  varDate     : Word = $0007; { vt_date         7 }
+  varOleStr   : Word = $0008; { vt_bstr         8 }
+  varDispatch : Word = $0009; { vt_dispatch     9 }
+  varError    : Word = $000A; { vt_error       10 }
+  varBoolean  : Word = $000B; { vt_bool        11 }
+  varVariant  : Word = $000C; { vt_variant     12 }
+  varUnknown  : Word = $000D; { vt_unknown     13 }
+  varDecimal  : Word = $000E; { vt_decimal     14 } 
+  varShortInt : Word = $0010; { vt_i1          16 }
+  varByte     : Word = $0011; { vt_ui1         17 }
+  varWord     : Word = $0012; { vt_ui2         18 }
+  varLongWord : Word = $0013; { vt_ui4         19 }
+  varInt64    : Word = $0014; { vt_i8          20 }
+  varWord64   : Word = $0015; { vt_ui8         21 } 
+  varArray    : Word = $2000;
   
 { Variant support procedures and functions }
 
@@ -136,6 +140,20 @@ function VarSameValue(const A, B: Variant): Boolean;public;
 function Unassigned: Variant;public; // Unassigned standard constant
 function Null: Variant;public;       // Null standard constant
 
+
+function VarIsArray(const A: Variant): Boolean; public;
+
+function VarArrayCreate(const aBounds: array of Integer; AVarType: TVarType): Variant;public;
+function VarArrayOf(const Values: array of Variant): Variant;public;
+
+function VarArrayDimCount(const A: Variant): Integer;public;
+function VarArrayLowBound(const A: Variant; Dim: Integer): Integer;public;
+function VarArrayHighBound(const A: Variant; Dim: Integer): Integer;public;
+
+function VarArrayGet(const A: Variant; const Indices: array of Integer): Object;public;
+procedure VarArrayPut(var A: Variant; const Value: Object; const Indices: array of Integer);public;
+
+
 implementation
 
 function VarType(const V: Variant): TVarType;
@@ -157,6 +175,10 @@ begin
     TypeCode.UInt16: result := varWord;
     TypeCode.UInt32: result := varLongWord;
     TypeCode.UInt64: result := varWord64;
+  else begin
+      if V.Value is array of Object then exit varArray or varVariant;
+      exit varError;
+    end;
   end; // case
 end;
 
@@ -180,7 +202,7 @@ begin
     TypeCode.UInt16: result := varWord;
     TypeCode.UInt32: result := varLongWord;
     TypeCode.UInt64: result := varWord64;
-  else result := varError;
+  else raise new EVariantTypeCastError('Invalid variant type');
   end; // case
 end;
 
@@ -926,5 +948,57 @@ begin
     end;
   end; // case
 end;
+
+function VarIsArray(const A: Variant): Boolean; 
+begin
+  Result := A.Value is array of Object;
+end;
+
+function VarArrayCreate(const aBounds: array of Integer; AVarType: TVarType): Variant;
+begin
+  if aBounds.Length <> 2 then raise new EVariantError('Invalid bounds');
+  if aBounds[0] <> 0 then raise new EVariantError('Invalid bounds');
+  Result := new Variant(new Object[aBounds[1] + 1]);
+end;
+
+function VarArrayOf(const Values: array of Variant): Variant;
+var
+  r: Array of Object;
+begin
+  r := new Object[length(Values)];
+  for i: Integer := 0 to length(Values) -1 do r[i] := Values[i].Value;
+  Result := new Variant(r);
+end;
+
+
+function VarArrayDimCount(const A: Variant): Integer;
+begin
+  if VarIsArray(A) then result := 1 else result := 0;
+end;
+
+function VarArrayLowBound(const A: Variant; Dim: Integer): Integer;
+begin
+  Result := 0;
+end;
+
+function VarArrayHighBound(const A: Variant; Dim: Integer): Integer;
+begin
+  if VarIsArray(A) and (Dim = 0) then result := length(array of Object(A.Value)) -1 else result := -1;
+end;
+
+
+function VarArrayGet(const A: Variant; const Indices: array of Integer): Object;
+begin
+  if VarIsArray(A) and (length(Indices) = 1) then exit array of Object(A.Value)[Indices[0]];
+  raise new EVariantError('Array index out of range');
+end;
+
+procedure VarArrayPut(var A: Variant; const Value: Object; const Indices: array of Integer);
+begin
+  if VarIsArray(A) and (length(Indices) = 1) then array of Object(A.Value)[Indices[0]] := Value else 
+  raise new EVariantError('Array index out of range');
+end;
+
+
 
 end.
