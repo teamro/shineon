@@ -426,7 +426,7 @@ begin
   var lPosition := fBindingSource.Position;
   fBindingSource.MoveNext;
   if fBindingSource.Position = lPosition then begin
-    fEOF := true;
+    FEOF := true;
   end;
 end;
 
@@ -438,7 +438,7 @@ end;
 method TCustomClientDataSet.Prior;
 begin
   if FEOF then begin
-    fEOF := false;
+    FEOF := false;
     exit; // already on the last one
   end;
 
@@ -703,7 +703,7 @@ end;
 
 method TCDSFields.Invalidate;
 begin
-  if FDataSet.fDataTable = nil then fItems.Clear else begin
+  if FDataSet.fDataTable = nil then FItems.Clear else begin
     if FItems.Count = FDataSet.fDataTable.Columns.Count then begin
       for i: Integer := 0 to FItems.Count -1 do begin
         FItems[i].IntColumn := FDataSet.fDataTable.Columns[i];

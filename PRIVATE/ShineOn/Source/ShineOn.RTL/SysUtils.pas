@@ -147,6 +147,7 @@ type
     class function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
     class function GetEnvironmentVariable(Name: String): String;
     class procedure Sleep(val: Integer);
+    class function FormatFloat(aFormat: String; V: Double): String;
   end;
   
 function UpperCase(const S: String): String;public;
@@ -1217,6 +1218,69 @@ end;
 class procedure SysUtils.Sleep(val: Integer);
 begin
   Thread.Sleep(val);
+end;
+
+function AdjustCommaInFormat(const aFormat: String): String;
+var
+   I, Removed, LCommaPos: Integer;
+   C: Char;
+   FoundComma, CommaInResult, BeforeDecimal, Scientific: Boolean;
+begin
+   Result := aFormat;
+   Scientific := False;
+   FoundComma := False;
+   CommaInResult := False;
+   BeforeDecimal := True;
+   Removed := 0;
+   LCommaPos := 0;
+   I := 0;
+   while I < length(aFormat) do
+   begin
+     C := aFormat[I];
+     case C of
+       '.':
+         BeforeDecimal := False;
+       '''', '"':
+         repeat
+           inc(I);
+         until (I+1 > length(aFormat)) or (aFormat[I] <> C);
+       'e', 'E':
+         Scientific := True;
+       ',':
+         begin
+           LCommaPos := I;
+           FoundComma := True;
+           if (not BeforeDecimal) or (CommaInResult) or
+               (I = 1) or
+               ((aFormat[I - 1] <> '0') and (aFormat[I - 1] <> '#')) or
+               (I+1 = length(aFormat)) or
+               ((aFormat[I + 1] <> '0') and (aFormat[I + 1] <> '#')) then
+           begin
+             Result := Result.Remove(I - Removed, 1);
+             Removed := Removed + 1;
+           end
+           else
+             CommaInResult := True; // this one is ok
+         end;
+       '%':
+         begin
+           Result := Result.Insert(I, '\');
+           inc(I);
+         end;
+     end;
+     inc(I);
+   end;
+   if FoundComma and (not CommaInResult) and (not Scientific) then
+     if (Result[0] = '0') or (Result[0] = '#') then
+       Result := '#,' + Result
+     else
+       Result := Result.Insert(LCommaPos, '#,#');
+end;
+
+
+class function SysUtils.FormatFloat(aFormat: String; V: Double): String;
+begin
+  Result := Double(V).ToString(AdjustCommaInFormat(aFormat), System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat);
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
