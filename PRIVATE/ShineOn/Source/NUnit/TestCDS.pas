@@ -46,6 +46,11 @@ end;
 
 method TestCDS.TestEOF;
 begin
+  fCds.CommandText := 'select * from table where condition=:a and test='':b'' and value=@c';
+  NUnit.Framework.Assert.AreEqual(fCds.Params.Count, 2);
+  NUnit.Framework.Assert.AreEqual(fCds.Params[0].Name, String('a'));
+  NUnit.Framework.Assert.AreEqual(fCds.Params[1].Name, '@c');
+
   fDt.Rows.Clear;
   NUnit.Framework.Assert.AreEqual(fCds.Eof, true);
   NUnit.Framework.Assert.AreEqual(fCds.Fields.Count, 3);

@@ -65,6 +65,7 @@ type
     class operator implicit(val: UInt16): Variant;
     class operator implicit(val: UInt32): Variant;
     class operator implicit(val: UInt64): Variant;
+    class operator implicit(val: array of Object): Variant;
     class operator implicit(val: Variant): Boolean;
     class operator implicit(val: Variant): Byte;
     class operator implicit(val: Variant): DateTime;
@@ -79,6 +80,7 @@ type
     class operator implicit(val: Variant): UInt16;
     class operator implicit(val: Variant): UInt32;
     class operator implicit(val: Variant): UInt64;
+    class operator implicit(val: Variant): array of Object;
   end;
 
 const
@@ -947,6 +949,16 @@ begin
       end else if (t1 = t2) then exit t1;
     end;
   end; // case
+end;
+
+class operator Variant.implicit(val: array of Object): Variant;
+begin
+  Result := new Variant(val);
+end;
+
+class operator Variant.implicit(val: Variant): array of Object;
+begin
+  result := val.Value as array of Object;
 end;
 
 function VarIsArray(const A: Variant): Boolean; 

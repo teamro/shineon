@@ -29,6 +29,39 @@ type
     [Browsable(false)]
     property DataSet: TCustomClientDataSet read FDataSet;
   end;
+
+  TCDSParam = public class
+  private
+  public
+    property Name: String;
+    property Value: Object;
+    [Browsable(false)]
+    property AsString: String read Convert.ToString(Value) write Value;
+    [Browsable(false)]
+    property AsInteger: Integer read Convert.ToInt32(Value) write Value;
+    [Browsable(false)]
+    property AsDateTime: DateTime read Convert.ToDateTime(Value) write Value;
+  end;
+
+  TCDSParams = public class
+  private
+    FDataSet: TCustomClientDataSet;
+    FItems: List<TCDSParam> := new List<TCDSParam>;
+  public 
+    constructor Create(aDataset: TCustomClientDataSet);
+
+    property Items[aIndex: Integer]: TCDSParam read FItems[aIndex]; default;
+    property Count: Integer read FItems.Count;
+    method &Add: TCDSParam;
+    method &Add(aParam: TCDSParam);
+    method Delete(i: Integer);
+    method Clear;
+    method ParamByName(aParamName: String): TCDSParam;
+
+    [Browsable(false)]
+    property DataSet: TCustomClientDataSet read FDataSet;
+  end;
+
   TFieldNotifyEvent = public procedure(Sender: TCDSField);
   TCDSField = public class
   private
@@ -36,6 +69,7 @@ type
     fOnValidate: TFieldNotifyEvent;
     FColumn: DataColumn;
     FDataset: TCustomClientDataSet;
+    method get_OldValue: Object;
     method get_Value: Object;
     method set_Value(aValue: Object);
   assembly
@@ -45,6 +79,8 @@ type
   public 
    public method IsNull: Boolean;
     { Properties }
+    [Browsable(false)]
+    public property AsDateTime: DateTime read Convert.ToDateTime(Value) write Value;
     [Browsable(false)]
     public property AsBoolean: Boolean read Convert.ToBoolean(Value) write Value;
     [Browsable(false)]
@@ -60,19 +96,42 @@ type
     [Browsable(false)]
     property Column: DataColumn read FColumn;
 
+    [Browsable(false)]
+    public property OldValue: Object read get_OldValue;
+    
+
     property OnValidate: TFieldNotifyEvent read fOnValidate write fOnValidate;
     property OnChange: TFieldNotifyEvent read fOnChange write fOnChange;
   end;
+
 
   TDataAction = public (daFail, daAbort, daRetry);
   TDataSetNotifyEvent = public procedure(DataSet: TCustomClientDataSet);
   TDataSetErrorEvent = public procedure(DataSet: TCustomClientDataSet; E: EDatsetException; var Action: TDataAction);
   // 
+
+  TDataSource = public abstract class(Component, IBindingListView, IBindingList, IList, ICollection, 
+	  IEnumerable, ITypedList, ISupportInitializeNotification, ISupportInitialize, ICancelAddNew,
+	  System.Windows.Forms.ICurrencyManagerProvider)
+  private
+    fDataset: TCustomClientDataSet;
+    fEmptySource: System.Windows.Forms.BindingSource;
+    // Returns an empty binding source so it doesn't give an exception
+    method get_Source: IBindingListView; implements IBindingListView, ITypedList, ISupportInitializeNotification, ICancelAddNew, System.Windows.Forms.ICurrencyManagerProvider;
+  public
+    method EnableControls;
+    method DisableControls;
+
+    property Dataset: TCustomClientDataSet read fDataset write fDataset;
+  end;
+
   TCustomClientDataSet = public abstract class(Component, IBindingListView, IBindingList, IList, ICollection, 
 	IEnumerable, ITypedList, ISupportInitializeNotification, ISupportInitialize, ICancelAddNew,
 	System.Windows.Forms.ICurrencyManagerProvider)
   private
+    fCommandText: String;
     fLastRow: Integer := -1;
+    fParams: TCDSParams;
     fBeforeOpen: TDataSetNotifyEvent;
     fAfterOpen: TDataSetNotifyEvent;
     fBeforeClose: TDataSetNotifyEvent;
@@ -96,6 +155,7 @@ type
     fOnEditError: TDataSetErrorEvent;
     fOnNewRecord: TDataSetNotifyEvent;
     fOnPostError: TDataSetErrorEvent;
+    method set_CommandText(value: String);
     method get_Row: DataRow;
     method fBindingSource_PositionChanged(sender: Object; e: EventArgs);
     method fDataTable_TableNewRow(sender: Object; e: DataTableNewRowEventArgs);
@@ -176,6 +236,7 @@ type
     method Insert; virtual;
     method Last; virtual;
     method Locate(KeyFields: String; params KeyValues: array of Object): Boolean; virtual;
+    method Locate(KeyFields: String; params KeyValues: array of Object; ResultFields: String): Variant; virtual;
     method Locate(KeyField: String; KeyValue: Object): Boolean; virtual;
     method Next; virtual;
     method Post; virtual;
@@ -183,6 +244,14 @@ type
     method RecNo: Int32;
     method RecordCount: Int32;
     
+    method EnableControls;
+    method DisableControls;
+    method LoadFromFile(aFilename: String);
+    method SaveToFile(aFilename: String);
+    method LoadFromStream(aStream: System.IO.Stream);
+    method SaveToStream(aStream: System.IO.Stream);
+
+    method CloneCursor(Source: TCustomClientDataSet; aReset: Boolean);
 
     { Properties }
     [Browsable(false)]
@@ -198,7 +267,7 @@ type
     [Browsable(false)]
     property Filtered: Boolean read FFiltered write set_Filtered;
     [Browsable(false)]
-    property State: TCDSState read FState;
+    property State: TCDSState read iif(Active, FState, TCDSState.dsInactive);
 
     property BeforeOpen: TDataSetNotifyEvent read fBeforeOpen write fBeforeOpen;
     property AfterOpen: TDataSetNotifyEvent read fAfterOpen write fAfterOpen;
@@ -223,12 +292,25 @@ type
     property OnEditError: TDataSetErrorEvent read fOnEditError write fOnEditError;
     property OnNewRecord: TDataSetNotifyEvent read fOnNewRecord write fOnNewRecord;
     property OnPostError: TDataSetErrorEvent read fOnPostError write fOnPostError;
+
+    property CommandText: String read fCommandText write set_CommandText;
+    method RefreshParams;
+    property &Params: TCDSParams read fParams;
+
+    method ParamByName(aName: String): TCDSParam;
   end;
 
   TClientDataSet = public abstract class(TCustomClientDataSet)
   private
   public
   end;
+
+
+// Todo:Readonly, Aggregates, FieldDefs, IndexFields, IndexFieldNames, Bookmarks, OnCalcFields
+// Todo:Default implementation
+
+
+// DEFAULT/STORED
 
 
 implementation
@@ -296,6 +378,7 @@ begin
   FFields := new TCDSFields(self);
   FState := TCDSState.dsInactive;
   fBindingSource := new System.Windows.Forms.BindingSource();
+  fParams := new TCDSParams(self);
   //FLastInsertID := -1;
   //FRowsAffected := -1;
   //FActiveDataView := new DataView();
@@ -685,6 +768,96 @@ begin
    result :=fBindingSource.Current as DataRow;
 end;
 
+method TCustomClientDataSet.EnableControls;
+begin
+  fDataTable.EndLoadData;
+end;
+
+method TCustomClientDataSet.DisableControls;
+begin
+  fDataTable.BeginLoadData;
+end;
+
+method TCustomClientDataSet.set_CommandText(value: String);
+begin
+  fCommandText := value;
+  RefreshParams;
+end;
+
+
+method TCustomClientDataSet.Locate(KeyFields: String; params KeyValues: array of Object; ResultFields: String): Variant;
+begin
+  if Locate(KeyFields, KeyValues) then begin
+    if ResultFields.IndexOf(';') = -1 then exit(new Variant(FieldByName(ResultFields).Value));
+    var lResultFields := ResultFields.Split(';');
+    result := new Variant(new Object[lResultFields.Length]);
+    for i: Integer := 0 to lResultFields.Length -1 do begin
+      result.AsList[i] := FieldByName(lResultFields[i]).Value;
+    end;
+  end;
+end;
+
+method TCustomClientDataSet.LoadFromFile(aFilename: String);
+begin
+  fDataTable.ReadXml(aFilename);
+end;
+
+method TCustomClientDataSet.SaveToFile(aFilename: String);
+begin
+  fDataTable.WriteXml(aFilename);
+end;
+
+method TCustomClientDataSet.LoadFromStream(aStream: System.IO.Stream);
+begin
+  fDataTable.ReadXml(aStream);
+end;
+
+method TCustomClientDataSet.SaveToStream(aStream: System.IO.Stream);
+begin
+  fDataTable.WriteXml(aStream);
+end;
+
+method TCustomClientDataSet.RefreshParams;
+var
+  instr: Char := #0;
+begin
+  var i: Integer := 0 ;
+  while i < fCommandText.Length do begin
+    case fCommandText[i] of
+      #39: begin
+        if instr = #39 then instr := #0 else if instr = #0 then instr := #39;
+      end;
+      '"': begin
+        if instr = '"' then instr := #0 else if instr = #0 then instr := '"';
+      end;
+      '@', ':': if instr = #0 then begin
+        var lStart := i;
+        if (fCommandText[i] = ':') then inc(lStart); // : should not be included but @ should
+        inc(i);
+        while (i < length(fCommandText)) and (fCommandText[i] in ['A'..'Z', 'a'..'z', '_', '-', '0'..'9']) do inc(i);
+        var lName := fCommandText.Substring(lStart, i - lStart);
+        fParams.Add(new TCDSParam(Name := lName));
+        continue;
+      end;
+    end;
+    inc(i);
+  end;
+end;
+
+method TCustomClientDataSet.ParamByName(aName: String): TCDSParam;
+begin
+  result := fParams.ParamByName(aName);
+end;
+
+method TCustomClientDataSet.CloneCursor(Source: TCustomClientDataSet; aReset: Boolean);
+begin
+  DataTable := Source.DataTable;
+  if not aReset  then begin
+    Filter := Source.Filter;
+    Filtered := Source.Filtered;
+  end;
+end;
+
 method TCDSField.Row: DataRow;
 begin
   Result := FDataset.Row;
@@ -709,6 +882,11 @@ end;
 method TCDSField.get_Value: Object;
 begin
   Result := Row[FColumn];
+end;
+
+method TCDSField.get_OldValue: Object;
+begin
+  result := Row[FColumn, DataRowVersion.Current];
 end;
 
 method TCDSFields.Invalidate;
@@ -737,6 +915,57 @@ method TCDSFields.FieldByName(aFieldName: String): TCDSField;
 begin
   for i: Integer := 0 to FItems.Count -1 do begin
     if String.Compare(FItems[i].FieldName, aFieldName, StringComparison.InvariantCultureIgnoreCase) = 0 then exit FItems[i];
+  end;
+end;
+
+method TDataSource.EnableControls;
+begin
+  fDataset.EnableControls;
+end;
+
+method TDataSource.DisableControls;
+begin
+  fDataset.DisableControls;
+end;
+
+method TDataSource.get_Source: IBindingListView;
+begin
+  if fDataset <> nil then result := fDataset else begin
+    if fEmptySource = nil then fEmptySource := new System.Windows.Forms.BindingSource;
+    result := fEmptySource;
+  end;
+end;
+
+constructor TCDSParams.Create(aDataset: TCustomClientDataSet);
+begin
+end;
+
+
+method TCDSParams.Add: TCDSParam;
+begin
+  result := new TCDSParam;
+  Add(result);
+end;
+
+method TCDSParams.Add(aParam: TCDSParam);
+begin
+  FItems.Add(aParam);
+end;
+
+method TCDSParams.Delete(i: Integer);
+begin
+  FItems.RemoveAt(i);
+end;
+
+method TCDSParams.Clear;
+begin
+  FItems.Clear;
+end;
+    
+method TCDSParams.ParamByName(aParamName: String): TCDSParam;
+begin
+  for i: Integer := 0 to FItems.Count -1 do begin
+    if FItems[i].Name = aParamName then exit(FItems[i]);
   end;
 end;
 

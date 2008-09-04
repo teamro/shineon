@@ -616,14 +616,6 @@ begin
   NUnit.Framework.Assert.AreEqual('Decimal          = -123', SysUtils.Format('Decimal          = %d', [-123]));
   NUnit.Framework.Assert.AreEqual('Reposition after 3 strings = Zero One Two One Two', SysUtils.Format('Reposition after 3 strings = %s %s %s %1:s %s', ['Zero', 'One', 'Two', 'Three']));
   NUnit.Framework.Assert.AreEqual('Justified decimal = <1234   >', SysUtils.Format('Justified decimal = <%-7d>', [1234]));
-
-  var r: TSearchRec;
-  if FindFirst('g:\*.*', faAnyFile, var r) = 0 then begin
-    repeat
-      
-    until FindNext(var r) <> 0;
-    FindClose(r);
-  end;
 end;
 
 end.
