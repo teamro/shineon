@@ -111,7 +111,7 @@ type
     class method ValueToString(aField: DataColumn; aValue: Object): String;
   assembly 
     //FActiveDataView: DataView;
-//    FBOF: Boolean;
+    FBOF: Boolean;
     FEOF: Boolean;
     FFilter: String;
     FFiltered: Boolean;
@@ -165,11 +165,11 @@ type
     method Append;
     //method CloneCursor(Source: TCustomClientDataSet);
     
-    property Bof: Boolean read fBindingSource.Current = nil;
     method Cancel; virtual;
     method Delete; virtual;
     method Edit; virtual;
     property Eof: Boolean read (fBindingSource.Current = nil) or FEOF;
+    property Bof: Boolean read (fBindingSource.Current = nil) or FBOF;
     method FieldByName(FieldName: String): TCDSField;
     property FieldCount: Int32 read FFields.Count;
     method First; virtual;
@@ -338,6 +338,7 @@ end;
 method TCustomClientDataSet.First;
 begin
   fBindingSource.MoveFirst;
+  FBOF := false;
   FEOF := false;
 end;
 
@@ -356,6 +357,8 @@ end;*)
 method TCustomClientDataSet.Last;
 begin
   fBindingSource.MoveLast;
+  FBOF := false;
+  FEOF := false;
 end;
 
 class method TCustomClientDataSet.ValueToString(aField: DataColumn; aValue: Object): String;
@@ -433,6 +436,8 @@ end;
 method TCustomClientDataSet.Post;
 begin
   fBindingSource.EndEdit;
+  FBOF := false;
+  FEOF := false;
 end;
 
 method TCustomClientDataSet.Prior;
@@ -442,12 +447,17 @@ begin
     exit; // already on the last one
   end;
 
+  var lPosition := fBindingSource.Position;
   fBindingSource.MovePrevious;
+  if lPosition = fBindingSource.Position then begin
+    FBOF := false;
+  end;
 end;
 
 method TCustomClientDataSet.RecNo: Int32;
 begin
   result := fBindingSource.Position;
+  if FBOF then dec(Result) else if FEOF then inc(Result);
 end;
 
 method TCustomClientDataSet.RecordCount: Int32;

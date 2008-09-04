@@ -24,7 +24,25 @@ type
     Attr: Integer;
     Name: String;
   end;
+  TextFile = public record(IDisposable)
+  assembly
+    fFile: FileStream;
+    fReader: StreamReader;
+    fWriter: StreamWriter;
+    fOpenMode: FileAccess;
+    fFilename: String;
 
+    method Init(fs: FileStream; Mode: FileAccess);
+  public
+    property Filename: String read fFilename;
+    property OpenMode: FileAccess read fOpenMode;
+
+    property File: FileStream read fFile;
+    property Reader: StreamReader read fReader;
+    property Writer: StreamWriter read fWriter;
+
+    method Dispose; 
+  end;
 const
   faReadOnly  = $00000001;
   faHidden    = $00000002;
@@ -40,6 +58,14 @@ function FindNext(var F: TSearchRec): Integer;public;
 procedure FindClose(var F: TSearchRec);public;
 function FileDateToDateTime(aDateTime: Integer): DateTime;public;
 function DateTimeToFileDate(aDateTime: DateTime): Integer;public;
+procedure AssignFile(var fs: TextFile; aFilename: String); public;
+procedure Rewrite(var fs: TextFile); public; 
+procedure Reset(var fs: TextFile; aMode: FileAccess := FileAccess.Read); public;
+procedure CloseFile(var fs: TextFile); public;
+procedure Append(var fs: TextFile); public;
+procedure ReadLine(var fs: TextFile; var s: String); public;
+procedure WriteLine(var fs: TextFile; s: String); public;
+procedure WriteLine(var fs: TextFile; params s: array of String); public;
 
 implementation
 
@@ -152,5 +178,70 @@ begin
   end;
 end;
 
+
+method TextFile.Dispose;
+begin
+  fWriter:Flush;
+  fFile:Dispose;
+  fFile := nil;
+  fWriter := nil;
+  fReader := nil;
+  fFilename := nil;
+end;
+
+method TextFile.Init(fs: FileStream; Mode: FileAccess);
+begin
+  fFile := fs;
+  if Mode in [FileAccess.ReadWrite, FileAccess.Write] then fWriter := new StreamWriter(fFile, Encoding.Default);
+  if Mode in [FileAccess.Read, FileAccess.Read] then fReader := new StreamReader(fFile, Encoding.Default, true);
+end;
+
+procedure AssignFile(var fs: TextFile; aFilename: String);
+begin
+  if fs.File <> nil then 
+    fs.Dispose;
+  fs.fFilename := aFilename;
+end;
+
+procedure Rewrite(var fs: TextFile);
+begin
+  var r := new FileStream(fs.Filename, FileMode.&Create, FileAccess.Write);
+  fs.Init(r, FileAccess.Write);
+end;
+
+procedure Reset(var fs: TextFile; aMode: FileAccess := FileAccess.Read);
+begin
+  var r := new FileStream(fs.Filename, FileMode.Open, aMode);
+  fs.Init(r, aMode);
+end;
+
+procedure CloseFile(var fs: TextFile);
+begin
+  fs.Dispose;
+end;
+
+procedure Append(var fs: TextFile);
+begin
+  var r := new FileStream(fs.Filename, FileMode.Open, FileAccess.ReadWrite);
+  r.Position := r.Length;
+  fs.Init(r, FileAccess.ReadWrite);
+end;
+
+procedure ReadLine(var fs: TextFile; var s: String);
+begin
+  s := fs.fReader.ReadLine;
+end;
+
+procedure WriteLine(var fs: TextFile; s: String);
+begin
+  fs.fWriter.WriteLine(s);
+end;
+
+procedure WriteLine(var fs: TextFile; params s: array of String);
+begin
+  for i: Integer := 0 to length(s) -1 do begin 
+    fs.fWriter.Write(s[i]);
+  end;
+end;
 
 end.
