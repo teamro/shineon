@@ -79,7 +79,9 @@ type
     class function Abs(X:TDateTime):TDateTime;
     class function Exp(X: Double): Double;
 
-    class procedure SetLength(var S; length: Int32);
+    class procedure SetLength(var S: String; length: Int32);
+    class procedure SetLength<T>(var S: Array of T; length: Int32);
+    class procedure SetLength(var S: DelphiString; length: Int32);
     class procedure Write(S:String);
     class procedure WriteLn(S:String);
     class procedure Write(params S: Array of Object);
@@ -142,7 +144,9 @@ function Abs(X:Integer):Integer;public;
 function Abs(X:Double):Double;public;
 function Abs(X:TDateTime):TDateTime;public;
 function Exp(X: Double): Double;public;
-procedure SetLength(var S; length: Int32);public;
+procedure SetLength<T>(var S: Array of T; length: Int32);public;
+procedure SetLength(var S: String; length: Int32);public;
+procedure SetLength(var S: DelphiString; length: Int32);public;
 procedure &Write(S:String);public;
 procedure WriteLn(S:String);public;
 procedure &Write(params S: Array of Object); public;
@@ -402,35 +406,28 @@ begin
   Result := Number * Number;
 end; 
 
-class procedure SystemUnit.SetLength(var S; length: Int32);
-require
-  assigned(S);
+
+class procedure SystemUnit.SetLength(var S: String; length: Int32);
 begin
-  case S type of
-    DelphiString:
-      begin
-        DelphiString(S).SetLength(length);
-      end;
-    System.Array: 
-      with aArray := System.Array(S) do 
-      begin
-        var lLength: Int32 := iif(aArray.Length > length, length, aArray.Length);
-        var lNew: &Array := &Array.CreateInstance(aArray.GetType.GetElementType, length);
-        &Array.Copy(aArray, lNew, lLength);
-        S := lNew;
-      end;
-    System.String: 
-      with aString := System.String(S) do 
-      begin
-        if aString.Length > length then
-          S := aString.Substring(0, length)
-        else if aString.Length < length then
-          S := aString.PadRight(length, #0000);
-        // else keep original.
-      end;
-    else 
-      raise new ArgumentException(String.Format(sFmtSetLengthError,S.GetType.Name));
-  end;
+  if S = nil then S := '';
+
+  if S.Length > length then
+    S := S.Substring(0, length)
+  else if S.Length < length then
+    S := S.PadRight(length, #0000);
+end;
+class procedure SystemUnit.SetLength(var S: DelphiString; length: Int32);
+begin
+  if S = nil then S := new DelphiString();
+  S.SetLength(length);
+end;
+
+class procedure SystemUnit.SetLength<T>(var S: Array of T; length: Int32);
+begin
+  var lLength: Int32 := iif(S.Length > length, length, S.Length);
+  var lNew: &Array := &Array.CreateInstance(typeOf(T), length);
+  &Array.Copy(S, lNew, lLength);
+  S := array of T(lNew);
 end;
 
 class procedure SystemUnit.WriteLn(S:String);
@@ -736,10 +733,19 @@ begin
   result := ShineOn.Rtl.SystemUnit.Sqr(Number);
 end;  
   
-procedure SetLength(var S; length: Int32);
+procedure SetLength<T>(var S: Array of T; length: Int32);
+begin
+  ShineOn.Rtl.SystemUnit.SetLength<T>(S, length);
+end;
+procedure SetLength(var S: String; length: Int32);
 begin
   ShineOn.Rtl.SystemUnit.SetLength(S, length);
 end;
+procedure SetLength(var S: DelphiString; length: Int32);
+begin
+  ShineOn.Rtl.SystemUnit.SetLength(S, length);
+end;
+
   
 procedure Write(S:String);
 begin

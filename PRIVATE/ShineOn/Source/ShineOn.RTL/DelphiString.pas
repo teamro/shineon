@@ -58,7 +58,7 @@ type
 
     method SetLength(aNewLength: Integer);
     property Length: Integer read RemObjects.Oxygene.System.Length(fChars); implements ICollection.Count;
-    property Chars[i: Integer]: Char read fChars[i+1] write fChars[i+1]; default;
+    property Chars[i: Integer]: Char read fChars[i-1] write fChars[i-1]; default;
     property CharData: Array of Char read fChars write fChars; 
 
     method ToString: String; override;
@@ -118,7 +118,7 @@ begin
   if (Left <> nil) and (Left.CharData <> nil) then 
     Array.Copy(Left.CharData, 0, result.CharData, 0, Left.CharData.Length);
   if (Right <> nil) and (Right.CharData <> nil) then 
-    Array.Copy(Right.CharData, 0, result.CharData, valueOrDefault(Right:Length), Right.CharData.Length);
+    Array.Copy(Right.CharData, 0, result.CharData, valueOrDefault(Left:Length), Right.CharData.Length);
 end;
 
 class operator DelphiString.Equal(const Left, Right: DelphiString): Boolean;
@@ -152,15 +152,16 @@ begin
   for i: Integer := 0 to Math.Max(lLeft.Length, lRight.Length) -1 do begin
     if i >= lLeft.Length then exit(true);
     if i >= lRight.Length then exit(false);
-    if lRight[i] < lLeft[i] then exit true;
-    if lRight[i] > lLeft[i] then exit false;
+    if lLeft[i] < lRight[i] then exit true;
+    if lLeft[i] > lRight[i] then exit false;
   end;
-  exit true;
+  exit false;
 end;
 
 class operator DelphiString.LessOrEqual(const Left, Right: DelphiString): Boolean;
 begin
-  result := not (Left > Right);
+  result := (Left > Right);
+  result := not result;
 end;
 
 class operator DelphiString.Greater(const Left, Right: DelphiString): Boolean;
@@ -174,10 +175,10 @@ begin
   for i: Integer := 0 to Math.Max(lLeft.Length, lRight.Length) -1 do begin
     if i >= lLeft.Length then exit(false);
     if i >= lRight.Length then exit(true);
-    if lRight[i] < lLeft[i] then exit false;
-    if lRight[i] > lLeft[i] then exit true;
+    if lLeft[i] < lRight[i] then exit false;
+    if lLeft[i] > lRight[i] then exit true;
   end;
-  exit true;
+  exit false;
 end;
 
 class operator DelphiString.GreaterOrEqual(const Left, Right: DelphiString): Boolean;
@@ -192,32 +193,32 @@ end;
 
 class operator DelphiString.Equal(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left = String(Right);
+  result := DelphiString(Left) = (Right);
 end;
 
 class operator DelphiString.NotEqual(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left <> String(Right);
+  result := DelphiString(Left) <> (Right);
 end;
 
 class operator DelphiString.Less(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left < String(Right);
+  result := DelphiString(Left) < (Right);
 end;
 
 class operator DelphiString.LessOrEqual(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left <= String(Right);
+  result := DelphiString(Left) <= (Right);
 end;
 
 class operator DelphiString.Greater(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left > String(Right);
+  result := DelphiString(Left) > (Right);
 end;
 
 class operator DelphiString.GreaterOrEqual(const Left: String; Right: DelphiString): Boolean;
 begin
-  result := Left >= String(Right);
+  result := DelphiString(Left) >= (Right);
 end;
 
 class operator DelphiString.Add(const Left: DelphiString; aRight: String): DelphiString;
@@ -227,32 +228,32 @@ end;
 
 class operator DelphiString.Equal(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) = aRight;
+  result := (Left) = DelphiString(aRight);
 end;
 
 class operator DelphiString.NotEqual(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) <> aRight;
+  result := (Left) <> DelphiString(aRight);
 end;
 
 class operator DelphiString.Less(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) < aRight;
+  result := (Left) < DelphiString(aRight);
 end;
 
 class operator DelphiString.LessOrEqual(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) <= aRight;
+  result := (Left) <= DelphiString(aRight);
 end;
 
 class operator DelphiString.Greater(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) > aRight;
+  result := (Left) > DelphiString(aRight);
 end;
 
 class operator DelphiString.GreaterOrEqual(const Left: DelphiString; aRight: String): Boolean;
 begin
-  result := String(Left) >= aRight;
+  result := (Left) >= DelphiString(aRight);
 end;
 
 class operator DelphiString.Implicit(const Value: String): DelphiString;
