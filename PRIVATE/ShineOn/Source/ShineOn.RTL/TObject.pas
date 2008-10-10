@@ -111,8 +111,7 @@ type
   DisposableHelper<T> nested in TObjectExtender
     = private static class
   public
-    class constructor;
-    
+    constructor;
     property DisposeCall : Action<T>; readonly;
   end;
   
@@ -126,14 +125,14 @@ procedure TObjectExtender.Free<T>(o: T);
 begin
   Destroy<T>(o);
 end;    
-
   
-class constructor TObjectExtender.DisposableHelper<T>;
+constructor TObjectExtender.DisposableHelper<T>;
 begin
   var typeRef := typeOf(T);
   var call : Action<T>;
   // dispose, if necessary. noop, otherwise.
-  if typeOf(IDisposable).IsAssignableFrom(typeRef) then
+  if not typeRef.IsSealed
+  or typeOf(IDisposable).IsAssignableFrom(typeRef) then
     call := obj -> TObjectExtender.Destroy(Object(obj))
   else
     call := method (obj: T); begin end;
