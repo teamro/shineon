@@ -83,9 +83,11 @@ type
     class operator Add(const Left, Right: TDateTime): TDateTime;
     class operator Add(const Left: TDateTime; const Right: Double): TDateTime;
     class operator Add(const Left: TDateTime; const Right: System.TimeSpan): TDateTime;
+    class operator Add(const Left: TDateTime; const Right: Integer): TDateTime;
     class operator Subtract(const Left, Right: TDateTime): TDateTime;
     class operator Subtract(const Left: TDateTime; const Right: Double): TDateTime;
     class operator Subtract(const Left: TDateTime; const Right: System.TimeSpan): TDateTime;
+    class operator Subtract(const Left: TDateTime; const Right: Integer): TDateTime;
 
     class operator Equal(const Left, Right: TDateTime): Boolean;
     class operator NotEqual(const Left, Right: TDateTime): Boolean;
@@ -558,6 +560,12 @@ begin
   Result := TDateTime(RightDateTime);
 end;
 
+
+class operator TDateTime.Add(const Left: TDateTime; const Right: Integer): TDateTime;
+begin
+  result := Left.ToDateTime.AddDays(Right);
+end;
+
 class operator TDateTime.Subtract(const Left, Right: TDateTime): TDateTime;
 var
   Buffer: TimeSpan;
@@ -593,6 +601,11 @@ begin
   LeftDateTime := Left.ToDateTime;
 
   Result := TDateTime(LeftDateTime.Subtract(Right));
+end;
+
+class operator TDateTime.Subtract(const Left: TDateTime; const Right: Integer): TDateTime;
+begin
+  result := Left - TimeSpan.FromDays(Right);
 end;
 
 class operator TDateTime.Equal(const Left, Right: TDateTime): Boolean;
