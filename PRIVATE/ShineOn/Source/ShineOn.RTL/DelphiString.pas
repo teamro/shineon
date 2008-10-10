@@ -35,6 +35,8 @@ type
     class operator GreaterOrEqual(const Left: String; Right: DelphiString): Boolean;
 
     class operator &Add(const Left: DelphiString; aRight: String): DelphiString;
+    class operator &Add(const Left: DelphiString; aRight: Char): DelphiString;
+
     class operator Equal(const Left: DelphiString; aRight: String): Boolean;
     class operator NotEqual(const Left: DelphiString; aRight: String): Boolean;
     class operator Less(const Left: DelphiString; aRight: String): Boolean;
@@ -226,6 +228,11 @@ begin
   Result := DelphiString(String(Left) + aRight);
 end;
 
+class operator DelphiString.Add(const Left: DelphiString; aRight: Char): DelphiString;
+begin
+  Result := DelphiString(String(Left) + aRight);
+end;
+
 class operator DelphiString.Equal(const Left: DelphiString; aRight: String): Boolean;
 begin
   result := (Left) = DelphiString(aRight);
@@ -294,7 +301,7 @@ end;
 
 class operator DelphiString.Implicit(const Value: Char): DelphiString;
 begin
-  result := new DelphiString(Value);
+  result := new DelphiString(String(Value));
 end;
 
 method DelphiString.ToBytes(aEncoding: Encoding := nil): Array of Byte;
