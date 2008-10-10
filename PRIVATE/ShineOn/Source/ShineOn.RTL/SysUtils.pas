@@ -19,7 +19,7 @@ uses System,
      System.Windows.Forms;
 
 type
-  TReplaceFlags = public set of (ReplaceAll, IgnoreCase);
+  TReplaceFlags = public flags(ReplaceAll, IgnoreCase);
   
 type
   SysUtils = public sealed class
