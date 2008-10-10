@@ -33,6 +33,10 @@ type
     
     [Extension] procedure Free(o: Object); 
     [Extension] procedure Destroy(o: Object);
+
+    // this variant won't not need to box if the type is not Diposable
+    [Extension] procedure Free<T>(o: T); 
+    [Extension] procedure Destroy<T>(o: T);
   end;
   
   TClass = public &Type;
@@ -102,5 +106,39 @@ procedure TObjectExtender.Free(o: Object);
 begin
   o.Destroy;
 end;    
+
+type
+  DisposableHelper<T> nested in TObjectExtender
+    = private static class
+  public
+    class constructor;
+    
+    property DisposeCall : Action<T>; readonly;
+  end;
+  
+procedure TObjectExtender.Destroy<T>(o: T);
+begin
+  // dispose, if necessary. noop, otherwise.
+  DisposableHelper<T>.DisposeCall(o);
+end;
+
+procedure TObjectExtender.Free<T>(o: T);
+begin
+  Destroy<T>(o);
+end;    
+
+  
+class constructor TObjectExtender.DisposableHelper<T>;
+begin
+  var typeRef := typeOf(T);
+  var call : Action<T>;
+  // dispose, if necessary. noop, otherwise.
+  if typeOf(IDisposable).IsAssignableFrom(typeRef) then
+    call := obj -> TObjectExtender.Destroy(Object(obj))
+  else
+    call := method (obj: T); begin end;
+  
+  DisposeCall := call;
+end;
 
 end.
