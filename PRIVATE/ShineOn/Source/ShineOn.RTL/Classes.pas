@@ -1785,7 +1785,7 @@ end;
 
 function THandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; 
 begin
-  Result := FStream.Seek(Offset, System.IO.SeekOrigin(Origin));
+  Result := FStream.Seek(Offset, Origin);
 end;
 
 procedure THandleStream.Dispose;
@@ -1895,7 +1895,7 @@ end;
 
 function TCustomMemoryStream.Seek(Offset: Int64; Origin: TSeekOrigin): Int64; 
 begin
-  Result := FStream.Seek(Offset, System.IO.SeekOrigin(Origin));
+  Result := FStream.Seek(Offset, Origin);
 end;
 
 procedure TCustomMemoryStream.SaveToStream(Stream: TStream);
@@ -2011,7 +2011,7 @@ end;
 function TStringStream.Seek(Offset: Int64; Origin: TSeekOrigin): Int64; 
 begin
   case Origin of
-    TSeekOrigin.Beginning: 
+    TSeekOrigin.Begin: 
       FPosition := Offset;
     TSeekOrigin.Current: 
       FPosition := FPosition + Offset;

@@ -48,7 +48,7 @@ type
     class const soFromBeginning = 0;
     class const soFromCurrent = 1;
     class const soFromEnd = 2;
-    class const soBeginning = TSeekOrigin.Beginning;
+    class const soBeginning = TSeekOrigin.Begin;
     class const soCurrent = TSeekOrigin.Current;
     class const soEnd = TSeekOrigin.End;
     class const fmCreate     = $FFFF;

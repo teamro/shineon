@@ -23,7 +23,8 @@ uses
   
 type
 { TStream seek origins }
-  TSeekOrigin = public enum(Beginning, Current, &End);
+
+  TSeekOrigin = public System.IO.SeekOrigin;
 
 type  
   HRESULT = public LongInt;
