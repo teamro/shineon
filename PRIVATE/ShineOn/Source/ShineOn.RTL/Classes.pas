@@ -37,11 +37,11 @@ type
   TListSortCompare = public function (Item1, Item2: Object): Integer;
   TComponent = public Component;
   
-  TListNotification = public (Added, Extracted, Deleted);
+  TListNotification = public enum(Added, Extracted, Deleted);
   
  
 type   
-  TListAssignOp = public (Copy, &And, &Or, &Xor, SrcUnique, DestUnique);
+  TListAssignOp = public enum(Copy, &And, &Or, &Xor, SrcUnique, DestUnique);
   
   
 type  
@@ -437,7 +437,6 @@ type
   TThread = public abstract class
   private
     FThread, FSynchThread:Thread;
-    FSynchForm:Form;
     FSynchControl:Control;
     FReturnValue:Integer;
     FFatalException:Object;
@@ -2167,17 +2166,18 @@ begin
     FThread.Join();
     AMethod();
   end
-  else if FSynchControl <> nil then
+  else if assigned(FSynchControl) then
     FSynchControl.Invoke(AMethod)
-  else if FSynchForm <> nil then
-    FSynchForm.Invoke(AMethod)
   else 
   begin
     AForm := nil;
-    if AForm = nil then
-      AForm := Form.ActiveForm; // user hasn't set the global ApplicationMainForm variable, so check if there is another active form
-    if AForm = nil then
+    if not assigned(AForm) 
+    and (Application.OpenForms.Count > 0) then
+      AForm := Application.OpenForms[0]; // user hasn't set the global ApplicationMainForm variable, so check if there is another active form
+
+    if not assigned(AForm) then
       raise new EThread('Cannot call TThread.Synchronize without an active form, control or thread');
+
     AForm.Invoke(AMethod);  
   end;
 end;
@@ -2204,8 +2204,7 @@ end;
 
 constructor TThread.Create(CreateSuspended: Boolean; SynchForm:Form);
 begin
-  Create(CreateSuspended);
-  FSynchForm := SynchForm;
+  Create(CreateSuspended, Control(SynchForm));
 end;
 
 procedure TThread.Resume;
