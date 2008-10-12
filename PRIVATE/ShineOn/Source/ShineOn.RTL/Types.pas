@@ -23,7 +23,7 @@ uses
   
 type
 { TStream seek origins }
-  TSeekOrigin = public (Beginning, Current, &End);
+  TSeekOrigin = public enum(Beginning, Current, &End);
 
 type  
   HRESULT = public LongInt;
@@ -97,11 +97,11 @@ type
 type
 
 { Text alignment types }
-  TAlignment = public (LeftJustify, RightJustify, Center);
-  TLeftRight = public (taLeftJustify,taRightJustify); //!!! Not compatible with global taLeftJustify/taRightJustify
-  TBiDiMode = public (LeftToRight, RightToLeft, RightToLeftNoAlign, RightToLeftReadingOnly);
+  TAlignment = public enum(LeftJustify, RightJustify, Center);
+  TLeftRight = public enum(LeftJustify,RightJustify); //!!! Not compatible with global taLeftJustify/taRightJustify
+  TBiDiMode = public enum(LeftToRight, RightToLeft, RightToLeftNoAlign, RightToLeftReadingOnly);
   TShiftState = public flags(Shift, Alt, Ctrl, Left, Right, Middle, Double);
-  THelpType = public (Keyword, Context);
+  THelpType = public enum(Keyword, Context);
   
   
 { Types used by standard events }
@@ -135,13 +135,13 @@ type
 
 { Duplicate management }
 
-  TDuplicates = public (Ignore, Accept, Error);
+  TDuplicates = public enum(Ignore, Accept, Error);
   
 
 type
 { TList class }
 
-  TTextLineBreakStyle = public (LF, CRLF);
+  TTextLineBreakStyle = public enum(LF, CRLF);
   
 type  
   THandle = public IntPtr;

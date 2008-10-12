@@ -292,7 +292,7 @@ begin
     begin
       Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
       
-      if LocaleOptions = TLocaleOptions.loUserLocale then
+      if LocaleOptions = TLocaleOptions.UserLocale then
         Result := S.ToUpper
       else
         Result := S.ToUpper(Culture.InvariantCulture)
@@ -317,7 +317,7 @@ begin
     begin
       Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-      if LocaleOptions = TLocaleOptions.loUserLocale then
+      if LocaleOptions = TLocaleOptions.UserLocale then
         Result := S.ToLower
       else
         Result := S.ToLower(Culture.InvariantCulture)
@@ -337,7 +337,7 @@ var
 begin
   Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-  if LocaleOptions = TLocaleOptions.loUserLocale then
+  if LocaleOptions = TLocaleOptions.UserLocale then
     Result := System.String.Compare(S1, S2, False)
   else
     Result := System.String.Compare(S1,S2,False,Culture.InvariantCulture);
@@ -391,7 +391,7 @@ var
 begin
   Culture := System.Threading.Thread.CurrentThread.CurrentCulture;
 
-  if LocaleOptions = TLocaleOptions.loUserLocale then
+  if LocaleOptions = TLocaleOptions.UserLocale then
     Result := _CompareText(S1,S2,Culture)
   else
     Result := _CompareText(S1,S2,Culture.InvariantCulture);

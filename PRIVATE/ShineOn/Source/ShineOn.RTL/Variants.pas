@@ -12,7 +12,24 @@ type
   EVariantTypeCastError = public class(EVariantError) end;
   EVariantInvalidOpError = public class(EVariantError) end;
   TVarType = public Word;
-  TBinOperator = (otAdd = 0, otSub = 1, otMul = 2,otIntDiv = 3,otDiv = 4,otMod = 5,otShl = 6,otShr = 7,otAnd = 8,otOr = 9,otXor = 10,otGreaterEqual = 11,otLessEqual = 12,otGreater = 13,otLess = 14,otEqual = 15,otNotEqual = 16);
+  
+  TBinOperator = public enum(Add = 0
+                            ,Sub = 1
+                            ,Mul = 2
+                            ,IntDiv = 3
+                            ,&Div = 4
+                            ,&Mod = 5
+                            ,&Shl = 6
+                            ,&Shr = 7
+                            ,&And = 8
+                            ,&Or = 9
+                            ,&Xor = 10
+                            ,GreaterEqual = 11
+                            ,LessEqual = 12
+                            ,Greater = 13
+                            ,Less = 14
+                            ,Equal = 15
+                            ,NotEqual = 16);  
   Variant = public record(IList)
   private
     fValue: Object; readonly;
@@ -133,7 +150,7 @@ function VarToDateTime(const V: Variant): TDateTime;public;
 function VarFromDateTime(const DateTime: TDateTime): Variant;public;
 
 type
-  TVariantRelationship = public (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
+  TVariantRelationship = public enum(Equal, LessThan, GreaterThan, NotEqual);
 
 function VarSameValue(const A, B: Variant): Boolean;public;
 
@@ -155,6 +172,31 @@ function VarArrayHighBound(const A: Variant; Dim: Integer): Integer;public;
 function VarArrayGet(const A: Variant; const Indices: array of Integer): Object;public;
 procedure VarArrayPut(var A: Variant; const Value: Object; const Indices: array of Integer);public;
 
+
+// global enum constants
+const
+  otAdd          = TBinOperator.Add;
+  otSub          = TBinOperator.Sub;
+  otMul          = TBinOperator.Mul;
+  otIntDiv       = TBinOperator.IntDiv;
+  otDiv          = TBinOperator.Div;
+  otMod          = TBinOperator.Mod;
+  otShl          = TBinOperator.Shl;
+  otShr          = TBinOperator.Shr;
+  otAnd          = TBinOperator.And;
+  otOr           = TBinOperator.Or;
+  otXor          = TBinOperator.Xor;
+  otGreaterEqual = TBinOperator.GreaterEqual;
+  otLessEqual    = TBinOperator.LessEqual;
+  otGreater      = TBinOperator.Greater;
+  otLess         = TBinOperator.Less;
+  otEqual        = TBinOperator.Equal;
+  otNotEqual     = TBinOperator.NotEqual;
+
+  vrEqual       = TVariantRelationship.Equal;
+  vrLessThan    = TVariantRelationship.LessThan;
+  vrGreaterThan = TVariantRelationship.GreaterThan;
+  vrNotEqual    = TVariantRelationship.NotEqual;
 
 implementation
 
@@ -377,7 +419,7 @@ end;
 
 class operator Variant.Add(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otAdd) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Add) of
     varSmallint: Result := SmallInt(val1) + SmallInt(val2);
     varInteger:Result := Integer(val1) + Integer(val2);
     varSingle:Result := Single(val1) + Single(val2);
@@ -401,7 +443,7 @@ end;
 
 class operator Variant.Subtract(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otSub) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Sub) of
     varSmallint: Result := SmallInt(val1) - SmallInt(val2);
     varInteger:Result := Integer(val1) - Integer(val2);
     varSingle:Result := Single(val1) - Single(val2);
@@ -423,7 +465,7 @@ end;
 
 class operator Variant.Multiply(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otMul) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Mul) of
     varSmallint: Result := SmallInt(val1) * SmallInt(val2);
     varInteger:Result := Integer(val1) * Integer(val2);
     varSingle:Result := Single(val1) * Single(val2);
@@ -443,7 +485,7 @@ end;
 
 class operator Variant.Divide(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otDiv) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Div) of
     varSmallint: Result := SmallInt(val1) / SmallInt(val2);
     varInteger:Result := Integer(val1) / Integer(val2);
     varSingle:Result := Single(val1) / Single(val2);
@@ -463,7 +505,7 @@ end;
 
 class operator Variant.Modulus(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otMod) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Mod) of
     varSmallint: Result := SmallInt(val1) mod SmallInt(val2);
     varInteger:Result := Integer(val1) mod Integer(val2);
     varShortInt:Result := ShortInt(val1) mod ShortInt(val2);
@@ -479,7 +521,7 @@ end;
 
 class operator Variant.BitwiseAnd(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otAnd) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.And) of
     varSmallint: Result := SmallInt(val1) and SmallInt(val2);
     varInteger:Result := Integer(val1) and Integer(val2);
     varShortInt:Result := ShortInt(val1) and ShortInt(val2);
@@ -496,7 +538,7 @@ end;
 
 class operator Variant.BitwiseOr(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otOr) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Or) of
     varSmallint: Result := SmallInt(val1) or SmallInt(val2);
     varInteger:Result := Integer(val1) or Integer(val2);
     varShortInt:Result := ShortInt(val1) or ShortInt(val2);
@@ -513,7 +555,7 @@ end;
 
 class operator Variant.BitwiseXor(val1, val2: Variant): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otXor) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Xor) of
     varSmallint: Result := SmallInt(val1) xor SmallInt(val2);
     varInteger:Result := Integer(val1) xor Integer(val2);
     varShortInt:Result := ShortInt(val1) xor ShortInt(val2);
@@ -530,7 +572,7 @@ end;
 
 class operator Variant.ShiftLeft(val1: Variant; val2: Integer): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otShl) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Shl) of
     varSmallint: Result := SmallInt(val1) shl Integer(val2);
     varInteger:Result := Integer(val1) shl Integer(val2);
     varShortInt:Result := ShortInt(val1) shl Integer(val2);
@@ -546,7 +588,7 @@ end;
 
 class operator Variant.ShiftRight(val1: Variant; val2: Integer): Variant;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otShr) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Shr) of
     varSmallint: Result := SmallInt(val1) shr Integer(val2);
     varInteger:Result := Integer(val1) shr Integer(val2);
     varShortInt:Result := ShortInt(val1) shr Integer(val2);
@@ -562,7 +604,7 @@ end;
 
 class operator Variant.Equal(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otEqual) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Equal) of
     varSmallint: Result := SmallInt(val1) = SmallInt(val2);
     varInteger:Result := Integer(val1) = Integer(val2);
     varSingle:Result := Single(val1) = Single(val2);
@@ -585,7 +627,7 @@ end;
 
 class operator Variant.NotEqual(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otNotEqual) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.NotEqual) of
     varSmallint: Result := SmallInt(val1) <> SmallInt(val2);
     varInteger:Result := Integer(val1) <> Integer(val2);
     varSingle:Result := Single(val1) <> Single(val2);
@@ -608,7 +650,7 @@ end;
 
 class operator Variant.Less(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otLess) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Less) of
     varSmallint: Result := SmallInt(val1) < SmallInt(val2);
     varInteger:Result := Integer(val1) < Integer(val2);
     varSingle:Result := Single(val1) < Single(val2);
@@ -630,7 +672,7 @@ end;
 
 class operator Variant.Greater(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otGreater) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.Greater) of
     varSmallint: Result := SmallInt(val1) > SmallInt(val2);
     varInteger:Result := Integer(val1) > Integer(val2);
     varSingle:Result := Single(val1) > Single(val2);
@@ -652,7 +694,7 @@ end;
 
 class operator Variant.LessOrEqual(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otLessEqual) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.LessEqual) of
     varSmallint: Result := SmallInt(val1) <= SmallInt(val2);
     varInteger:Result := Integer(val1) <= Integer(val2);
     varSingle:Result := Single(val1) <= Single(val2);
@@ -674,7 +716,7 @@ end;
 
 class operator Variant.GreaterOrEqual(val1, val2: Variant): Boolean;
 begin
-  case GetResultType(VarType(val1), VarType(val2), TBinOperator.otGreaterEqual) of
+  case GetResultType(VarType(val1), VarType(val2), TBinOperator.GreaterEqual) of
     varSmallint: Result := SmallInt(val1) >= SmallInt(val2);
     varInteger:Result := Integer(val1) >= Integer(val2);
     varSingle:Result := Single(val1) >= Single(val2);
@@ -897,43 +939,43 @@ end;
 class method Variant.GetResultType(t1,t2: TVarType; op: TBinOperator): TVarType;
 begin
   case op of
-    TBinOperator.otAdd: 
+    TBinOperator.Add: 
       if IsIntType(t1) and (t2 = varDate) then exit(t2) else
       if IsIntType(t2) and (t1 = varDate) then exit(t1) else
       if IsIntType(t1) and IsIntType(t2) then exit(GetHighestType(t1, t2)) else 
       if IsIntRealType(t1) and IsIntRealType(t2) then begin
         if t1 in [varDouble, varSingle, varDecimal] then exit t1 else exit t2;
       end else if (t1 = varOleStr) and (t2 = varOleStr) then exit(t1);
-    TBinOperator.otSub: 
+    TBinOperator.Sub: 
       if IsIntType(t1) and IsIntType(t2) then exit(GetHighestType(t1, t2)) else 
       if IsIntRealType(t1) and IsIntRealType(t2) then begin
         if t1 in [varDouble, varSingle, varDecimal] then exit t1 else exit t2;
       end;
-    TBinOperator.otMul,
-    TBinOperator.otIntDiv,
-    TBinOperator.otDiv:
+    TBinOperator.Mul,
+    TBinOperator.IntDiv,
+    TBinOperator.Div:
       if IsIntType(t1) and IsIntType(t2) then
         exit GetHighestType(t1, t2)
       else if IsIntRealType(t1) and IsIntRealType(t2) then begin
         if t1 in [varDouble, varSingle, varDecimal] then exit t1 else exit t2;
       end;
-    TBinOperator.otAnd,
-    TBinOperator.otOr,
-    TBinOperator.otXor:
+    TBinOperator.And,
+    TBinOperator.Or,
+    TBinOperator.Xor:
       if IsIntType(t1) and IsIntType(t2) then
         exit GetHighestType(t1, t2)
       else if (t1 = varBoolean) or (t2 = varBoolean) then
         exit t1;
-    TBinOperator.otMod:
+    TBinOperator.Mod:
       if IsIntType(t1) and IsIntType(t2) then 
         exit GetHighestType(t1, t2);
-    TBinOperator.otShl,
-    TBinOperator.otShr:
+    TBinOperator.Shl,
+    TBinOperator.Shr:
       if IsIntType(t1) and IsIntType(t2) then exit t1;
-    TBinOperator.otGreater,
-    TBinOperator.otLess,
-    TBinOperator.otGreaterEqual,
-    TBinOperator.otLessEqual:
+    TBinOperator.Greater,
+    TBinOperator.Less,
+    TBinOperator.GreaterEqual,
+    TBinOperator.LessEqual:
       begin
         if IsIntType(t1) and IsIntType(t2) then exit GetHighestType(t1, t2) else
         if IsIntRealType(t1) and IsIntRealType(t2) then begin
@@ -941,8 +983,8 @@ begin
         end else if (t1 = varOleStr) and (t2 = varOleStr) then exit t1;
       end;
     else begin
-      //TBinOperator.otEqual:
-      //TBinOperator.otNotEqual:
+      //TBinOperator.Equal:
+      //TBinOperator.NotEqual:
       if IsIntType(t1) and IsIntType(t2) then exit GetHighestType(t1, t2) else
       if IsIntRealType(t1) and IsIntRealType(t2) then begin
         if t1 in [varDouble, varSingle, varDecimal] then exit t1 else exit t2;

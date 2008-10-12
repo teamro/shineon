@@ -11,13 +11,13 @@ namespace ShineOn.Rtl;
 interface
 
 type
-  TSynchroObject = class(TObject)
+  TSynchroObject = public class(TObject)
   public
     method Acquire; virtual;
     method Release; virtual;
   end;
 
-  TWaitResult = (wrSignaled, wrTimeout, wrAbandoned, wrError);
+  TWaitResult = public enum(Signaled, Timeout, Abandoned, Error);
 
   THandleObject = class(TSynchroObject, IDisposable)
   protected
@@ -75,6 +75,14 @@ type
     method Enter;
     method Leave;
   end;}
+
+// global enum constants
+const
+  wrSignaled  = TWaitResult.Signaled;
+  wrTimeout   = TWaitResult.Timeout;
+  wrAbandoned = TWaitResult.Abandoned;
+  wrError     = TWaitResult.Error;
+
 
 implementation
 

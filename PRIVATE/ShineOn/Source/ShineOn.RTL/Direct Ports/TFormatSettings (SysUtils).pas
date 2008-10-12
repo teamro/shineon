@@ -18,7 +18,8 @@ type
   SeparatorType = public DelphiString;
 
 { MultiByte Character Set (MBCS) byte type }
-  TMbcsByteType = public enum(mbSingleByte, mbLeadByte, mbTrailByte);
+  TMbcsByteType = public enum(SingleByte, LeadByte, TrailByte);
+
 
 { System Locale information record }
   TSysLocale = public record
@@ -210,8 +211,16 @@ type
     TwoDigitYearCenturyWindow: Word;
   end;
 
-  TLocaleOptions = public enum (loInvariantLocale, loUserLocale);
+  TLocaleOptions = public enum (InvariantLocale, UserLocale);
 
+// global enum constants
+const
+  mbSingleByte = TMbcsByteType.SingleByte;
+  mbLeadByte   = TMbcsByteType.LeadByte;
+  mbTrailByte  = TMbcsByteType.TrailByte;
+  
+  loInvariantLocale = TLocaleOptions.InvariantLocale;
+  loUserLocale      = TLocaleOptions.UserLocale;
 implementation
 
 end.
