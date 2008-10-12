@@ -5,10 +5,12 @@ interface
 uses
   System.Collections,
   System.Globalization,
-  System.Text;
+  System.Text, 
+  System.Xml,
+  System.Xml.Serialization;
 
 type
-  DelphiString = public sealed class(ICollection)
+  DelphiString = public sealed class(ICollection, IXmlSerializable)
   private
     fChars: Array of Char;
   public
@@ -65,7 +67,13 @@ type
 
     method ToString: String; override;
     method CopyTo(array: System.Array; index: System.Int32);
-
+  protected
+    {$REGION IXmlSerializable}
+    method GetSchema: System.Xml.Schema.XmlSchema; empty;
+    method ReadXml(reader: System.Xml.XmlReader);
+    method WriteXml(writer: System.Xml.XmlWriter);    
+    {$ENDREGION}
+    
     {$REGION ICollection}
     property SyncRoot: Object read self;
     property IsSynchronized: Boolean read false;
@@ -341,6 +349,28 @@ end;
 method DelphiString.GetEnumerator: System.Collections.IEnumerator;
 begin
   result := fChars.GetEnumerator;
+end;
+
+method DelphiString.ReadXml(reader: System.Xml.XmlReader);
+begin
+  var attr := reader.GetAttribute("nil", "http://www.w3.org/2001/XMLSchema-instance");
+  if not String.IsNullOrEmpty(attr)
+  and XmlConvert.ToBoolean(attr) then
+    fChars := []
+  else
+    with readChars := reader.ReadElementString():ToCharArray() do
+    if assigned(readChars) then
+      fChars := readChars
+    else
+      fChars := [];
+end;
+
+method DelphiString.WriteXml(writer: System.Xml.XmlWriter);
+begin
+  if Length = 0 then
+    writer.WriteAttributeString("xsi", "nil", "http://www.w3.org/2001/XMLSchema-instance", "true")
+  else
+    writer.WriteCData(self);
 end;
 
 end.
