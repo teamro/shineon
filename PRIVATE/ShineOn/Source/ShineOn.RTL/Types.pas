@@ -100,7 +100,7 @@ type
   TAlignment = public (LeftJustify, RightJustify, Center);
   TLeftRight = public (taLeftJustify,taRightJustify); //!!! Not compatible with global taLeftJustify/taRightJustify
   TBiDiMode = public (LeftToRight, RightToLeft, RightToLeftNoAlign, RightToLeftReadingOnly);
-  TShiftState = public set of (Shift, Alt, Ctrl, Left, Right, Middle, Double);
+  TShiftState = public flags(Shift, Alt, Ctrl, Left, Right, Middle, Double);
   THelpType = public (Keyword, Context);
   
   
