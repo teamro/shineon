@@ -70,8 +70,8 @@ type
     class const scCtrl = $4000;
     class const scAlt = $8000;
     class const scNone = 0;
-    class const taLeftJustify = TAlignment.LeftJustify;
-    class const taRightJustify = TAlignment.RightJustify;
+    class const taLeftJustify = TAlignment.Left;
+    class const taRightJustify = TAlignment.Right;
     class const taCenter = TAlignment.Center;
     class const bdLeftToRight = TBiDiMode.LeftToRight;
     class const bdRightToLeft = TBiDiMode.RightToLeft;

@@ -98,7 +98,7 @@ type
 type
 
 { Text alignment types }
-  TAlignment = public enum(LeftJustify, RightJustify, Center);
+  TAlignment = public System.Windows.Forms.HorizontalAlignment;
   TLeftRight = public enum(LeftJustify,RightJustify); //!!! Not compatible with global taLeftJustify/taRightJustify
   TBiDiMode = public enum(LeftToRight, RightToLeft, RightToLeftNoAlign, RightToLeftReadingOnly);
   TShiftState = public flags(Shift, Alt, Ctrl, Left, Right, Middle, Double);
