@@ -266,24 +266,8 @@ begin
 end;
 
 function TRegistry.GetDataType(const ValueName: String): TRegDataType; 
-var 
-  aValue:Object;
-  aType:System.Type;
 begin
-  Result := TRegDataType.Unknown;
-  aValue := FCurrentKey.GetValue(ValueName);
-  if aValue <> nil then
-  begin
-    aType := aValue.GetType;
-    case aType type of 
-      System.String:
-        Result := TRegDataType.String;
-      Integer:
-        Result := TRegDataType.DWord
-    else 
-      Result := TRegDataType.Binary;
-    end;
-  end;
+  exit FCurrentKey.GetValueKind(ValueName);
 end;
 
 function TRegistry.GetKeyInfo(var Value: TRegKeyInfo): Boolean; 
