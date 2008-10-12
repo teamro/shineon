@@ -15,11 +15,11 @@ namespace ShineOn.Rtl;
 interface
 
 type
-  TConvFamily =  Word;
-  TConvType =  Word;
-  TConversionProc = delegate(const AValue: Double): Double;
-  TConvTypeArray = array of TConvType;
-  TConvFamilyArray = array of TConvFamily;
+  TConvFamily =  public Word;
+  TConvType =  public Word;
+  TConversionProc = public delegate(const AValue: Double): Double;
+  TConvTypeArray = public array of TConvType;
+  TConvFamilyArray = public array of TConvFamily;
 
 // Simple conversion between two measurement types
 method Convert(const AValue: Double;
@@ -131,7 +131,7 @@ method RaiseConversionRegError(AFamily: TConvFamily;
   const ADescription: DelphiString);
 
 type
-  EConversionError = class(Exception);
+  EConversionError = public class(Exception);
 
 const
   CIllegalConvFamily: TConvFamily = 0;
@@ -143,7 +143,7 @@ var
 // Custom conversion type support
 
 type
-  TConvTypeInfo = class(TObject)
+  TConvTypeInfo = public class(TObject)
   private
     FDescription: DelphiString;
     FConvFamily: TConvFamily;
@@ -156,9 +156,9 @@ type
     property ConvType: TConvType read FConvType;
     property Description:  DelphiString read FDescription;
   end;
-  TConvTypeList = array of TConvTypeInfo;
+  TConvTypeList = public array of TConvTypeInfo;
 
-  TConvTypeFactor = class(TConvTypeInfo)
+  TConvTypeFactor = public class(TConvTypeInfo)
   private
     FFactor: Double;
   protected
@@ -170,7 +170,7 @@ type
     method FromCommon(const AValue: Double): Double; override;
   end;
 
-  TConvTypeProcs = class(TConvTypeInfo)
+  TConvTypeProcs = public class(TConvTypeInfo)
   private
     FToCommonProc: TConversionProc;
     FFromCommonProc: TConversionProc;
