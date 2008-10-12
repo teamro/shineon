@@ -13,12 +13,12 @@ interface
 type
 { Standard Character set type }
 
-  TSysCharSet = set of {Ansi}Char;
+  TSysCharSet = public set of {Ansi}Char;
   
-  SeparatorType = DelphiString;
+  SeparatorType = public DelphiString;
 
 { MultiByte Character Set (MBCS) byte type }
-  TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
+  TMbcsByteType = public enum(mbSingleByte, mbLeadByte, mbTrailByte);
 
 { System Locale information record }
   TSysLocale = public record
