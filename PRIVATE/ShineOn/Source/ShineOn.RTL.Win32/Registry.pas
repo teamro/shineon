@@ -57,6 +57,7 @@ const
 type
   HKEY = public Microsoft.Win32.RegistryKey;
   ERegistryException = public class(Exception);
+  
   TRegKeyInfo = public record
   public 
     NumSubKeys: Integer;
@@ -67,7 +68,7 @@ type
     FileTime: TFileTime;
   end;
 
-  TRegDataType = public (rdUnknown, rdString, rdExpandString, rdInteger, rdBinary);
+  TRegDataType = public Microsoft.Win32.RegistryValueKind;
 
   TRegDataInfo = public record
   public
@@ -192,6 +193,12 @@ type
     property RegIniFile: TRegIniFile read FRegIniFile;
   end;
 
+const
+  rdUnknown      = TRegDataType.Unknown; 
+  rdString       = TRegDataType.String; 
+  rdExpandString = TRegDataType.ExpandString;
+  rdInteger      = TRegDataType.DWord;
+  rdBinary       = TRegDataType.Binary;
 
 implementation
 
@@ -263,18 +270,18 @@ var
   aValue:Object;
   aType:System.Type;
 begin
-  Result := TRegDataType.rdUnknown;
+  Result := TRegDataType.Unknown;
   aValue := FCurrentKey.GetValue(ValueName);
   if aValue <> nil then
   begin
     aType := aValue.GetType;
     case aType type of 
       System.String:
-        Result := TRegDataType.rdString;
+        Result := TRegDataType.String;
       Integer:
-        Result := TRegDataType.rdInteger
+        Result := TRegDataType.DWord
     else 
-      Result := TRegDataType.rdBinary;
+      Result := TRegDataType.Binary;
     end;
   end;
 end;
