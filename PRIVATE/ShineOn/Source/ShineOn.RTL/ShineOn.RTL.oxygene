@@ -56,6 +56,7 @@
     <Compile Include="Dates\DateUtils.pas" />
     <Compile Include="Dates\TDateTime.pas" />
     <Compile Include="DelphiString.pas" />
+    <Compile Include="DelphiString.Standard Interfaces.pas" />
     <None Include="Direct Ports\ConvUtils.pas" />
     <None Include="Direct Ports\StdConvs.pas" />
     <None Include="Direct Ports\SyncObjects.pas" />

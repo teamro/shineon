@@ -4,15 +4,19 @@ interface
 
 uses
   System.Collections,
+  System.Collections.Generic,
   System.Globalization,
   System.Text, 
   System.Xml,
   System.Xml.Serialization;
 
 type
-  DelphiString = public sealed class(ICollection, IXmlSerializable)
+  DelphiString = public partial sealed class(ICollection, IXmlSerializable, IEnumerable<Char>)
   private
     fChars: Array of Char;
+    property SequenceImplementation : array of Char
+      read iif(assigned(fChars), fChars, new Char[0]);
+      implements IEnumerable<Char>;
   public
     constructor;
     constructor (aEncoding: Encoding := nil; aData: Array of Byte);
@@ -133,6 +137,9 @@ end;
 
 class operator DelphiString.Equal(const Left, Right: DelphiString): Boolean;
 begin
+  if ReferenceEquals(Left, Right) then
+    exit true;
+    
   var lLeft := Left:CharData;
   var lRight := Right:CharData;
   if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(true);
@@ -153,6 +160,9 @@ end;
 
 class operator DelphiString.Less(const Left, Right: DelphiString): Boolean;
 begin
+  if ReferenceEquals(Left, Right) then
+    exit false;
+    
   var lLeft := Left:CharData;
   var lRight := Right:CharData;
   if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
@@ -170,12 +180,18 @@ end;
 
 class operator DelphiString.LessOrEqual(const Left, Right: DelphiString): Boolean;
 begin
+  if ReferenceEquals(Left, Right) then
+    exit true;
+    
   result := (Left > Right);
   result := not result;
 end;
 
 class operator DelphiString.Greater(const Left, Right: DelphiString): Boolean;
 begin
+  if ReferenceEquals(Left, Right) then
+    exit false;
+    
   var lLeft := Left:CharData;
   var lRight := Right:CharData;
   if (RemObjects.Oxygene.System.length(lLeft) = 0) and (RemObjects.Oxygene.System.length(lRight) = 0) then exit(false);
@@ -203,6 +219,9 @@ end;
 
 class operator DelphiString.Equal(const Left: String; Right: DelphiString): Boolean;
 begin
+  if ReferenceEquals(Left, Right) then
+    exit true;
+    
   result := DelphiString(Left) = (Right);
 end;
 
@@ -348,7 +367,7 @@ end;
 
 method DelphiString.GetEnumerator: System.Collections.IEnumerator;
 begin
-  result := fChars.GetEnumerator;
+  result := SequenceImplementation.GetEnumerator;
 end;
 
 method DelphiString.ReadXml(reader: System.Xml.XmlReader);
