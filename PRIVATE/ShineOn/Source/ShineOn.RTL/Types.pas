@@ -62,10 +62,12 @@ type
 
   TFileTime = public FILETIME;
 
+  IInterface = public interface // there's no "root" interface type in .NET
+  end;
+
   IUnknown = public interface // there's no "root" interface type in .NET
   end;
     
-
   // Exceptions
 
   EOutOfMemory = public OutOfMemoryException;
