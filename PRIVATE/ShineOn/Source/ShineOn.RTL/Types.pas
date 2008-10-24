@@ -62,12 +62,11 @@ type
 
   TFileTime = public FILETIME;
 
-  IInterface = public interface // there's no "root" interface type in .NET
-  end;
 
   IUnknown = public interface // there's no "root" interface type in .NET
   end;
     
+  IInterface = public IUnknown; // Delphi's interfaces are always IUnknown
   // Exceptions
 
   EOutOfMemory = public OutOfMemoryException;
