@@ -20,7 +20,6 @@
     <OutputPath>..\bin</OutputPath>
     <EnableAsserts>False</EnableAsserts>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(Framework)\mscorlib.dll</HintPath>
@@ -63,6 +62,7 @@
     <Compile Include="Direct Ports\TFormatSettings (SysUtils).pas" />
     <Compile Include="Direct Ports\TMultiReadExclusiveWriteSynchonizer.pas" />
     <Compile Include="Files.pas" />
+    <Compile Include="Generics.Collections.pas" />
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
@@ -75,4 +75,5 @@
     <Compile Include="Types.pas" />
     <Compile Include="Variants.pas" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
 </Project>
