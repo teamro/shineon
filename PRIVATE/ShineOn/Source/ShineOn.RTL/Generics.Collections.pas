@@ -16,6 +16,8 @@ type
     method AddRange(const aItems: array of T);
     method RemoveAt(aIndex: Integer);
     method Clear;
+    method Sort;
+    method Sort(aComparer: IComparer<T>);
     property Item[aIndex: Integer]: T read fItems.Item[aIndex] write fItems.Item[aIndex];
     property Count: Integer read fItems.Count;
   end;
@@ -59,6 +61,16 @@ end;
 method TList<T>.Clear;
 begin
   fItems.Clear;
+end;
+
+method TList<T>.Sort;
+begin
+  fItems.Sort;
+end;
+
+method TList<T>.Sort(aComparer: IComparer<T>);
+begin
+  fItems.Sort(aComparer);
 end;
 
 end.
