@@ -20,7 +20,6 @@
     <OutputPath>..\bin</OutputPath>
     <EnableAsserts>False</EnableAsserts>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(Framework)\mscorlib.dll</HintPath>
@@ -32,5 +31,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.pas" />
     <Compile Include="Controls.pas" />
+    <Compile Include="Graphics.pas" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
 </Project>
