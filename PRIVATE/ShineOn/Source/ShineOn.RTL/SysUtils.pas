@@ -149,6 +149,9 @@ type
     class procedure Sleep(val: Integer);
     class function FormatFloat(aFormat: String; V: Double): String;
   end;
+
+var
+  EmptyStr: string := '';
   
 function UpperCase(const S: String): String;public;
 function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String;public;
