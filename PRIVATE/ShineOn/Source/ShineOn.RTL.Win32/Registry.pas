@@ -53,7 +53,16 @@ const
                         KEY_NOTIFY or
                         KEY_CREATE_LINK) and not
                         SYNCHRONIZE;
-  
+
+var
+  HKEY_CLASSES_ROOT: Microsoft.Win32.RegistryKey := Registry.ClassesRoot; readonly;
+  HKEY_CURRENT_USER: Microsoft.Win32.RegistryKey := Registry.CurrentUser; readonly;
+  HKEY_LOCAL_MACHINE: Microsoft.Win32.RegistryKey := Registry.LocalMachine; readonly;
+  HKEY_USERS: Microsoft.Win32.RegistryKey := Registry.Users; readonly;
+  HKEY_PERFORMANCE_DATA: Microsoft.Win32.RegistryKey := Registry.PerformanceData; readonly;
+  HKEY_CURRENT_CONFIG: Microsoft.Win32.RegistryKey := Registry.CurrentConfig; readonly;
+  HKEY_DYN_DATA: Microsoft.Win32.RegistryKey := Registry.DynData; readonly;
+
 type
   HKEY = public Microsoft.Win32.RegistryKey;
   ERegistryException = public class(Exception);
