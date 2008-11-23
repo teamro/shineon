@@ -151,7 +151,7 @@ type
   end;
 
 var
-  EmptyStr: string := '';
+  EmptyStr: String := '';
   
 function UpperCase(const S: String): String;public;
 function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String;public;
