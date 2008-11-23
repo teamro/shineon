@@ -8,7 +8,7 @@ namespace ShineOn.Rtl;
 {                                                                         }
 { *********************************************************************** }
 
-interface
+interface 
 
 uses
   System.Globalization,
@@ -29,22 +29,22 @@ type
 
 { Date and time record }
 
-  TTimeStamp = record
+  TTimeStamp = public record
     Time: Integer;      { Number of milliseconds since midnight }
     Date: Integer;      { One plus number of days since 1/1/0001 }
   end;
 
 { Date/time support routines }
 
-method DateTimeToTimeStamp(ADateTime: TDateTime): TTimeStamp;
+method DateTimeToTimeStamp(ADateTime: TDateTime): TTimeStamp; public;
 
-method TimeStampToDateTime(const ATimeStamp: TTimeStamp): TDateTime;
+method TimeStampToDateTime(const ATimeStamp: TTimeStamp): TDateTime; public;
 
 {! MSecsToTimeStamp/TimeStampToMSecs used to use Comp as their working type,
   they now use Int64. }
 
-method MSecsToTimeStamp(MSecs: Int64): TTimeStamp;
-method TimeStampToMSecs(const ATimeStamp: TTimeStamp): Int64;
+method MSecsToTimeStamp(MSecs: Int64): TTimeStamp; public;
+method TimeStampToMSecs(const ATimeStamp: TTimeStamp): Int64; public;
 
 { EncodeDate encodes the given year, month, and day into a TDateTime value.
   The year must be between 1 and 9999, the month must be between 1 and 12,
@@ -53,7 +53,7 @@ method TimeStampToMSecs(const ATimeStamp: TTimeStamp): Int64;
   EConvertError exception is raised. The resulting value is the number of
   days between 12/30/1899 and the given date. }
 
-method EncodeDate(Year, Month, Day: Word): TDateTime;
+method EncodeDate(Year, Month, Day: Word): TDateTime; public;
 
 { EncodeTime encodes the given hour, minute, second, and millisecond into a
   TDateTime value. The hour must be between 0 and 23, the minute must be
@@ -64,44 +64,44 @@ method EncodeDate(Year, Month, Day: Word): TDateTime;
   a day given by the specified time. The value 0 corresponds to midnight,
   0.5 corresponds to noon, 0.75 corresponds to 6:00 pm, etc. }
 
-method EncodeTime(Hour, Min, Sec, MSec: Word): TDateTime;
+method EncodeTime(Hour, Min, Sec, MSec: Word): TDateTime; public;
 
 { Instead of generating errors the following variations of EncodeDate and
   EncodeTime simply return False if the parameters given are not valid.
   Other than that, these functions are functionally the same as the above
   functions. }
 
-method TryEncodeDate(Year, Month, Day: Word; out aDate: TDateTime): Boolean;
-method TryEncodeTime(Hour, Min, Sec, MSec: Word; out aTime: TDateTime): Boolean;
+method TryEncodeDate(Year, Month, Day: Word; out aDate: TDateTime): Boolean; public;
+method TryEncodeTime(Hour, Min, Sec, MSec: Word; out aTime: TDateTime): Boolean; public;
 
 { DecodeDate decodes the integral (date) part of the given TDateTime value
   into its corresponding year, month, and day. If the given TDateTime value
   is less than or equal to zero, the year, month, and day return parameters
   are all set to zero. }
 
-method DecodeDate(const ADateTime: TDateTime; var Year, Month, Day: Word);
+method DecodeDate(const ADateTime: TDateTime; var Year, Month, Day: Word); public;
 
 { This variation of DecodeDate works similarly to the above function but
   returns more information.  The result value of this function indicates
   whether the year decoded is a leap year or not.  }
 
 method DecodeDateFully(const ADateTime: TDateTime; var Year, Month, Day,
-  DOW: Word): Boolean;
+  DOW: Word): Boolean; public;
 
 { DecodeTime decodes the fractional (time) part of the given TDateTime value
   into its corresponding hour, minute, second, and millisecond. }
 
-method DecodeTime(const ADateTime: TDateTime; var Hour, Min, Sec, MSec: Word);
+method DecodeTime(const ADateTime: TDateTime; var Hour, Min, Sec, MSec: Word); public;
 
 { DateTimeToSystemTime converts a date and time from Delphi's TDateTime
   format into the Win32 API's TSystemTime format. }
 
-method DateTimeToSystemTime(const ADateTime: TDateTime; var SystemTime: TSystemTime); 
+method DateTimeToSystemTime(const ADateTime: TDateTime; var SystemTime: TSystemTime); public;
 
 { SystemTimeToDateTime converts a date and time from the Win32 API's
   TSystemTime format into Delphi's TDateTime format. }
 
-method SystemTimeToDateTime(const SystemTime: TSystemTime): TDateTime; 
+method SystemTimeToDateTime(const SystemTime: TSystemTime): TDateTime; public;
 
 { DayOfWeek returns the day of the week of the given date. The result is an
   integer between 1 and 7, corresponding to Sunday through Saturday.
@@ -111,20 +111,20 @@ method SystemTimeToDateTime(const SystemTime: TSystemTime): TDateTime;
 
 { Date returns the current date. }
 
-method Date: TDateTime; 
+method Date: TDateTime; public;
 
 { Time returns the current time. }
 
-method Time: TDateTime; 
-method GetTime: TDateTime; 
+method Time: TDateTime; public;
+method GetTime: TDateTime; public;
 
 { Now returns the current date and time, corresponding to Date + Time. }
 
-method Now: TDateTime; 
+method Now: TDateTime; public;
 
 { Current year returns the year portion of the date returned by Now }
 
-method CurrentYear: Word; 
+method CurrentYear: Word; public;
 
 { IncMonth returns Date shifted by the specified number of months.
   NumberOfMonths parameter can be negative, to return a date N months ago.
@@ -132,28 +132,28 @@ method CurrentYear: Word;
   month, the day is set to the last day of the resulting month.
   Input time of day is copied to the DateTime result.  }
 
-method IncMonth(const ADateTime: TDateTime; NumberOfMonths: Integer := 1): TDateTime;
+method IncMonth(const ADateTime: TDateTime; NumberOfMonths: Integer := 1): TDateTime; public;
 
 { Optimized version of IncMonth that works with years, months and days
   directly.  See above comments for more detail as to what happens to the day
   when incrementing months }
 
-method IncAMonth(var Year, Month, Day: Word; NumberOfMonths: Integer := 1);
+method IncAMonth(var Year, Month, Day: Word; NumberOfMonths: Integer := 1); public;
 
 { ReplaceTime replaces the time portion of the DateTime parameter with the given
   time value, adjusting the signs as needed if the date is prior to 1900
   (Date value less than zero)  }
 
-method ReplaceTime(var ADateTime: TDateTime; const NewTime: TDateTime); 
+method ReplaceTime(var ADateTime: TDateTime; const NewTime: TDateTime); public;
 
 { ReplaceDate replaces the date portion of the DateTime parameter with the given
   date value, adjusting as needed for negative dates }
 
-method ReplaceDate(var ADateTime: TDateTime; const NewDate: TDateTime); 
+method ReplaceDate(var ADateTime: TDateTime; const NewDate: TDateTime); public;
 
 { IsLeapYear determines whether the given year is a leap year. }
 
-method IsLeapYear(Year: Word): Boolean; 
+method IsLeapYear(Year: Word): Boolean; public;
 
 type
   TDayTable = array[1..12] of Word;
@@ -176,17 +176,17 @@ const
   The conversion uses the format specified by the ShortDateFormat global
   variable. }
 
-method DateToStr(const ADateTime: TDateTime): DelphiString;  
-method DateToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString;  
-method DateToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; 
+method DateToStr(const ADateTime: TDateTime): DelphiString; public;
+method DateToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString; public;
+method DateToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; public;
 
 { TimeToStr converts the time part of the given TDateTime value to a string.
   The conversion uses the format specified by the LongTimeFormat global
   variable. }
 
-method TimeToStr(const ADateTime: TDateTime): DelphiString;  
-method TimeToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString;  
-method TimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; 
+method TimeToStr(const ADateTime: TDateTime): DelphiString; public;
+method TimeToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString; public;
+method TimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; public;
 
 { DateTimeToStr converts the given date and time to a string. The resulting
   string consists of a date and time formatted using the ShortDateFormat and
@@ -194,9 +194,9 @@ method TimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiS
   resulting string only if the fractional part of the given date and time
   value is non-zero. }
 
-method DateTimeToStr(const ADateTime: TDateTime): DelphiString; 
-method DateTimeToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString; 
-method DateTimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; 
+method DateTimeToStr(const ADateTime: TDateTime): DelphiString; public; 
+method DateTimeToStr(const ADateTime: TDateTime; const FormatSettings: TFormatSettings): DelphiString; public;
+method DateTimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): DelphiString; public;
 
 { StrToDate converts the given string to a date value. The string must
   consist of two or three numbers, separated by the character defined by
@@ -208,21 +208,21 @@ method DateTimeToStr(const ADateTime: TDateTime; Provider: IFormatProvider): Del
   string does not contain a valid date, an EConvertError exception is
   raised. }
 
-method StrToDate(const S: DelphiString): TDateTime; 
-method StrToDate(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; 
-method StrToDate(const S: DelphiString; Provider: IFormatProvider): TDateTime; 
+method StrToDate(const S: DelphiString): TDateTime; public;
+method StrToDate(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; public;
+method StrToDate(const S: DelphiString; Provider: IFormatProvider): TDateTime; public;
 
-method StrToDateDef(const S: DelphiString; const Default: TDateTime): TDateTime; 
-method StrToDateDef(const S: DelphiString; const Default: TDateTime;
-  const FormatSettings: TFormatSettings): TDateTime; 
-method StrToDateDef(const S: DelphiString; const Default: TDateTime;
-  Provider: IFormatProvider): TDateTime; 
+method StrToDateDef(const S: DelphiString; const Default: TDateTime): TDateTime; public;
+method StrToDateDef(const S: DelphiString; const Default: TDateTime; 
+  const FormatSettings: TFormatSettings): TDateTime; public;
+method StrToDateDef(const S: DelphiString; const Default: TDateTime; 
+  Provider: IFormatProvider): TDateTime;  public;
 
-method TryStrToDate(const S: DelphiString; out Value: TDateTime): Boolean; 
+method TryStrToDate(const S: DelphiString; out Value: TDateTime): Boolean; public;
+method TryStrToDate(const S: DelphiString; out Value: TDateTime; 
+  const FormatSettings: TFormatSettings): Boolean; public;
 method TryStrToDate(const S: DelphiString; out Value: TDateTime;
-  const FormatSettings: TFormatSettings): Boolean; 
-method TryStrToDate(const S: DelphiString; out Value: TDateTime;
-  Provider: IFormatProvider): Boolean; 
+  Provider: IFormatProvider): Boolean; public;
 
 { StrToTime converts the given string to a time value. The string must
   consist of two or three numbers, separated by the character defined by
@@ -233,42 +233,42 @@ method TryStrToDate(const S: DelphiString; out Value: TDateTime;
   is assumed to be in 24-hour clock format. If the given string does not
   contain a valid time, an EConvertError exception is raised. }
 
-method StrToTime(const S: DelphiString): TDateTime; 
-method StrToTime(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; 
-method StrToTime(const S: DelphiString; Provider: IFormatProvider): TDateTime; 
+method StrToTime(const S: DelphiString): TDateTime; public;
+method StrToTime(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; public;
+method StrToTime(const S: DelphiString; Provider: IFormatProvider): TDateTime; public;
 
-method StrToTimeDef(const S: DelphiString; const Default: TDateTime): TDateTime; 
-method StrToTimeDef(const S: DelphiString; const Default: TDateTime;
-  const FormatSettings: TFormatSettings): TDateTime; 
-method StrToTimeDef(const S: DelphiString; const Default: TDateTime;
-  Provider: IFormatProvider): TDateTime; 
+method StrToTimeDef(const S: DelphiString; const Default: TDateTime): TDateTime; public;
+method StrToTimeDef(const S: DelphiString; const Default: TDateTime; 
+  const FormatSettings: TFormatSettings): TDateTime; public;
+method StrToTimeDef(const S: DelphiString; const Default: TDateTime; 
+  Provider: IFormatProvider): TDateTime; public;
 
-method TryStrToTime(const S: DelphiString; out Value: TDateTime): Boolean; 
+method TryStrToTime(const S: DelphiString; out Value: TDateTime): Boolean; public;
 method TryStrToTime(const S: DelphiString; out Value: TDateTime;
-  const FormatSettings: TFormatSettings): Boolean; 
+  const FormatSettings: TFormatSettings): Boolean; public;
 method TryStrToTime(const S: DelphiString; out Value: TDateTime;
-  Provider: IFormatProvider): Boolean; 
+  Provider: IFormatProvider): Boolean; public;
 
 { StrToDateTime converts the given string to a date and time value. The
   string must contain a date optionally followed by a time. The date and
   time parts of the string must follow the formats described for the
   StrToDate and StrToTime functions. }
 
-method StrToDateTime(const S: DelphiString): TDateTime; 
-method StrToDateTime(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; 
-method StrToDateTime(const S: DelphiString; Provider: IFormatProvider): TDateTime; 
+method StrToDateTime(const S: DelphiString): TDateTime; public;
+method StrToDateTime(const S: DelphiString; const FormatSettings: TFormatSettings): TDateTime; public;
+method StrToDateTime(const S: DelphiString; Provider: IFormatProvider): TDateTime; public;
 
-method StrToDateTimeDef(const S: DelphiString; const Default: TDateTime): TDateTime; 
+method StrToDateTimeDef(const S: DelphiString; const Default: TDateTime): TDateTime; public;
 method StrToDateTimeDef(const S: DelphiString; const Default: TDateTime;
-  const FormatSettings: TFormatSettings): TDateTime; 
+  const FormatSettings: TFormatSettings): TDateTime; public;
 method StrToDateTimeDef(const S: DelphiString; const Default: TDateTime;
-  Provider: IFormatProvider): TDateTime; 
+  Provider: IFormatProvider): TDateTime; public;
 
-method TryStrToDateTime(const S: DelphiString; out Value: TDateTime): Boolean; 
+method TryStrToDateTime(const S: DelphiString; out Value: TDateTime): Boolean; public;
 method TryStrToDateTime(const S: DelphiString; out Value: TDateTime;
-  const FormatSettings: TFormatSettings): Boolean; 
+  const FormatSettings: TFormatSettings): Boolean; public;
 method TryStrToDateTime(const S: DelphiString; out Value: TDateTime;
-  Provider: IFormatProvider): Boolean; 
+  Provider: IFormatProvider): Boolean; public;
 
 { FormatDateTime formats the date-and-time value given by DateTime using the
   format given by Format. The following format specifiers are supported:
@@ -385,22 +385,22 @@ method TryStrToDateTime(const S: DelphiString; out Value: TDateTime;
   assigns 'The meeting is on Wednesday, February 15, 1995 at 10:30 AM' to
   the string variable S. }
 
-method FormatDateTime(const aFormat: DelphiString; ADateTime: TDateTime): DelphiString;  
+method FormatDateTime(const aFormat: DelphiString; ADateTime: TDateTime): DelphiString; public; 
 method FormatDateTime(const aFormat: DelphiString; ADateTime: TDateTime;
-  const FormatSettings: TFormatSettings): DelphiString; 
+  const FormatSettings: TFormatSettings): DelphiString; public;
 method FormatDateTime(const aFormat: DelphiString; ADateTime: TDateTime;
-  Provider: IFormatProvider): DelphiString; 
+  Provider: IFormatProvider): DelphiString; public;
 
 { DateTimeToString converts the date and time value given by DateTime using
   the format string given by Format into the string variable given by Result.
   For further details, see the description of the FormatDateTime function. }
 
 method DateTimeToString(var &&Result: DelphiString; const aFormat: DelphiString;
-  ADateTime: TDateTime); 
+  ADateTime: TDateTime); public;
 method DateTimeToString(var &&Result: DelphiString; const aFormat: DelphiString;
-  ADateTime: TDateTime; const FormatSettings: TFormatSettings); 
+  ADateTime: TDateTime; const FormatSettings: TFormatSettings); public;
 method DateTimeToString(var &&Result: DelphiString; const aFormat: DelphiString;
-  ADateTime: TDateTime; Provider: IFormatProvider); 
+  ADateTime: TDateTime; Provider: IFormatProvider); public;
 
 { ConvertDelphiDateTimeFormat and ConvertClrDateTimeFormat convert between
  our date time format strings and the ones used by System.DateTime. This
@@ -418,17 +418,17 @@ method DateTimeToString(var &&Result: DelphiString; const aFormat: DelphiString;
     * no support for fractional seconds, they map to milliseconds (zzz)
     * no support for time zone offsets
  }
-method ConvertDelphiDateTimeFormat(const aFormat: DelphiString): DelphiString;
-method ConvertClrDateTimeFormat(const aFormat: DelphiString): DelphiString;
+method ConvertDelphiDateTimeFormat(const aFormat: DelphiString): DelphiString; public;
+method ConvertClrDateTimeFormat(const aFormat: DelphiString): DelphiString; public;
 
 { FloatToDateTime will range validate a value to make sure it falls
   within the acceptable date range }
 
-method MinDateTime: TDateTime;  { 01/01/0100 12:00:00.000 AM }
-method MaxDateTime: TDateTime;  { 12/31/9999 11:59:59.999 PM }
+method MinDateTime: TDateTime; public;  { 01/01/0100 12:00:00.000 AM }
+method MaxDateTime: TDateTime; public; { 12/31/9999 11:59:59.999 PM }
 
-method FloatToDateTime(const Value: Extended): TDateTime;
-method TryFloatToDateTime(const Value: Extended; out AResult: TDateTime): Boolean;
+method FloatToDateTime(const Value: Extended): TDateTime; public;
+method TryFloatToDateTime(const Value: Extended; out AResult: TDateTime): Boolean; public;
 
 
 implementation

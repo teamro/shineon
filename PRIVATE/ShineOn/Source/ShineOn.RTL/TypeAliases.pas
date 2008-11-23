@@ -17,7 +17,7 @@ const
 type
   { System time is represented with the following structure: }
   [StructLayout(LayoutKind.Sequential)]
-  _SYSTEMTIME = record
+  _SYSTEMTIME = public record
     wYear: Word;
     wMonth: Word;
     wDayOfWeek: Word;
