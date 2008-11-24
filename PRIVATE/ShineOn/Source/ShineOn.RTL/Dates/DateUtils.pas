@@ -40,170 +40,170 @@ interface
 
 { Simple trimming functions }
 
-method DateOf(const AValue: TDateTime): TDateTime;
-method TimeOf(const AValue: TDateTime): TDateTime;
+method DateOf(const AValue: TDateTime): TDateTime; public;
+method TimeOf(const AValue: TDateTime): TDateTime; public;
 
 { Misc functions }
 
-method IsInLeapYear(const AValue: TDateTime): Boolean;
-method IsPM(const AValue: TDateTime): Boolean;
-method IsValidDate(const AYear, AMonth, ADay: Word): Boolean;
-method IsValidTime(const AHour, AMinute, ASecond, AMilliSecond: Word): Boolean;
+method IsInLeapYear(const AValue: TDateTime): Boolean; public;
+method IsPM(const AValue: TDateTime): Boolean; public;
+method IsValidDate(const AYear, AMonth, ADay: Word): Boolean; public;
+method IsValidTime(const AHour, AMinute, ASecond, AMilliSecond: Word): Boolean; public;
 method IsValidDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond,
-  AMilliSecond: Word): Boolean;
-method IsValidDateDay(const AYear, ADayOfYear: Word): Boolean;
+  AMilliSecond: Word): Boolean; public;
+method IsValidDateDay(const AYear, ADayOfYear: Word): Boolean; public;
 method IsValidDateWeek(const AYear, AWeekOfYear,                    {ISO 8601}
-  ADayOfWeek: Word): Boolean;
+  ADayOfWeek: Word): Boolean; public;
 method IsValidDateMonthWeek(const AYear, AMonth, AWeekOfMonth,     {ISO 8601x}
-  ADayOfWeek: Word): Boolean;
-method WeeksInYear(const AValue: TDateTime): Word;                  {ISO 8601}
-method WeeksInAYear(const AYear: Word): Word;                       {ISO 8601}
-method DaysInYear(const AValue: TDateTime): Word;
-method DaysInAYear(const AYear: Word): Word;
-method DaysInMonth(const AValue: TDateTime): Word;
-method DaysInAMonth(const AYear, AMonth: Word): Word;
-method Today: TDateTime;
-method Yesterday: TDateTime;
-method Tomorrow: TDateTime;
-method IsToday(const AValue: TDateTime): Boolean;
-method IsSameDay(const AValue, ABasis: TDateTime): Boolean;
+  ADayOfWeek: Word): Boolean; public;
+method WeeksInYear(const AValue: TDateTime): Word; public;                 {ISO 8601}
+method WeeksInAYear(const AYear: Word): Word; public;                       {ISO 8601}
+method DaysInYear(const AValue: TDateTime): Word; public;
+method DaysInAYear(const AYear: Word): Word; public;
+method DaysInMonth(const AValue: TDateTime): Word; public;
+method DaysInAMonth(const AYear, AMonth: Word): Word; public;
+method Today: TDateTime; public;
+method Yesterday: TDateTime; public;
+method Tomorrow: TDateTime; public;
+method IsToday(const AValue: TDateTime): Boolean; public;
+method IsSameDay(const AValue, ABasis: TDateTime): Boolean; public;
 
 { Pick-a-field functions }
 
-method YearOf(const AValue: TDateTime): Word;
-method MonthOf(const AValue: TDateTime): Word;
-method WeekOf(const AValue: TDateTime): Word;                       {ISO 8601}
-method DayOf(const AValue: TDateTime): Word;
-method HourOf(const AValue: TDateTime): Word;
-method MinuteOf(const AValue: TDateTime): Word;
-method SecondOf(const AValue: TDateTime): Word;
-method MilliSecondOf(const AValue: TDateTime): Word;
+method YearOf(const AValue: TDateTime): Word; public;
+method MonthOf(const AValue: TDateTime): Word; public;
+method WeekOf(const AValue: TDateTime): Word; public;                      {ISO 8601}
+method DayOf(const AValue: TDateTime): Word; public;
+method HourOf(const AValue: TDateTime): Word; public;
+method MinuteOf(const AValue: TDateTime): Word; public;
+method SecondOf(const AValue: TDateTime): Word; public;
+method MilliSecondOf(const AValue: TDateTime): Word; public;
 
 { Start/End functions }
 
-method StartOfTheYear(const AValue: TDateTime): TDateTime;
-method EndOfTheYear(const AValue: TDateTime): TDateTime;
-method StartOfAYear(const AYear: Word): TDateTime;
-method EndOfAYear(const AYear: Word): TDateTime;
+method StartOfTheYear(const AValue: TDateTime): TDateTime; public;
+method EndOfTheYear(const AValue: TDateTime): TDateTime; public;
+method StartOfAYear(const AYear: Word): TDateTime; public;
+method EndOfAYear(const AYear: Word): TDateTime; public;
 
-method StartOfTheMonth(const AValue: TDateTime): TDateTime;
-method EndOfTheMonth(const AValue: TDateTime): TDateTime;
-method StartOfAMonth(const AYear, AMonth: Word): TDateTime;
-method EndOfAMonth(const AYear, AMonth: Word): TDateTime;
+method StartOfTheMonth(const AValue: TDateTime): TDateTime; public;
+method EndOfTheMonth(const AValue: TDateTime): TDateTime; public;
+method StartOfAMonth(const AYear, AMonth: Word): TDateTime; public;
+method EndOfAMonth(const AYear, AMonth: Word): TDateTime; public;
 
-method StartOfTheWeek(const AValue: TDateTime): TDateTime;          {ISO 8601}
-method EndOfTheWeek(const AValue: TDateTime): TDateTime;            {ISO 8601}
+method StartOfTheWeek(const AValue: TDateTime): TDateTime; public;         {ISO 8601}
+method EndOfTheWeek(const AValue: TDateTime): TDateTime; public;           {ISO 8601}
 method StartOfAWeek(const AYear, AWeekOfYear: Word;                 {ISO 8601}
-  const ADayOfWeek: Word := 1): TDateTime;
+  const ADayOfWeek: Word := 1): TDateTime; public;
 method EndOfAWeek(const AYear, AWeekOfYear: Word;                   {ISO 8601}
-  const ADayOfWeek: Word := 7): TDateTime;
+  const ADayOfWeek: Word := 7): TDateTime; public;
 
-method StartOfTheDay(const AValue: TDateTime): TDateTime;
-method EndOfTheDay(const AValue: TDateTime): TDateTime;
-method StartOfADay(const AYear, AMonth, ADay: Word): TDateTime; 
-method EndOfADay(const AYear, AMonth, ADay: Word): TDateTime; 
-method StartOfADay(const AYear, ADayOfYear: Word): TDateTime; 
-method EndOfADay(const AYear, ADayOfYear: Word): TDateTime; 
+method StartOfTheDay(const AValue: TDateTime): TDateTime; public;
+method EndOfTheDay(const AValue: TDateTime): TDateTime; public;
+method StartOfADay(const AYear, AMonth, ADay: Word): TDateTime; public; 
+method EndOfADay(const AYear, AMonth, ADay: Word): TDateTime; public;
+method StartOfADay(const AYear, ADayOfYear: Word): TDateTime; public;
+method EndOfADay(const AYear, ADayOfYear: Word): TDateTime; public;
 
 { This of that functions }
 
-method MonthOfTheYear(const AValue: TDateTime): Word;
-method WeekOfTheYear(const AValue: TDateTime): Word;       {ISO 8601}
+method MonthOfTheYear(const AValue: TDateTime): Word; public;
+method WeekOfTheYear(const AValue: TDateTime): Word; public;      {ISO 8601}
 method WeekOfTheYear(const AValue: TDateTime;                       {ISO 8601}
-  var AYear: Word): Word; 
-method DayOfTheYear(const AValue: TDateTime): Word;
-method HourOfTheYear(const AValue: TDateTime): Word;
-method MinuteOfTheYear(const AValue: TDateTime): LongWord;
-method SecondOfTheYear(const AValue: TDateTime): LongWord;
-method MilliSecondOfTheYear(const AValue: TDateTime): Int64;
+  var AYear: Word): Word; public;
+method DayOfTheYear(const AValue: TDateTime): Word; public;
+method HourOfTheYear(const AValue: TDateTime): Word; public;
+method MinuteOfTheYear(const AValue: TDateTime): LongWord; public;
+method SecondOfTheYear(const AValue: TDateTime): LongWord; public;
+method MilliSecondOfTheYear(const AValue: TDateTime): Int64; public;
 
-method WeekOfTheMonth(const AValue: TDateTime): Word;     {ISO 8601x}
+method WeekOfTheMonth(const AValue: TDateTime): Word; public;    {ISO 8601x}
 method WeekOfTheMonth(const AValue: TDateTime; var AYear,          {ISO 8601x}
-  AMonth: Word): Word; 
-method DayOfTheMonth(const AValue: TDateTime): Word;
-method HourOfTheMonth(const AValue: TDateTime): Word;
-method MinuteOfTheMonth(const AValue: TDateTime): Word;
-method SecondOfTheMonth(const AValue: TDateTime): LongWord;
-method MilliSecondOfTheMonth(const AValue: TDateTime): LongWord;
+  AMonth: Word): Word; public;
+method DayOfTheMonth(const AValue: TDateTime): Word; public;
+method HourOfTheMonth(const AValue: TDateTime): Word; public;
+method MinuteOfTheMonth(const AValue: TDateTime): Word; public;
+method SecondOfTheMonth(const AValue: TDateTime): LongWord; public;
+method MilliSecondOfTheMonth(const AValue: TDateTime): LongWord; public;
 
-method DayOfTheWeek(const AValue: TDateTime): Word;                 {ISO 8601}
-method HourOfTheWeek(const AValue: TDateTime): Word;                {ISO 8601}
-method MinuteOfTheWeek(const AValue: TDateTime): Word;              {ISO 8601}
-method SecondOfTheWeek(const AValue: TDateTime): LongWord;          {ISO 8601}
-method MilliSecondOfTheWeek(const AValue: TDateTime): LongWord;     {ISO 8601}
+method DayOfTheWeek(const AValue: TDateTime): Word; public;                {ISO 8601}
+method HourOfTheWeek(const AValue: TDateTime): Word; public;               {ISO 8601}
+method MinuteOfTheWeek(const AValue: TDateTime): Word; public;             {ISO 8601}
+method SecondOfTheWeek(const AValue: TDateTime): LongWord; public;         {ISO 8601}
+method MilliSecondOfTheWeek(const AValue: TDateTime): LongWord; public;     {ISO 8601}
 
-method HourOfTheDay(const AValue: TDateTime): Word;
-method MinuteOfTheDay(const AValue: TDateTime): Word;
-method SecondOfTheDay(const AValue: TDateTime): LongWord;
-method MilliSecondOfTheDay(const AValue: TDateTime): LongWord;
+method HourOfTheDay(const AValue: TDateTime): Word; public;
+method MinuteOfTheDay(const AValue: TDateTime): Word; public;
+method SecondOfTheDay(const AValue: TDateTime): LongWord; public;
+method MilliSecondOfTheDay(const AValue: TDateTime): LongWord; public;
 
-method MinuteOfTheHour(const AValue: TDateTime): Word;
-method SecondOfTheHour(const AValue: TDateTime): Word;
-method MilliSecondOfTheHour(const AValue: TDateTime): LongWord;
+method MinuteOfTheHour(const AValue: TDateTime): Word; public;
+method SecondOfTheHour(const AValue: TDateTime): Word; public;
+method MilliSecondOfTheHour(const AValue: TDateTime): LongWord; public;
 
-method SecondOfTheMinute(const AValue: TDateTime): Word;
-method MilliSecondOfTheMinute(const AValue: TDateTime): LongWord;
+method SecondOfTheMinute(const AValue: TDateTime): Word; public;
+method MilliSecondOfTheMinute(const AValue: TDateTime): LongWord; public;
 
-method MilliSecondOfTheSecond(const AValue: TDateTime): Word;
+method MilliSecondOfTheSecond(const AValue: TDateTime): Word; public;
 
 { Range checking functions }
 
 method WithinPastYears(const ANow, AThen: TDateTime;
-  const AYears: Integer): Boolean;
+  const AYears: Integer): Boolean; public;
 method WithinPastMonths(const ANow, AThen: TDateTime;
-  const AMonths: Integer): Boolean;
+  const AMonths: Integer): Boolean; public;
 method WithinPastWeeks(const ANow, AThen: TDateTime;
-  const AWeeks: Integer): Boolean;
+  const AWeeks: Integer): Boolean; public;
 method WithinPastDays(const ANow, AThen: TDateTime;
-  const ADays: Integer): Boolean;
+  const ADays: Integer): Boolean; public;
 method WithinPastHours(const ANow, AThen: TDateTime;
-  const AHours: Int64): Boolean;
+  const AHours: Int64): Boolean; public;
 method WithinPastMinutes(const ANow, AThen: TDateTime;
-  const AMinutes: Int64): Boolean;
+  const AMinutes: Int64): Boolean; public;
 method WithinPastSeconds(const ANow, AThen: TDateTime;
-  const ASeconds: Int64): Boolean;
+  const ASeconds: Int64): Boolean; public;
 method WithinPastMilliSeconds(const ANow, AThen: TDateTime;
-  const AMilliSeconds: Int64): Boolean;
+  const AMilliSeconds: Int64): Boolean; public;
 
 { Range query functions }
 
-method YearsBetween(const ANow, AThen: TDateTime): Integer;
-method MonthsBetween(const ANow, AThen: TDateTime): Integer;
-method WeeksBetween(const ANow, AThen: TDateTime): Integer;
-method DaysBetween(const ANow, AThen: TDateTime): Integer;
-method HoursBetween(const ANow, AThen: TDateTime): Int64;
-method MinutesBetween(const ANow, AThen: TDateTime): Int64;
-method SecondsBetween(const ANow, AThen: TDateTime): Int64;
-method MilliSecondsBetween(const ANow, AThen: TDateTime): Int64;
+method YearsBetween(const ANow, AThen: TDateTime): Integer; public;
+method MonthsBetween(const ANow, AThen: TDateTime): Integer; public;
+method WeeksBetween(const ANow, AThen: TDateTime): Integer; public;
+method DaysBetween(const ANow, AThen: TDateTime): Integer; public;
+method HoursBetween(const ANow, AThen: TDateTime): Int64; public;
+method MinutesBetween(const ANow, AThen: TDateTime): Int64; public;
+method SecondsBetween(const ANow, AThen: TDateTime): Int64; public;
+method MilliSecondsBetween(const ANow, AThen: TDateTime): Int64; public;
 
 { Range spanning functions }
 { YearSpan and MonthSpan are approximates, not exact but pretty darn close }
-method YearSpan(const ANow, AThen: TDateTime): Double;
-method MonthSpan(const ANow, AThen: TDateTime): Double;
-method WeekSpan(const ANow, AThen: TDateTime): Double;
-method DaySpan(const ANow, AThen: TDateTime): Double;
-method HourSpan(const ANow, AThen: TDateTime): Double;
-method MinuteSpan(const ANow, AThen: TDateTime): Double;
-method SecondSpan(const ANow, AThen: TDateTime): Double;
-method MilliSecondSpan(const ANow, AThen: TDateTime): Double;
+method YearSpan(const ANow, AThen: TDateTime): Double; public;
+method MonthSpan(const ANow, AThen: TDateTime): Double; public;
+method WeekSpan(const ANow, AThen: TDateTime): Double; public;
+method DaySpan(const ANow, AThen: TDateTime): Double; public;
+method HourSpan(const ANow, AThen: TDateTime): Double; public;
+method MinuteSpan(const ANow, AThen: TDateTime): Double; public;
+method SecondSpan(const ANow, AThen: TDateTime): Double; public;
+method MilliSecondSpan(const ANow, AThen: TDateTime): Double; public;
 
 { Increment/decrement datetime fields }
 
 method IncYear(const AValue: TDateTime;
-  const ANumberOfYears: Integer := 1): TDateTime;
+  const ANumberOfYears: Integer := 1): TDateTime; public;
 // function IncMonth is in SysUtils
 method IncWeek(const AValue: TDateTime;
-  const ANumberOfWeeks: Integer := 1): TDateTime;
+  const ANumberOfWeeks: Integer := 1): TDateTime; public;
 method IncDay(const AValue: TDateTime;
-  const ANumberOfDays: Integer := 1): TDateTime;
+  const ANumberOfDays: Integer := 1): TDateTime; public;
 method IncHour(const AValue: TDateTime;
-  const ANumberOfHours: Int64 := 1): TDateTime;
+  const ANumberOfHours: Int64 := 1): TDateTime; public;
 method IncMinute(const AValue: TDateTime;
-  const ANumberOfMinutes: Int64 := 1): TDateTime;
+  const ANumberOfMinutes: Int64 := 1): TDateTime; public;
 method IncSecond(const AValue: TDateTime;
-  const ANumberOfSeconds: Int64 := 1): TDateTime;
+  const ANumberOfSeconds: Int64 := 1): TDateTime; public;
 method IncMilliSecond(const AValue: TDateTime;
-  const ANumberOfMilliSeconds: Int64 := 1): TDateTime;
+  const ANumberOfMilliSeconds: Int64 := 1): TDateTime; public;
 
 { Unified encode/decode functions that deal with all datetime fields at once }
 
@@ -215,17 +215,17 @@ method IncMilliSecond(const AValue: TDateTime;
 { Encode/decode functions that work with week of year and day of week }
 
 method EncodeDateWeek(const AYear, AWeekOfYear: Word;               {ISO 8601}
-  const ADayOfWeek: Word := 1): TDateTime;
+  const ADayOfWeek: Word := 1): TDateTime; public;
 
 { Encode/decode functions that work with day of year }
 
-method EncodeDateDay(const AYear, ADayOfYear: Word): TDateTime;
-method DecodeDateDay(const AValue: TDateTime; out AYear, ADayOfYear: Word);
+method EncodeDateDay(const AYear, ADayOfYear: Word): TDateTime; public;
+method DecodeDateDay(const AValue: TDateTime; out AYear, ADayOfYear: Word); public;
 
 { Encode/decode functions that work with week of month }
 
 method EncodeDateMonthWeek(const AYear, AMonth, AWeekOfMonth,      {ISO 8601x}
-  ADayOfWeek: Word): TDateTime;
+  ADayOfWeek: Word): TDateTime; public;
 
 { The following functions are similar to the above ones except these don't
   generated exceptions on failure, they return false instead }
@@ -233,37 +233,37 @@ method EncodeDateMonthWeek(const AYear, AMonth, AWeekOfMonth,      {ISO 8601x}
 {method TryEncodeDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond,
   AMilliSecond: Word; out AValue: TDateTime): Boolean;}
 method TryEncodeDateMonthWeek(const AYear, AMonth, AWeekOfMonth,   {ISO 8601x}
-  ADayOfWeek: Word; var AValue: TDateTime): Boolean;
+  ADayOfWeek: Word; var AValue: TDateTime): Boolean; public;
 
 { Recode functions for datetime fields }
 
-method RecodeYear(const AValue: TDateTime; const AYear: Word): TDateTime;
-method RecodeMonth(const AValue: TDateTime; const AMonth: Word): TDateTime;
-method RecodeDay(const AValue: TDateTime; const ADay: Word): TDateTime;
-method RecodeHour(const AValue: TDateTime; const AHour: Word): TDateTime;
-method RecodeMinute(const AValue: TDateTime; const AMinute: Word): TDateTime;
-method RecodeSecond(const AValue: TDateTime; const ASecond: Word): TDateTime;
+method RecodeYear(const AValue: TDateTime; const AYear: Word): TDateTime; public;
+method RecodeMonth(const AValue: TDateTime; const AMonth: Word): TDateTime; public;
+method RecodeDay(const AValue: TDateTime; const ADay: Word): TDateTime; public;
+method RecodeHour(const AValue: TDateTime; const AHour: Word): TDateTime; public;
+method RecodeMinute(const AValue: TDateTime; const AMinute: Word): TDateTime; public;
+method RecodeSecond(const AValue: TDateTime; const ASecond: Word): TDateTime; public;
 method RecodeMilliSecond(const AValue: TDateTime;
-  const AMilliSecond: Word): TDateTime;
+  const AMilliSecond: Word): TDateTime; public;
 
 method RecodeDate(const AValue: TDateTime; const AYear, AMonth,
-  ADay: Word): TDateTime;
+  ADay: Word): TDateTime; public;
 method RecodeTime(const AValue: TDateTime; const AHour, AMinute, ASecond,
-  AMilliSecond: Word): TDateTime;
+  AMilliSecond: Word): TDateTime; public;
 method RecodeDateTime(const AValue: TDateTime; const AYear, AMonth, ADay,
-  AHour, AMinute, ASecond, AMilliSecond: Word): TDateTime;
+  AHour, AMinute, ASecond, AMilliSecond: Word): TDateTime; public;
 
 { The following function is similar to the above one except it doesn't
   generated an exception on failure, it return false instead }
 
 { Fuzzy comparison }
 
-method CompareDateTime(const A, B: TDateTime): TValueRelationship;
-method SameDateTime(const A, B: TDateTime): Boolean;
-method CompareDate(const A, B: TDateTime): TValueRelationship;
-method SameDate(const A, B: TDateTime): Boolean;
-method CompareTime(const A, B: TDateTime): TValueRelationship;
-method SameTime(const A, B: TDateTime): Boolean;
+method CompareDateTime(const A, B: TDateTime): TValueRelationship; public;
+method SameDateTime(const A, B: TDateTime): Boolean; public;
+method CompareDate(const A, B: TDateTime): TValueRelationship; public;
+method SameDate(const A, B: TDateTime): Boolean; public;
+method CompareTime(const A, B: TDateTime): TValueRelationship; public;
+method SameTime(const A, B: TDateTime): Boolean; public;
 
 { For a given date these functions tell you the which day of the week of the
   month (or year).  If its a Thursday, they will tell you if its the first,
@@ -271,44 +271,44 @@ method SameTime(const A, B: TDateTime): Boolean;
   the first Thursday of the year it doesn't mean its the first week of the
   year.  See ISO 8601 above for more information. }
 
-method NthDayOfWeek(const AValue: TDateTime): Word;
+method NthDayOfWeek(const AValue: TDateTime): Word; public;
 
 method DecodeDayOfWeekInMonth(const AValue: TDateTime; out AYear, AMonth,
-  ANthDayOfWeek, ADayOfWeek: Word);
+  ANthDayOfWeek, ADayOfWeek: Word); public;
 
 method EncodeDayOfWeekInMonth(const AYear, AMonth, ANthDayOfWeek,
-  ADayOfWeek: Word): TDateTime;
+  ADayOfWeek: Word): TDateTime; public;
 method TryEncodeDayOfWeekInMonth(const AYear, AMonth, ANthDayOfWeek,
-  ADayOfWeek: Word; out AValue: TDateTime): Boolean;
+  ADayOfWeek: Word; out AValue: TDateTime): Boolean; public;
 
 { Error reporting }
 
 method InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute,
-  ASecond, AMilliSecond: Word; const ABaseDate: TDateTime := 0);
-method InvalidDateWeekError(const AYear, AWeekOfYear, ADayOfWeek: Word);
-method InvalidDateDayError(const AYear, ADayOfYear: Word);
+  ASecond, AMilliSecond: Word; const ABaseDate: TDateTime := 0); public;
+method InvalidDateWeekError(const AYear, AWeekOfYear, ADayOfWeek: Word); public;
+method InvalidDateDayError(const AYear, ADayOfYear: Word); public;
 method InvalidDateMonthWeekError(const AYear, AMonth, AWeekOfMonth,
-  ADayOfWeek: Word);
+  ADayOfWeek: Word); public;
 method InvalidDayOfWeekInMonthError(const AYear, AMonth, ANthDayOfWeek,
-  ADayOfWeek: Word);
+  ADayOfWeek: Word); public;
 
 { Julian and Modified Julian Date conversion support }
 { Be aware that not all Julian Dates (or MJD) are encodable as a TDateTime }
 
-method DateTimeToJulianDate(const AValue: TDateTime): Double;
-method JulianDateToDateTime(const AValue: Double): TDateTime;
-method TryJulianDateToDateTime(const AValue: Double;
-  out ADateTime: TDateTime): Boolean;
+method DateTimeToJulianDate(const AValue: TDateTime): Double; public;
+method JulianDateToDateTime(const AValue: Double): TDateTime; public;
+method TryJulianDateToDateTime(const AValue: Double; 
+  out ADateTime: TDateTime): Boolean; public;
 
-method DateTimeToModifiedJulianDate(const AValue: TDateTime): Double;
-method ModifiedJulianDateToDateTime(const AValue: Double): TDateTime;
-method TryModifiedJulianDateToDateTime(const AValue: Double;
-  out ADateTime: TDateTime): Boolean;
+method DateTimeToModifiedJulianDate(const AValue: TDateTime): Double; public;
+method ModifiedJulianDateToDateTime(const AValue: Double): TDateTime; public;
+method TryModifiedJulianDateToDateTime(const AValue: Double; 
+  out ADateTime: TDateTime): Boolean; public;
 
 { Unix date conversion support }
 
-method DateTimeToUnix(const AValue: TDateTime): Int64;
-method UnixToDateTime(const AValue: Int64): TDateTime;
+method DateTimeToUnix(const AValue: TDateTime): Int64; public;
+method UnixToDateTime(const AValue: Int64): TDateTime; public;
 
 { Constants used in this unit }
 
