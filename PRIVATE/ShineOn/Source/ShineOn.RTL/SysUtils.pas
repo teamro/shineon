@@ -557,11 +557,15 @@ class function SysUtils.QuotedStr(const S: String; QuoteChar: Char): String;
 var 
   I: Integer;
 begin
-  Result := S;
-  for I := Result.Length - 1 downto 0 do
-    if Result[I] = QuoteChar then 
-      Result := Result.Insert(I, QuoteChar);
-  Result := QuoteChar + Result + QuoteChar;
+  if String.IsNullOrEmpty(S) then
+    Result := QuoteChar + QuoteChar
+  else begin
+    Result := S;
+    for I := Result.Length - 1 downto 0 do
+      if Result[I] = QuoteChar then 
+        Result := Result.Insert(I, QuoteChar);
+    Result := QuoteChar + Result + QuoteChar;
+  end;
 end;
 
 class function SysUtils.AnsiQuotedStr(const S: String; Quote: Char): String;
