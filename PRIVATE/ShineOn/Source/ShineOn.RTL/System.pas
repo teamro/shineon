@@ -509,7 +509,7 @@ class procedure SystemUnit.Insert(Source: DelphiString; var S: DelphiString; &In
 begin
   if (Source = nil) or (Source.Length = 0) then exit;
   if S = nil then begin S := Source.Duplicate;exit; end;
-  if &Index > S.Length then S.SetLength(&Index);
+  if &Index > S.Length + 1 then S.SetLength(&Index);
   var lNewString := new DelphiString;
   lNewString.SetLength(S.Length + Source.Length);
   Array.Copy(S.CharData, 0, lNewString.CharData, 0, &Index -1);
