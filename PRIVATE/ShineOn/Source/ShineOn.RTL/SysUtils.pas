@@ -550,12 +550,18 @@ end;
 
 class function SysUtils.QuotedStr(const S: String): String;
 begin
-  Result := QuotedStr(S,'"');
+  Result := QuotedStr(S,'''');
 end;
 
 class function SysUtils.QuotedStr(const S: String; QuoteChar: Char): String;
+var 
+  I: Integer;
 begin
-  Result := QuoteChar + S + QuoteChar;
+  Result := S;
+  for I := Result.Length - 1 downto 0 do
+    if Result[I] = QuoteChar then 
+      Result := Result.Insert(I, QuoteChar);
+  Result := QuoteChar + Result + QuoteChar;
 end;
 
 class function SysUtils.AnsiQuotedStr(const S: String; Quote: Char): String;
@@ -565,7 +571,7 @@ end;
 
 class function SysUtils.DequotedStr(const S: String): String;
 begin
-  Result := DequotedStr(S,'"');
+  Result := DequotedStr(S,'''');
 end;
 
 class function SysUtils.DequotedStr(const S: String; QuoteChar: Char): String;
