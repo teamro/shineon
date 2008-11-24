@@ -136,13 +136,13 @@ begin
   //               0         1         2
   //               012345678901234567890
   var S:String := 'This is a TestString';
-  ShineOn.RTL.Pos(',', S);
-  NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos(',', S), -1);
+  ShineOn.RTL.Pos(String(','), S);
+  NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos(String(','), S), -1);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('This', S), 0);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('his', S), 1);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('is', S), 2);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('s is', S), 3);
-  NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos(' ', S), 4);
+  NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos(String(' '), S), 4);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('is a', S), 5);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('a Test', S), 8);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('TestString', S), 10);
