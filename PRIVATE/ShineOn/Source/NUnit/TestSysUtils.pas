@@ -13,7 +13,7 @@ namespace NUnit.ShineOn.RTL;
 interface
 uses
   Nunit.Framework,
-  ShineOn.RTL;
+  ShineOn.Rtl;
 
 type
   [TestFixture]
@@ -69,8 +69,10 @@ type
     method TrimLeft;
     [Test, Ignore('Test not implemented')] 
     method TrimRight;
-    [Test, Ignore('Test not implemented')] 
-    method AnsiQuotedStr;
+    [Test] 
+    method TestQuotedStr;
+    [Test] 
+    method TestAnsiQuotedStr;
     [Test, Ignore('Test not implemented')] 
     method AnsiExtractQuotedStr;
     [Test, Ignore('Test not implemented')] 
@@ -316,9 +318,34 @@ begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method SysUtilsTests.AnsiQuotedStr; 
+method SysUtilsTests.TestQuotedStr;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  var S := 'This is a test';
+  var R := QuotedStr(S);
+  NUnit.Framework.Assert.AreEqual('''This is a test''', R);
+
+  S := 'This is ''a'' test';
+  R := QuotedStr(S);
+  NUnit.Framework.Assert.AreEqual('''This is ''''a'''' test''', R);
+
+  S := 'This is "a'' test';
+  R := QuotedStr(S, '"');
+  NUnit.Framework.Assert.AreEqual('"This is ""a'' test"', R);
+
+  S := '';
+  R := QuotedStr(S, '"');
+  NUnit.Framework.Assert.AreEqual('""', R);
+end;
+
+method SysUtilsTests.TestAnsiQuotedStr; 
+begin
+  var S := 'This is a test';
+  var R := AnsiQuotedStr(S, '''');
+  NUnit.Framework.Assert.AreEqual('''This is a test''', R);
+
+  S := 'This is ''a'' test';
+  R := AnsiQuotedStr(S, '"');
+  NUnit.Framework.Assert.AreEqual('"This is ''a'' test"', R);
 end;
 
 method SysUtilsTests.AnsiExtractQuotedStr; 
