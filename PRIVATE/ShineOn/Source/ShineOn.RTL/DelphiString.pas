@@ -42,6 +42,7 @@ type
 
     class operator &Add(const Left: DelphiString; aRight: String): DelphiString;
     class operator &Add(const Left: DelphiString; aRight: Char): DelphiString;
+    class operator &Add(const Left: Char; aRight: DelphiString): DelphiString;
 
     class operator Equal(const Left: DelphiString; aRight: String): Boolean;
     class operator NotEqual(const Left: DelphiString; aRight: String): Boolean;
@@ -390,6 +391,11 @@ begin
     writer.WriteAttributeString("xsi", "nil", "http://www.w3.org/2001/XMLSchema-instance", "true")
   else
     writer.WriteCData(self);
+end;
+
+class operator DelphiString.Add(const Left: Char; aRight: DelphiString): DelphiString;
+begin
+  Result := DelphiString(Left + String(aRight));
 end;
 
 end.
