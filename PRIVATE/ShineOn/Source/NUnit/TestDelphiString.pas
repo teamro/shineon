@@ -45,7 +45,7 @@ begin
   Insert('Really ', lNew, 1);
   NUnit.Framework.Assert.AreEqual('Really My String', lNew.ToString, 'Insert');
   lNew := lOrg;
-  Insert('y', lNew, 10);
+  Insert(DelphiString('y'), lNew, 10);
   NUnit.Framework.Assert.AreEqual('My Stringy', lNew.ToString, 'Insert');
 end;
 
