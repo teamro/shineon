@@ -40,13 +40,13 @@ begin
   var lOrg: DelphiString := 'My String';
   var lNew := lOrg;
   Insert('Own ', lNew, 4);
-  NUnit.Framework.Assert.AreEqual(lNew.ToString, 'My Own String', 'Insert');
+  NUnit.Framework.Assert.AreEqual('My Own String', lNew.ToString, 'Insert');
   lNew := lOrg;
   Insert('Really ', lNew, 1);
-  NUnit.Framework.Assert.AreEqual(lNew.ToString, 'Really My String', 'Insert');
+  NUnit.Framework.Assert.AreEqual('Really My String', lNew.ToString, 'Insert');
   lNew := lOrg;
   Insert('y', lNew, 10);
-  NUnit.Framework.Assert.AreEqual(lNew.ToString, 'My Stringy', 'Insert');
+  NUnit.Framework.Assert.AreEqual('My Stringy', lNew.ToString, 'Insert');
 end;
 
 method DelphiStringTests.TestCopy;
