@@ -272,7 +272,7 @@ function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags):
 function GetEnvironmentVariable(Name: String): String;   public;
 procedure Sleep(aVal: Integer);public;
 
-function Format (Const aFormatting: String; Const aData: array of Object ) : String;
+function Format (Const aFormatting: String; Const aData: array of Object ) : String; public;
 
 implementation
 
