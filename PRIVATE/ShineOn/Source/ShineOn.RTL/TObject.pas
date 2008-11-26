@@ -113,6 +113,8 @@ type
   public
     constructor;
     property DisposeCall : Action<T>; readonly;
+    procedure DisposeReferenceType(o: T);
+    procedure DisposeValueType(o: T);
   end;
   
 procedure TObjectExtender.Destroy<T>(o: T);
@@ -133,11 +135,21 @@ begin
   // dispose, if necessary. noop, otherwise.
   if not typeRef.IsSealed
   or typeOf(IDisposable).IsAssignableFrom(typeRef) then
-    call := obj -> TObjectExtender.Destroy(Object(obj))
+    call := @DisposeReferenceType
   else
-    call := method (obj: T); begin end;
+    call := @DisposeValueType;
   
   DisposeCall := call;
+end;
+
+procedure TObjectExtender.DisposableHelper<T>.DisposeReferenceType(o: T);
+begin
+  TObjectExtender.Destroy(Object(o));
+end;
+
+procedure TObjectExtender.DisposableHelper<T>.DisposeValueType(o: T);
+begin
+  // noop
 end;
 
 end.
