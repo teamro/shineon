@@ -424,9 +424,12 @@ end;
 
 class procedure SystemUnit.SetLength<T>(var S: Array of T; length: Int32);
 begin
-  var lLength: Int32 := iif(S.Length > length, length, S.Length);
   var lNew: &Array := &Array.CreateInstance(typeOf(T), length);
-  &Array.Copy(S, lNew, lLength);
+  if assigned(S) then
+  begin
+    var lLength: Int32 := iif(S.Length > length, length, S.Length);
+    &Array.Copy(S, lNew, lLength);
+  end;
   S := array of T(lNew);
 end;
 
