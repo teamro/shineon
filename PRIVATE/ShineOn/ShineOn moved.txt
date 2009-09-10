@@ -1,3 +1,0 @@
-The new url is:
-
-http://public.svn.remobjects.com/trunk/PUBLIC/Prism/ShineOn/
