@@ -9,7 +9,7 @@
 namespace ShineOn.Rtl;
 // TODO:
 // * implement all NotImplemented
-// * implement sorting and binary search in TStringList
+// * implement sorting in TStringList
 
 interface
 
@@ -265,6 +265,8 @@ type
     FDuplicates:TDuplicates;
     FSorted, FCaseSensitive:Boolean;
     FOnChange, FOnChanging:TNotifyEvent;
+    function FindBin(S: String; var Index: Integer): Boolean;
+    function FindLinear(S: String; var Index: Integer): Boolean;
   protected
     function Get(Index: Integer): String; override;
     function GetCapacity: Integer; override;
@@ -1595,12 +1597,52 @@ end;
 
 function TStringList.Find(S: String; var Index: Integer): Boolean; 
 begin
-  //TODO: implement binary search once sorting is implemented;
-  Result := true;
+  if Sorted then
+    Result := FindBin(S, Index)
+  else
+    Result := FindLinear(S, Index);
+end;
+
+function TStringList.FindBin(S: String; var Index: Integer): Boolean; 
+var
+  iLeft, iRight, iCurrent: Integer;
+  iCompare: Integer;
+begin
+  // TODO: write a nunit-test
+  Result := False;
+  iLeft := 0;
+  iRight := Count - 1;
+  while iLeft <= iRight do
+  begin
+    iCurrent := (iLeft + iRight) shr 1;
+    iCompare := CompareStrings(Strings[iCurrent], S);
+    if iCompare < 0 then
+      iLeft := iCurrent + 1
+    else
+    begin
+      iRight := iCurrent - 1;
+      if iCompare = 0 then
+      begin
+        Result := True;
+        if Duplicates <> Duplicates.Accept then
+          iLeft := iCurrent;
+      end;
+    end;
+  end;
+  Index := iLeft;
+end;
+
+function TStringList.FindLinear(S: String; var Index: Integer): Boolean; 
+begin
   for Index := 0 to Count -1 do
+  begin
     if CompareStrings(TStringItem(FStrings[Index]).AString, S) = 0 then
+    begin
+      Result := true;
       Exit;
-  Index := -1; //TODO: in a sorted list, return the index where the item should be inserted.
+    end;
+  end;
+  Index := -1; 
   Result := false;
 end;
 
