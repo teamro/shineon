@@ -18,7 +18,7 @@ uses
 
 type
     [TestFixture]
-    TestFileStream = public class(TestCase)
+    TestFileStream = public class(System.Object)
   private
       var nl : String := #13#10;  
       var bazFileName : String; // := Path.GetTempPath + 'TestFileStream.txt';
@@ -26,9 +26,9 @@ type
   protected
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test] 
 	[ExpectedException(typeof(IOException))]	// used by an another process
  	method CtorIOException; 
@@ -239,7 +239,7 @@ begin
                 	
     try 
         S := new System.IO.FileStream ('', System.IO.FileMode.&Create);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ArgumentException), E.GetType, 'test#01');                		
@@ -248,7 +248,7 @@ begin
 
     try 
         S := new System.IO.FileStream (nil, System.IO.FileMode.&Create);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ArgumentNullException), E.GetType, 'test#02');                		
@@ -260,7 +260,7 @@ begin
             System.IO.File.Delete ('thisfileshouldnotexists.test');
                 		
         S := new System.IO.FileStream ('thisfileshouldnotexists.test', System.IO.FileMode.Open);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (System.IO.FileNotFoundException), E.GetType, 'test#03');
@@ -272,7 +272,7 @@ begin
             System.IO.File.Delete ('thisfileshouldNOTexists.test');
                 
         S := new System.IO.FileStream ('thisfileshouldNOTexists.test', System.IO.FileMode.Truncate);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (System.IO.FileNotFoundException), E.GetType, 'test#04');
@@ -284,7 +284,7 @@ begin
         S.Close;
         S := nil;
         S := new System.IO.FileStream ('thisfileshouldexists.test', System.IO.FileMode.CreateNew);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             if (System.IO.File.Exists ('thisfileshouldexists.test')) then // remove file
@@ -299,7 +299,7 @@ begin
             System.IO.Directory.Delete ('thisDicrectoryShouldNotExists');                		
                 
       S := new System.IO.FileStream ('thisDicrectoryShouldNotExists/eitherthisfile.test', System.IO.FileMode.CreateNew);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (System.IO.DirectoryNotFoundException), E.GetType, 'test#05');
@@ -308,7 +308,7 @@ begin
                 	
     try 
         S := new System.IO.FileStream ('test.test.test', System.IO.FileMode.Append or System.IO.FileMode.CreateNew);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ArgumentOutOfRangeException), E.GetType, 'test#08');
@@ -317,7 +317,7 @@ begin
                 	
     try 
         S := new System.IO.FileStream ('test.test.test', System.IO.FileMode.Append or System.IO.FileMode.Open);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ArgumentOutOfRangeException), E.GetType, 'test#09');
@@ -331,16 +331,16 @@ begin
                 	
     try 
       S := new System.IO.FileStream ('.test.test.test.2', System.IO.FileMode.CreateNew, System.IO.FileAccess.Read, System.IO.FileShare.None or System.IO.FileShare.Inheritable);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
-            NUnit.Framework.Assert.AreEqual(typeof (ArgumentOutOfRangeException), E.GetType, 'test#01');
+            NUnit.Framework.Assert.AreEqual(typeof (System.ArgumentException), E.GetType, 'test#01');
         end;
     end;
 
     try 
       S := new System.IO.FileStream ('.test.test.test.2', System.IO.FileMode.CreateNew, System.IO.FileAccess.Read, System.IO.FileShare.None or System.IO.FileShare.Write);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             // FileMode.CreateNew && FileAccess.Read
@@ -350,16 +350,16 @@ begin
                 	
     try 
       S := new System.IO.FileStream ('.test.test.test.2', System.IO.FileMode.CreateNew, System.IO.FileAccess.Read, System.IO.FileShare.Inheritable or System.IO.FileShare.ReadWrite);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
-            NUnit.Framework.Assert.AreEqual(typeof (ArgumentOutOfRangeException), E.GetType, 'test#03');
+            NUnit.Framework.Assert.AreEqual(typeof (ArgumentException), E.GetType, 'test#03');
         end;
     end;
                 	
     try 
       S := new System.IO.FileStream ('.test.test.test.2', System.IO.FileMode.Truncate, System.IO.FileAccess.Read);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             // FileMode.Truncate && FileAccess.Read
@@ -369,17 +369,17 @@ begin
                 	
     try 
       S := new System.IO.FileStream (new IntPtr (12), System.IO.FileAccess.Read);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             // Invalid handle
-            NUnit.Framework.Assert.AreEqual(typeof (AssertionException), E.GetType, 'test#05');
+            NUnit.Framework.Assert.AreEqual(typeof (System.IO.IOException), E.GetType, 'test#05');
         end;
     end;
                 	
     try 
       S := new System.IO.FileStream ('.test.test.test.2', System.IO.FileMode.Truncate, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite, -1);
-      Fail;
+      NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             // FileMode.Truncate && FileAccess.Read
@@ -448,7 +448,7 @@ begin
     var bytes : Array of Byte := new byte [5];
     try 
         S2.Read (bytes, 0, 5);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             // locked
@@ -502,7 +502,7 @@ begin
                 	
     try 
         S.Seek (-11, System.IO.SeekOrigin.End);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (System.IO.IOException), E.GetType, 'test#03');
@@ -543,7 +543,7 @@ begin
 			
     try 
         S.ReadByte;
-	    Fail;
+	    NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'test#01');
@@ -552,7 +552,7 @@ begin
 			
     try 
         S.WriteByte(64);
-	    Fail;
+	    NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'test#02');
@@ -561,7 +561,7 @@ begin
 			
     try 
         S.Flush;
-	    Fail;
+	    NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'test#03');
@@ -570,7 +570,7 @@ begin
 			
     try 
         var l : Int64 := S.Length;
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'test#04');
@@ -579,7 +579,7 @@ begin
 			
     try 
         var l : Int64 := S.Position;
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'test#05');

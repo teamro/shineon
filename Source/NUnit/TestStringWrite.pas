@@ -16,7 +16,7 @@ uses
 
 type
   [TestFixture]
-  TestStringWrite = public class(TestCase)
+  TestStringWrite = public class(System.Object)
   private
       var nl : String := #13#10;  
   protected
@@ -131,7 +131,7 @@ begin
         	
     try
         W.Write ('kicks ass');
-        Fail('Close 1');
+        NUnit.Framework.Assert.Fail('Close 1');
     except        
         on E: Exception do
         begin        
@@ -155,7 +155,7 @@ begin
     try
         var W:System.IO.StringWriter;
         W := new System.IO.StringWriter;
-        Fail;                
+        NUnit.Framework.Assert.Fail;                
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof(AssertionException), E.GetType, 'Exceptions 1');
@@ -166,7 +166,7 @@ begin
     W := new System.IO.StringWriter;
     try
 	    W := new System.IO.StringWriter;
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof(AssertionException), E.GetType, 'Exceptions 2');

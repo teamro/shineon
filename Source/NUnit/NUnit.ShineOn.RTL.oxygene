@@ -2,11 +2,12 @@
   <PropertyGroup>
     <ProjectGuid>{78329CFC-D7AA-468C-8DF7-DBC4C14D671C}</ProjectGuid>
     <RootNamespace>NUnit.ShineOn.RTL</RootNamespace>
-    <OutputType>library</OutputType>
+    <OutputType>Library</OutputType>
     <AssemblyName>Nunit.ShineOn.RTL</AssemblyName>
     <AllowGlobals>False</AllowGlobals>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE;</DefineConstants>
@@ -17,17 +18,18 @@
     <OutputPath>..\bin</OutputPath>
     <EnableAsserts>False</EnableAsserts>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(Framework)\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>$(ProgramFiles)\NUnit 2.4.8\bin\nunit.framework.dll</HintPath>
+      <HintPath>$(ProgramFiles)\NUnit 2.5.2\bin\net-2.0\framework\nunit.framework.dll</HintPath>
+      <Name>nunit.framework.dll</Name>
       <Private>True</Private>
     </Reference>
     <ProjectReference Include="..\ShineOn.RTL\ShineOn.RTL.oxygene">
       <Project>{EADE7853-FDBE-4770-B0B2-5FF5FDD2DBF7}</Project>
+      <HintPath>$(Project)\..\bin\ShineOn.Rtl.dll</HintPath>
       <Name>ShineOn.RTL</Name>
     </ProjectReference>
     <Reference Include="System">
@@ -69,4 +71,5 @@
     <Compile Include="TestTDateTime.pas" />
     <Compile Include="TestVariants.pas" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
 </Project>

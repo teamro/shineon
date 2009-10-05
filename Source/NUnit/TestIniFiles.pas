@@ -39,16 +39,16 @@ uses
 
 type
   [TestFixture]
-  TIniFilesTests = public class(TestCase)
+  TIniFilesTests = public class(System.Object)
   private
     FFilename:string;
     IniFile:TIniFile;
     method AddSomeData;
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test] 
     method Clear;
     [Test] 

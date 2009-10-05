@@ -16,7 +16,7 @@ uses
 
 type
   [TestFixture]
-  TestStringRead = public class(TestCase)
+  TestStringRead = public class(System.Object)
   private
       var nl : String := #13#10;  
   protected
@@ -166,7 +166,7 @@ begin
         	
     try
         R.Read;
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'Close 1');
@@ -175,7 +175,7 @@ begin
         	
     try 
         R.Peek;
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ObjectDisposedException), E.GetType, 'Close 2');        		             
@@ -189,7 +189,7 @@ begin
         	
     try 
 	    R := new System.IO.StringReader(nil);
-        Fail;
+        NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
             NUnit.Framework.Assert.AreEqual(typeof (ArgumentNullException), E.GetType, 'Exception 1');
@@ -200,7 +200,7 @@ begin
 		
 	try
  	    R.Read (nil, 0, 12);
-		Fail;
+		NUnit.Framework.Assert.Fail;
     except
         on E: Exception do begin
 		    NUnit.Framework.Assert.AreEqual(typeof (ArgumentNullException), E.GetType, 'Exception 2');

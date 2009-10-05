@@ -16,12 +16,12 @@ uses
 
 type
   [TestFixture]
-  TObjectListTests = public class(TestCase)
+  TObjectListTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test, Ignore('Test not implemented')] 
     method Add;
     [Test, Ignore('Test not implemented')] 
@@ -43,12 +43,12 @@ type
   end;
 
   [TestFixture]
-  TComponentListTests = public class(TestCase)
+  TComponentListTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Add;
@@ -69,12 +69,12 @@ type
   end;
 
   [TestFixture]
-  TClassListTests = public class(TestCase)
+  TClassListTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Add;
@@ -95,12 +95,12 @@ type
   end;
 
   [TestFixture]
-  TStackTests = public class(TestCase)
+  TStackTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Count;
@@ -115,12 +115,12 @@ type
   end;
 
   [TestFixture]
-  TObjectStackTests = public class(TestCase)
+  TObjectStackTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Count;
@@ -135,32 +135,12 @@ type
   end;
 
   [TestFixture]
-  TQueueTests = public class(TestCase)
+  TQueueTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
-
-    [Test, Ignore('Test not implemented')] 
-    method Count;
-    [Test, Ignore('Test not implemented')] 
-    method AtLeast;
-    [Test, Ignore('Test not implemented')] 
-    method Push;
-    [Test, Ignore('Test not implemented')] 
-    method Pop;
-    [Test, Ignore('Test not implemented')] 
-    method Peek;
-  end;
-  
-  [TestFixture]
-  TObjectQueueTests = public class(TestCase)
-  public
-    [Setup]
-    method Setup;override;
-    [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Count;
@@ -175,12 +155,32 @@ type
   end;
   
   [TestFixture]
-  TBucketListTests = public class(TestCase)
+  TObjectQueueTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
+
+    [Test, Ignore('Test not implemented')] 
+    method Count;
+    [Test, Ignore('Test not implemented')] 
+    method AtLeast;
+    [Test, Ignore('Test not implemented')] 
+    method Push;
+    [Test, Ignore('Test not implemented')] 
+    method Pop;
+    [Test, Ignore('Test not implemented')] 
+    method Peek;
+  end;
+  
+  [TestFixture]
+  TBucketListTests = public class(System.Object)
+  public
+    [Setup]
+    method Setup;
+    [TearDown]
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Clear;

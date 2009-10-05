@@ -25,12 +25,12 @@ uses
 
 type
   [TestFixture]
-  SystemTests = public class(TestCase)
+  SystemTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test]
     method Pos;
     [Test]

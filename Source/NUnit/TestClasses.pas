@@ -17,12 +17,12 @@ uses
     
 type
   [TestFixture]
-  TObjectTests = public class(TestCase)
+  TObjectTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test, Ignore('Test not implemented')] 
     method ClassType;
     [Test, Ignore('Test not implemented')] 
@@ -36,12 +36,12 @@ type
   end;
  
   [TestFixture]
-  TListTests = public class(TestCase)
+  TListTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Add;
@@ -88,12 +88,12 @@ type
   end;
 
   [TestFixture]
-  TInterfaceListTests = public class(TestCase)
+  TInterfaceListTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test, Ignore('Test not implemented')] 
     method Clear;
     [Test, Ignore('Test not implemented')] 
@@ -127,12 +127,12 @@ type
   end;
   
   [TestFixture]
-  TBitsTests = public class(TestCase)
+  TBitsTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method OpenBit;
@@ -143,12 +143,12 @@ type
   end;
   
   [TestFixture]
-  TPersistentTests = public class(TestCase)
+  TPersistentTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Assign;
@@ -157,12 +157,12 @@ type
   end;
 
   [TestFixture]
-  TStringlistTests = public class(TestCase)
+  TStringlistTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Add;
@@ -246,12 +246,12 @@ type
   end;
 
   [TestFixture]
-  THandleStreamTests = public class(TestCase)
+  THandleStreamTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Read;
@@ -270,7 +270,7 @@ type
   end;
 
   [TestFixture]
-  TFileStreamTests = public class(TestCase)
+  TFileStreamTests = public class(System.Object)
   private
     const fmCreate = $FFFF; // Classes
     const fmOpenRead = $0000; // SysUtils
@@ -282,9 +282,9 @@ type
     var tmpFile : TFileStream;
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Read;
@@ -304,12 +304,12 @@ type
   end;
 
   [TestFixture]
-  TMemoryStreamTests = public class(TestCase)
+  TMemoryStreamTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Read;
@@ -339,12 +339,12 @@ type
   end;
 
   [TestFixture]
-  TStringStreamTests = public class(TestCase)
+  TStringStreamTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Read;
@@ -368,12 +368,12 @@ type
   end;
   
   [TestFixture]
-  TResourceStreamTests = public class(TestCase)
+  TResourceStreamTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Read;
@@ -392,12 +392,12 @@ type
   end;
 
   [TestFixture]
-  TThreadTests = public class(TestCase)
+  TThreadTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
 
     [Test, Ignore('Test not implemented')] 
     method Resume;

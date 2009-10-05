@@ -8,7 +8,7 @@ uses
 
 type
   [TestFixture]
-  DelphiStringTests = public class(TestCase)
+  DelphiStringTests = public class(System.Object)
   public
     [Test]
     method TestPos;

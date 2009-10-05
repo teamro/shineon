@@ -11,7 +11,7 @@ uses
 
 type
   [TestFixture]
-  TestVariants = public class(TestCase)
+  TestVariants = public class(System.Object)
   private
   protected
   public

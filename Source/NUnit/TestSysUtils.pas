@@ -17,12 +17,12 @@ uses
 
 type
   [TestFixture]
-  SysUtilsTests = public class(TestCase)
+  SysUtilsTests = public class(System.Object)
   public
     [Setup]
-    method Setup;override;
+    method Setup;
     [TearDown]
-    method TearDown;override;
+    method TearDown;
     [Test] 
     method AnsiUpperCase;
     [Test, Ignore('Test not implemented')] 
@@ -77,11 +77,11 @@ type
     method AnsiExtractQuotedStr;
     [Test, Ignore('Test not implemented')] 
     method AnsiDequotedStr;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method IntToStr;
     [Test, Ignore('Test not implemented')] 
     method IntToHex;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method StrToInt;
     [Test, Ignore('Test not implemented')] 
     method StrToIntDef;
@@ -359,8 +359,30 @@ begin
 end;
 
 method SysUtilsTests.IntToStr; 
+var
+  S: Integer;
+  R: String;
+  E: String;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  S := 42;
+  R := SysUtils.IntToStr(S);
+  E := '42';
+  
+  NUnit.Framework.Assert.AreEqual(E, R, 'IntToStr failed -- Test #1');
+  
+  S := -42;
+  R := SysUtils.IntToStr(S);
+  E := '-42';
+
+  NUnit.Framework.Assert.AreEqual(E, R, 'IntToStr failed -- Test#2');
+
+  S := 0;
+  R := SysUtils.IntToStr(S);
+  E := '0';
+
+  NUnit.Framework.Assert.AreEqual(E, R, 'IntToStr failed -- Test#3');
+
+
 end;
 
 method SysUtilsTests.IntToHex; 
@@ -369,8 +391,39 @@ begin
 end;
 
 method SysUtilsTests.StrToInt; 
+var
+  S: string;
+  R: Integer;
+  Exp: Integer;
+
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  S := '42';
+  R := SysUtils.StrToInt(S);
+  Exp := 42;
+
+  Nunit.Framework.Assert.AreEqual(Exp, R, 'StrToInt failed -- Test#01');
+
+  S := '-42';
+  R := SysUtils.StrToInt(S);
+  Exp := -42;
+
+  Nunit.Framework.Assert.AreEqual(Exp, R, 'StrToInt failed -- Test#02');
+
+  S := '0';
+  R := SysUtils.StrToInt(S);
+  Exp := 0;
+
+  Nunit.Framework.Assert.AreEqual(Exp, R, 'StrToInt failed -- Test#03');
+
+  S := 'Foobar';
+  try
+    R := SysUtils.StrToInt(S);
+    NUnit.Framework.Assert.Fail;
+  except
+    on E: Exception do begin
+        NUnit.Framework.Assert.AreEqual(typeof (FormatException), E.GetType, 'test#04');
+    end;
+  end;
 end;
 
 method SysUtilsTests.StrToIntDef; 

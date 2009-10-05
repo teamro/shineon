@@ -24,7 +24,7 @@ uses
 
 type
 	[TestFixture]
-  TDateTimeTest = public class(TestCase)
+  TDateTimeTest = public class(System.Object)
   private
       var oldcult:CultureInfo;
 		var myTicks:Array of Int64 := [
@@ -40,9 +40,9 @@ type
   protected
   public
   	[SetUp]
- 		method SetUp;override;
+ 		method SetUp;
 		[TearDown]
-		method TearDown;override;
+		method TearDown;
 		[Test] // [Ignore('Ignore this test')]
 		method TestCtors;
 		[Test] // [Ignore('Ignore this test')]
@@ -189,7 +189,7 @@ begin
 	  td1 := TDateTime.Parse ('2002-02-25');
 	except
 	  on E: Exception do begin
-      Fail ('Unexpected exception. E=' + E.Message);
+      NUnit.Framework.Assert.Fail ('Unexpected exception. E=' + E.Message);
 	  end;
   end;	  
 	NUnit.Framework.Assert.AreEqual (myTicks[0], td1.Ticks, 'H01');
