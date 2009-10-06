@@ -64,8 +64,12 @@ procedure Reset(var fs: TextFile; aMode: FileAccess := FileAccess.Read); public;
 procedure CloseFile(var fs: TextFile); public;
 procedure Append(var fs: TextFile); public;
 procedure ReadLine(var fs: TextFile; var s: String); public;
-procedure WriteLine(var fs: TextFile; s: String); public;
-procedure WriteLine(var fs: TextFile; params s: array of String); public;
+procedure WriteLn(var fs: TextFile; s: String); public;
+procedure WriteLn(var fs: TextFile; params s: array of String); public;
+procedure WriteLn(var fs: TextFile; params S: Array of Object); public;
+procedure ReadLn(var fs: TextFile; var S: DelphiString); public;
+procedure Write(var fs: TextFile; params S: Array of Object); public;
+
 function EOF(var fs: TextFile): Boolean; public;
 
 implementation
@@ -233,12 +237,12 @@ begin
   s := fs.fReader.ReadLine;
 end;
 
-procedure WriteLine(var fs: TextFile; s: String);
+procedure WriteLn(var fs: TextFile; s: String);
 begin
   fs.fWriter.WriteLine(s);
 end;
 
-procedure WriteLine(var fs: TextFile; params s: array of String);
+procedure WriteLn(var fs: TextFile; params s: array of String);
 begin
   for i: Integer := 0 to length(s) -1 do begin 
     fs.fWriter.Write(s[i]);
@@ -249,5 +253,26 @@ function EOF(var fs: TextFile): Boolean;
 begin
   result := fs.fReader.EndOfStream;
 end;
+
+procedure ReadLn(var fs: TextFile; var S: DelphiString);
+var
+  SStr : System.String;
+begin
+  ReadLine(fs, SStr);
+  S := SStr;
+end;
+
+procedure Write(var fs: TextFile; params S: Array of Object);
+begin
+  for i: Integer := 0 to length(S)-1 do
+    fs.Writer.Write(S[i].ToString);
+end;
+
+procedure WriteLn(var fs: TextFile; params S: Array of Object);
+begin
+  Write(fs, S);
+  fs.Writer.Write(#13#10);
+end;
+
 
 end.
