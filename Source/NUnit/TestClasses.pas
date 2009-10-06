@@ -186,6 +186,8 @@ type
     method Equals;
     [Test, Ignore('Test not implemented')] 
     method Exchange;
+    [Test]
+    method Find;
     [Test, Ignore('Test not implemented')] 
     method GetText;
     [Test, Ignore('Test not implemented')] 
@@ -905,6 +907,23 @@ end;
 method TStringlistTests.CaseSensitive; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+end;
+
+method TStringlistTests.Find;
+const
+  cItem1 = '1';
+  cItem2 = '2';
+  cItem3 = '3';
+var
+  pList: TStringList;
+begin
+  pList := new TStringList();
+  pList.Add(cItem2);
+  pList.Add(cItem3);
+  pList.Add(cItem1);
+  NUnit.Framework.Assert.IsTrue(pList.IndexOf(cItem3) = 1);
+  pList.Sorted := True;
+  NUnit.Framework.Assert.IsTrue(pList.IndexOf(cItem3) = 2);
 end;
 
 method THandleStreamTests.Setup; 

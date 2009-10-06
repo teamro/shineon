@@ -266,9 +266,11 @@ type
     FDuplicates:TDuplicates;
     FSorted, FCaseSensitive:Boolean;
     FOnChange, FOnChanging:TNotifyEvent;
+    procedure ExchangeItems(Index1, Index2: Integer);
     function FindBin(S: String; var Index: Integer): Boolean;
     function FindLinear(S: String; var Index: Integer): Boolean;
-  protected
+    procedure QuickSort(Left, Right: Integer; Compare: TStringListSortCompare);
+   protected
     function Get(Index: Integer): String; override;
     function GetCapacity: Integer; override;
     function GetCount: Integer; override;
@@ -1589,7 +1591,7 @@ end;
 procedure TStringList.Exchange(Index1, Index2: Integer); 
 begin
   Changing;
-  inherited Exchange(Index1, Index2);
+  ExchangeItems(Index1, Index2);
   Changed;
 end;
 
@@ -1673,16 +1675,60 @@ begin
   Changed;
 end;
 
+function MethodCompareStrings(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := List.CompareStrings(List[Index1], List[Index2]);
+end;
+
 procedure TStringList.Sort; 
 begin
   Changing;
-  CustomSort(nil);
+  CustomSort(@MethodCompareStrings);
   Changed;
 end;
 
 procedure TStringList.CustomSort(Compare: TStringListSortCompare); 
 begin
-  FStrings.Sort(new TStringlistSortCompareWrapper(self, Compare));
+  QuickSort(0, Count - 1, Compare);
+end;
+
+procedure TStringList.ExchangeItems(Index1, Index2: Integer);
+var
+  pTemp: TStringItem;
+begin
+  pTemp := TStringItem(FStrings[Index1]);
+  FStrings[Index1] := FStrings[Index2];
+  FStrings[Index2] := pTemp;
+end;
+
+procedure TStringList.QuickSort(Left, Right: Integer; Compare: TStringListSortCompare);
+var
+  I, J, P: Integer;
+begin
+  repeat
+    I := Left;
+    J := Right;
+    P := (Left + Right) shr 1;
+    repeat
+      while Compare(Self, I, P) < 0 do
+        inc(I);
+      while Compare(Self, J, P) > 0 do
+        dec(J);
+      if I <= J then
+      begin
+        ExchangeItems(I, J);
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        inc(I);
+        dec(J);
+      end;
+    until I > J;
+    if Left < J then
+      QuickSort(Left, J, Compare);
+    Left := I;
+  until I >= Right;
 end;
 
 { TStream }
