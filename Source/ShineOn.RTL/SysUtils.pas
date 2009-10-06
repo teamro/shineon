@@ -148,6 +148,12 @@ type
     class function GetEnvironmentVariable(Name: String): String;
     class procedure Sleep(val: Integer);
     class function FormatFloat(aFormat: String; V: Double): String;
+    class function PathDelim: Char;
+    class function DirectorySeparator: Char;
+    class function DriveDelim: Char;
+    class function DriveSeparator: Char;
+    class function PathSep: Char;
+    class function PathSeparator: Char; 
   end;
 
 var
@@ -273,6 +279,13 @@ function GetEnvironmentVariable(Name: String): String;   public;
 procedure Sleep(aVal: Integer);public;
 
 function Format (Const aFormatting: String; Const aData: array of Object ) : String; public;
+
+function PathDelim: Char;
+function DirectorySeparator: Char;
+function DriveDelim: Char;
+function DriveSeparator: Char;
+function PathSep: Char;
+function PathSeparator: Char;
 
 implementation
 
@@ -1296,6 +1309,36 @@ begin
   Result := Double(V).ToString(AdjustCommaInFormat(aFormat), System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat);
 end;
 
+class function SysUtils.PathDelim: Char;
+begin
+  result := Path.PathSeparator;
+end;
+
+class function SysUtils.DirectorySeparator: Char;
+begin
+  result := Path.PathSeparator;
+end;
+
+class function SysUtils.DriveDelim: Char;
+begin
+  result := Path.VolumeSeparatorChar;
+end;
+
+class function SysUtils.DriveSeparator: Char;
+begin
+  result := Path.VolumeSeparatorChar;
+end;
+
+class function SysUtils.PathSep: Char;
+begin
+  result := Path.PathSeparator;
+end;
+
+class function SysUtils.PathSeparator: Char;
+begin
+  result := Path.PathSeparator;
+end;
+
 // DELPHI COMPATIBLE GLOBAL METHODS
 
 procedure Sleep(aVal: Integer);
@@ -1807,6 +1850,36 @@ function GetEnvironmentVariable(Name: String): String;
 begin
   Result := ShineOn.Rtl.SysUtils.GetEnvironmentVariable(Name);
 end;
-  
+
+function PathDelim: Char;
+begin
+  Result := ShineOn.Rtl.SysUtils.PathDelim;
+end;
+
+function DirectorySeparator: Char;
+begin
+  Result := ShineOn.Rtl.SysUtils.DirectorySeparator;
+end;
+
+function DriveDelim: Char;
+begin
+  Result := ShineOn.Rtl.SysUtils.DriveDelim;
+end;
+
+function DriveSeparator: Char;
+begin
+  Result := ShineOn.Rtl.SysUtils.DriveSeparator;
+end;
+
+function PathSep: Char;
+begin
+  Result := ShineOn.Rtl.SysUtils.PathSep;
+end;
+
+function PathSeparator: Char;  
+begin
+  Result := ShineOn.Rtl.SysUtils.PathSeparator;
+end;
+
   
 end.
