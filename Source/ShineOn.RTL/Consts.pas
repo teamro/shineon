@@ -45,21 +45,12 @@ const
   SUnderflow = 'Floating point underflow';
   SInvalidPointer = 'Invalid pointer operation';
   SInvalidCast = 'Invalid class typecast';
-{$IFDEF MSWINDOWS}
-  SAccessViolation = 'Access violation at address {0}. {1} of address {2}';
-{$ENDIF}
-{$IFDEF LINUX}
-  SAccessViolation = 'Access violation at address {0}, accessing address {1}';
-{$ENDIF}
   SStackOverflow = 'Stack overflow';
   SControlC = 'Control-C hit';
   SQuit = 'Quit key hit';
   SPrivilege = 'Privileged instruction';
   SOperationAborted = 'Operation aborted';
   SExceptTitle = 'Application Error';
-{$IFDEF LINUX}
-  SSigactionFailed = 'sigaction call failed';
-{$ENDIF}
   SInvalidFormat = 'Format ''{0}'' invalid or incompatible with argument';
   SArgumentMissing = 'No argument for format ''{0}''';
   SDispatchError = 'Variant method calls not supported';
@@ -158,10 +149,6 @@ const
   SLongDayNameThu = 'Thursday';
   SLongDayNameFri = 'Friday';
   SLongDayNameSat = 'Saturday';
-
-{$IFDEF LINUX}
-  SEraEntries = '';
-{$ENDIF}
 
   SCannotCreateDir = 'Unable to create directory';
 
