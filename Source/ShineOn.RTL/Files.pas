@@ -187,7 +187,7 @@ begin
   fFile := nil;
   fWriter := nil;
   fReader := nil;
-  fFilename := nil;
+  // keep the filename
 end;
 
 method TextFile.Init(fs: FileStream; Mode: FileAccess);
