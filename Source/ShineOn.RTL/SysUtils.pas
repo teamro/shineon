@@ -601,7 +601,7 @@ begin
     begin
       if Result[I] = QuoteChar then
         begin
-          Delete(Result,I,1);
+          Result := Result.Remove(I, 1);
           Break;
         end;
     end;
@@ -610,7 +610,7 @@ begin
     begin
       if Result[I] = QuoteChar then
         begin
-          Delete(Result,I,1);
+          Result := Result.Remove(I, 1);
           Break;
         end;
     end;
@@ -992,11 +992,19 @@ end;
 class function SysUtils.AnsiStrPos(Str, SubStr: String): String;
 var i:Int32;
 begin
+{$IFDEF LegacyStrIndexing}
+  i := AnsiPos(SubStr, Str);
+  if i > 0 then
+    Result := Str.Substring(i - 1)
+  else
+    Result := nil;
+{$ELSE}
   i := AnsiPos(SubStr, Str);
   if i >= 0 then
     Result := Str.Substring(i)  // TODO: should this be + 1?
   else
     Result := nil;
+{$ENDIF}
 end;
 
 class function SysUtils.AnsiStrRScan(Str: String; Chr: Char): String;

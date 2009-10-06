@@ -168,45 +168,77 @@ end;
 
 class function SystemUnit.Pos(SubStr, aStr:String):Int32;
 begin
-  //TODO: Should this function return 0 or -1 if substr not found?
+ {$IFDEF LegacyStrIndexing}
+  Result := aStr.IndexOf(SubStr)+1;
+ {$ELSE}
   Result := aStr.IndexOf(SubStr);
-
+{$ENDIF}  
 end;
+
 
 class function SystemUnit.Concat(S1, S2:String):String;
 begin
   Result := S1 + S2;
 end;
 
-class procedure SystemUnit.Delete(var S: String; Index, Count:Integer);
+class procedure SystemUnit.Delete(var S: String; Index, 
+Count:Integer);
 begin
-  if (Index >= 0) and (Index <= S.Length - 1) and (Count > 0) then
+{$IFDEF LegacyStrIndexing}
+  if (Index > 0) and (Index <= S.Length) and (Count > 0) then
+  begin
+    if Index + Count - 1 > S.Length then
+      Count := S.Length - Index + 1;
+    if Count > 0 then
+      S := S.Remove(Index-1, Count);
+  end;
+{$ELSE}
+  if (Index >= 0) and (Index <= S.Length - 1) and (Count >  0) then
   begin
     if Index + Count > S.Length then
       Count := S.Length - Index;
     if Count > 0 then
       S := S.Remove(Index, Count);
   end;
+{$ENDIF}
 end;
 
-class procedure SystemUnit.Insert(Source: String; var S: String; Index: Integer);
+class procedure SystemUnit.Insert(Source: String; var S: String; 
+Index: Integer);
 begin
+{$IFDEF LegacyStrIndexing}
+  S := S.Substring(0, Index-1) + Source + S.Substring(Index-1);
+{$ELSE}
   S := S.Substring(0, Index) + Source + S.Substring(Index);
+{$ENDIF}
 end;
+
 
 class function SystemUnit.Copy(Source:String; StartIndex, length: Integer):String;
 begin
+{$IFDEF LegacyStrIndexing}
+  if (Source = nil) or (StartIndex > Source.Length) or (length < 1) then
+    Result := ''
+  else
+  begin
+    if StartIndex + length > Source.Length then
+      Result := Source.Substring(StartIndex-1)
+    else
+      Result := Source.Substring(StartIndex-1, length);
+  end; 
+{$ELSE}
   if (Source = nil) or (StartIndex >= Source.Length) or (length < 1) then
     Result := ''
   else 
   begin
     if StartIndex + length >= Source.Length then
       Result := Source.Substring(StartIndex)
-    else if length > 0 then
+    else if length > 0 then  //Not needed since already checked  length above
       Result := Source.Substring(StartIndex, length)
     else
       Result := '';
   end;
+{$ENDIF}  
 end;
 
 class function SystemUnit.UpCase ( Letter : Char ) : Char; 

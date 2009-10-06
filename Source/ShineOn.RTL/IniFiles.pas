@@ -319,8 +319,12 @@ begin
   begin
     S := TStrings(FSections.Objects[i]);
     i := S.IndexOfName(Name);
-    if i >= 0 then
-      Result := Copy(S[i], S[i].IndexOf('=') + 1, S[i].Length);
+    if i >= 0 then begin
+      if S[i].IndexOf('=') = length(S[i])-1 then
+        Result := ''
+      else
+        Result := S[i].Substring(S[i].IndexOf('=') + 1);
+    end;
   end;
 end;
 
