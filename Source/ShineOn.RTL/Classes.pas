@@ -9,7 +9,7 @@
 namespace ShineOn.Rtl;
 // TODO:
 // * implement all NotImplemented
-// * implement sorting in TStringList
+
 
 interface
 
@@ -1608,7 +1608,6 @@ var
   iLeft, iRight, iCurrent: Integer;
   iCompare: Integer;
 begin
-  // TODO: write a nunit-test
   Result := False;
   iLeft := 0;
   iRight := Count - 1;
@@ -1683,7 +1682,7 @@ end;
 procedure TStringList.Sort; 
 begin
   Changing;
-  CustomSort(@MethodCompareStrings);
+  CustomSort(@CompareStrings);
   Changed;
 end;
 
