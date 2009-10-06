@@ -797,7 +797,7 @@ end;
 
 class function SysUtils.ExtractFilePath(FileName: String): String;
 begin
-  Result := System.IO.Path.GetDirectoryName(FileName);
+  Result := IncludeTrailingPathDelimiter(System.IO.Path.GetDirectoryName(FileName));
 end;
 
 class function SysUtils.ExtractFileDir(FileName: String): String;
