@@ -236,7 +236,7 @@ end;
 
 class procedure SystemUnit.Str(X:Double; Width:Int32;Decimals:Int32;var S:String);
 begin
-  X.ToString(Width.ToString + '.' + Decimals.ToString);
+  S := X.ToString(Width.ToString + '.' + Decimals.ToString);
 end;
 
 class procedure SystemUnit.Val(S:String; var V:Double; var Code: Integer);
