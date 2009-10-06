@@ -536,7 +536,7 @@ end;
 class function SystemUnit.ParamCount: Integer;
 begin
   PrepareParams;
-  result := length(fParams);
+  result := length(fParams)-1;  //Bug fix: don't count path param in 0
 end;
 
 class function SystemUnit.ParamStr(i: Integer): String;
@@ -546,15 +546,16 @@ begin
   end;
 
   PrepareParams;
-  if (i < 0) or (i >= length(fParams)) then 
-    result := fParams[i]
+  if (i < 0) or (i >= length(fParams)) then
+    result := ''  //Bug fix (reversed): was fParams[i]
   else
-    result := '';
+    
+    result := fParams[i];  //Bug fix: was ''
 end;
 
 class procedure SystemUnit.PrepareParams;
 begin
-  if fParams = nil then exit;
+  if fParams <> nil then exit;  //Bug fix: changed from = to <>
   fParams := Environment.GetCommandLineArgs;
   if fParams = nil then fParams := new String[0];
 end;
