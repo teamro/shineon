@@ -233,7 +233,7 @@ type
     [Test, Ignore('Test not implemented')] 
     method Text;
 
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method Sort;
     [Test, Ignore('Test not implemented')] 
     method CustomSort;
@@ -874,8 +874,17 @@ begin
 end;
 
 method TStringlistTests.Sort; 
+const
+  cFirstItem = 'First';
+  cSecondItem = 'Second';
+var
+  pList: TStringList;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  pList := new TStringList();
+  pList.Add(cSecondItem);
+  pList.Add(cFirstItem);
+  pList.Sorted := true;
+  NUnit.Framework.Assert.IsTrue(String.Equals(pList[0], cFirstItem));
 end;
 
 method TStringlistTests.CustomSort; 
