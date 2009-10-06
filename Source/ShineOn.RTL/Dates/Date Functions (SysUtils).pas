@@ -1480,7 +1480,7 @@ var
   LShortMonthNames, LLongMonthNames: array[0..12] of DelphiString;
 begin
   LFormat := DateTimeFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.Clone);
-  with LFormat do
+ { with LFormat do
   begin
     //DateSeparator := Borland.Vcl.SysUtils.DateSeparator;
     ShortDatePattern := ConvertDelphiDateTimeFormat(ShortDateFormat);
@@ -1499,7 +1499,7 @@ begin
     MonthNames := LLongMonthNames;
     AbbreviatedDayNames := ShortDayNames;
     DayNames := LongDayNames;
-  end;
+  end;}
   DateTimeToString(&Result, aFormat, ADateTime, LFormat);
 end;
 
@@ -1510,7 +1510,7 @@ var
   LShortMonthNames, LLongMonthNames: array[0..12] of DelphiString;
 begin
   LFormat := DateTimeFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.Clone);
-  with LFormat, FormatSettings do
+ { with LFormat, FormatSettings do
   begin
     LFormat.DateSeparator := FormatSettings.DateSeparator;
     ShortDatePattern := ConvertDelphiDateTimeFormat(ShortDateFormat);
@@ -1529,7 +1529,7 @@ begin
     MonthNames := LLongMonthNames;
     AbbreviatedDayNames := ShortDayNames;
     DayNames := LongDayNames;
-  end;
+  end;}
   DateTimeToString(&Result, aFormat, ADateTime, LFormat);
 end;
 
