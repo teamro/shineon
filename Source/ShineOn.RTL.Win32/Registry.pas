@@ -568,7 +568,7 @@ end;
 
 function TRegistry.SplitKey(const Key:String): array of String; 
 begin
-  if (Key = '') or (Key = nil) then
+  if String.IsNullOrEmpty(Key) then
     Result := nil
   else
     Result := Key.Split(['\']);
@@ -587,7 +587,7 @@ end;
 
 function TRegistry.IsRelative(const Key:String): Boolean; 
 begin
-  Result := (Key = nil) or (Key = '') or not Key.StartsWith('\');
+  Result := String.IsNullOrEmpty(Key) or not Key.StartsWith('\');
 end;
 
 constructor TRegIniFile.Create(const aFileName: String); 

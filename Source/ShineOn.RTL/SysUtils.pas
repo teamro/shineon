@@ -425,7 +425,7 @@ end;
 
 class function SysUtils.AnsiUpperCase(S: String): String;
 begin
-  if S = nil then
+  if Length(S) = 0 then
     Result := ''
   else
     Result := S.ToUpper
@@ -433,7 +433,7 @@ end;
 
 class function SysUtils.AnsiLowerCase(S: String): String;
 begin
-  if S = nil then
+  if Length(S) = 0 then
     Result := ''
   else
     Result := S.ToLower;
@@ -491,7 +491,7 @@ end;
 
 class function SysUtils.AnsiLastChar(S: String): String;
 begin
-  if (S = nil) or (S = '') then
+  if String.IsNullOrEmpty(S) then
     Result := ''
   else
     Result := S.Substring(S.Length-1);
@@ -534,7 +534,7 @@ end;
 
 class function SysUtils.Trim(S: String): String; 
 begin
-  if S = nil then
+  if Length(S) = 0 then
     Result := ''
   else
     Result := S.Trim;
@@ -542,7 +542,7 @@ end;
 
 class function SysUtils.TrimLeft(S: String): String; 
 begin
-  if S = nil then
+  if Length(S) = 0 then
     Result := ''
   else
     Result := S.TrimStart(nil);
@@ -550,7 +550,7 @@ end;
 
 class function SysUtils.TrimRight(S: String): String; 
 begin
-  if S = nil then
+  if Length(S) = 0 then
     Result := ''
   else
     Result := S.TrimEnd(nil);
@@ -802,7 +802,7 @@ end;
 
 class function SysUtils.ChangeFileExt(FileName, Extension: String): String;
 begin
-  if FileName = nil then
+  if String.IsNullOrEmpty(FileName) then
     Result := ''
   else
     Result := System.IO.Path.ChangeExtension(FileName, Extension);
@@ -919,7 +919,7 @@ end;
 
 class function SysUtils.IsPathDelimiter(S: String; Index: Integer): Boolean;
 begin
-  if S = nil then
+  if String.IsNullOrEmpty(S) then
     Result := false
   else
     Result := S[Index] = System.IO.Path.DirectorySeparatorChar;
@@ -927,7 +927,7 @@ end;
 
 class function SysUtils.IsDelimiter(Delimiters, S: String; Index: Integer): Boolean;
 begin
-  if (Delimiters = nil) or (S = nil) then
+  if String.IsNullOrEmpty(Delimiters) or String.IsNullOrEmpty(S) then
     Result := false
   else
     Result := Delimiters.IndexOf(S[Index]) >= 0;
@@ -935,7 +935,7 @@ end;
 
 class function SysUtils.IncludeTrailingPathDelimiter(S: String): String;
 begin
-  if S = nil then
+  if String.IsNullOrEmpty(S) then
     Result := ''
   else if not S.EndsWith(System.IO.Path.DirectorySeparatorChar) then
     Result := S + System.IO.Path.DirectorySeparatorChar
@@ -950,7 +950,7 @@ end;
 
 class function SysUtils.ExcludeTrailingPathDelimiter(S: String): String;
 begin
-  if S = nil then
+  if String.IsNullOrEmpty(S) then
     Result := ''
   else
     Result := S.TrimEnd([System.IO.Path.DirectorySeparatorChar])
@@ -963,7 +963,7 @@ end;
 
 class function SysUtils.LastDelimiter(Delimiters, S: String): Integer;
 begin
-  if (S = '') or (S = nil) or (Delimiters = '') or (Delimiters = nil)  then
+  if String.IsNullOrEmpty(S) or String.IsNullOrEmpty(Delimiters)  then
     Result := -1
   else
     Result := S.LastIndexOfAny(Delimiters.ToCharArray);
@@ -1002,7 +1002,7 @@ end;
 class function SysUtils.AnsiStrRScan(Str: String; Chr: Char): String;
 var i:Int32;
 begin
-  if Str = nil then
+  if String.IsNullOrEmpty(Str) then
     Result := nil
   else 
   begin
@@ -1017,7 +1017,7 @@ end;
 class function SysUtils.AnsiStrScan(Str: String; Chr: Char): String;
 var i:Int32;
 begin
-  if Str = nil then
+  if String.IsNullOrEmpty(Str) then
     Result := nil
   else
   begin
