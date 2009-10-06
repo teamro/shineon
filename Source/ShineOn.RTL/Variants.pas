@@ -43,8 +43,8 @@ type
     property Value: Object read fValue;
     property AsList: Array of Object read Array of Object(fValue); implements IList;
     property Item[I: Integer]: Object read AsList[I]; default;
-    class property Null: Variant := new Variant(nil); readonly;
-    class property Unassigned: Variant := new Variant(DBNull.Value);readonly;
+    class property Null: Variant := new Variant(DBNull.Value); readonly;
+    class property Unassigned: Variant := new Variant(nil);readonly;
     // unary:
     class operator Plus(val: Variant): Variant;
     class operator Minus(val: Variant): Variant;
