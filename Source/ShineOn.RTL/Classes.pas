@@ -39,6 +39,7 @@ type
   
   TListNotification = public enum(Added, Extracted, Deleted);
   
+  EStringListError = class(Exception);
  
 type   
   TListAssignOp = public enum(Copy, &And, &Or, &Xor, SrcUnique, DestUnique);
@@ -476,12 +477,9 @@ type
     property Suspended: Boolean read GetSuspended write SetSuspended;
     property ThreadID: THandle read FThreadID;
     property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
-  end;
-  
-  
+  end;  
   
 implementation
-
 
 function RTLStreamToDotNetStream(AStream:TStream):System.IO.Stream;
 var 
@@ -1661,14 +1659,16 @@ begin
 end;
 
 procedure TStringList.InsertObject(Index: Integer; S: String; AObject: Object); 
-var AItem:TStringItem;
+var 
+  AItem:TStringItem;
 begin
+  if Sorted then
+    raise new EStringListError(SSortedListError);
+
   Changing;
-  // TODO: only allow inserts at end for sorted lists
   AItem := new TStringItem;
   AItem.AString := S;
   AItem.AObject := AObject;
-  // TODO: in a sorted list, insert at correct location
   FStrings.Insert(Index, AItem);
   Changed;
 end;
