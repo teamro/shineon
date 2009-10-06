@@ -10,6 +10,10 @@ namespace ShineOn.Rtl;
 
 interface
 
+uses
+  System.Threading,
+  System.Globalization;
+
 type
 { Standard Character set type }
 
@@ -162,8 +166,8 @@ var
   ShortDateFormat: DelphiString;
   LongDateFormat: DelphiString;
   TimeSeparator: SeparatorType;
-  TimeAMString: DelphiString;
-  TimePMString: DelphiString;
+  TimeAMString: DelphiString := System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.AMDesignator;
+  TimePMString: DelphiString := System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.PMDesignator;
   ShortTimeFormat: DelphiString;
   LongTimeFormat: DelphiString;
   ShortMonthNames: array[1..12] of DelphiString;
