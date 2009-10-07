@@ -22,6 +22,9 @@ type
   TReplaceFlags = public flags(ReplaceAll, IgnoreCase);
   
 type
+  TOpenedFile = FileStream;
+
+type
   SysUtils = public sealed class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
@@ -110,6 +113,7 @@ type
     class function TimeToStr(ATime:TDateTime):String;
     class procedure FreeAndNil(var Obj);
     class function FileExists(FileName: String): Boolean;
+    class procedure FileClose(Handle: TOpenedFile);
     class function DirectoryExists(Directory: String): Boolean;
     class function ForceDirectories(Dir: String): Boolean;
     class function DeleteFile(FileName: String): Boolean;
@@ -1345,6 +1349,12 @@ end;
 class function SysUtils.PathSeparator: Char;
 begin
   result := Path.PathSeparator;
+end;
+
+class procedure SysUtils.FileClose(Handle: TOpenedFile);
+begin
+  if Handle <> nil then
+    Handle.Close();
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
