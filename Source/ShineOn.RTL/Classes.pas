@@ -54,14 +54,6 @@ type
     function Compare(X,Y:Object):Integer;
   end;
   
-  TStringlistSortCompareWrapper = assembly class(TObject, IComparer)
-    FStrings:TStringList;
-    FComparer:TStringListSortCompare;
-  public
-    constructor Create(AStrings:TStringList;AComparer:TStringListSortCompare);
-    function Compare(X,Y:Object):Integer;
-  end;
-   
   TList = public class(TObject, IEnumerable)
   private
     FList:ArrayList;
@@ -530,40 +522,8 @@ begin
     Result := X.GetHashCode - Y.GetHashCode;
 end;
 
-{ TStringlistSortCompareWrapper }
-
-constructor TStringlistSortCompareWrapper.Create(AStrings:TStringList;AComparer:TStringListSortCompare);
-begin
-  inherited Create;
-  FStrings := AStrings;
-  FComparer := AComparer;
-end;
-
-function TStringlistSortCompareWrapper.Compare(X,Y:Object):Integer;
-  function FindItem(S:String):Integer;
-  begin
-    for Result := 0 to FStrings.Count - 1 do
-      if FStrings.CompareStrings(FStrings[Result], S) = 0 then
-        Exit;
-    Result := -1;
-  end;
-begin
-  if FStrings <> nil then
-  begin
-    if (FComparer <> nil)  then
-      // a custom sort implementation will be *very* slow due to the need for FindItem()
-      FComparer(FStrings, FindItem(X.ToString), FindItem(Y.ToString))
-    else if FStrings.CaseSensitive then
-      Result := AnsiCompareText(X.ToString, Y.ToString)
-    else
-      Result := AnsiCompareStr(X.ToString, Y.ToString);
-  end
-  else 
-    Result := X.GetHashCode - Y.GetHashCode;
-end;
-
-
 { TList }
+
 function TList.GetEnumerator: IEnumerator;
 begin
  Result := IEnumerator(FList.GetEnumerator); //pass the enumerator of the internal arraylist.
@@ -1682,7 +1642,7 @@ end;
 procedure TStringList.Sort; 
 begin
   Changing;
-  CustomSort(@CompareStrings);
+  CustomSort(@MethodCompareStrings);
   Changed;
 end;
 
