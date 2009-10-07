@@ -22,7 +22,7 @@ type
   TReplaceFlags = public flags(ReplaceAll, IgnoreCase);
   
 type
-  TOpenedFile = FileStream;
+  TOpenedFile = public FileStream;
 
 type
   SysUtils = public sealed class
