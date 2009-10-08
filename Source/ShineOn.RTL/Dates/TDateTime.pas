@@ -8,8 +8,8 @@ uses
 { TDateTime Class }
   
 type
-  TDate = TDateTime;
-  TTime = TDateTime;
+  TDate = public TDateTime;
+  TTime = public TDateTime;
   
   EDateTimeException = public class(Exception);
   TDateTime = public record (IFormattable, IComparable, IConvertible)
