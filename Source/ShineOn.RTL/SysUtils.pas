@@ -112,6 +112,7 @@ type
     class function DateTimeToStr(ADateTime:TDateTime):String;
     class function TimeToStr(ATime:TDateTime):String;
     class procedure FreeAndNil(var Obj);
+    class function FileAge(const FileName: String; out FileDateTime: TDateTime): Boolean;
     class function FileExists(FileName: String): Boolean;
     class procedure FileClose(Handle: TOpenedFile);
     class function DirectoryExists(Directory: String): Boolean;
@@ -759,6 +760,15 @@ class procedure SysUtils.FreeAndNil(var Obj);
 begin
   Obj.Free;
   Obj := nil;
+end;
+
+class function SysUtils.FileAge(const FileName: String; out FileDateTime: TDateTime): Boolean;
+begin
+  Result := FileExists(FileName);
+  if Result then
+    FileDateTime := System.IO.File.GetLastWriteTime(FileName)
+  else
+    FileDateTime := DelphiEpoch;
 end;
 
 class function SysUtils.FileExists(FileName: String): Boolean;
