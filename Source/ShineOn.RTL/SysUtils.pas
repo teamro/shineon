@@ -119,6 +119,7 @@ type
     class function DeleteFile(FileName: String): Boolean;
     class function RenameFile(OldName, NewName: String): Boolean;
     class function ChangeFileExt(FileName, Extension: String): String;
+    class function ChangeFilePath(FileName, Path: String): String;
     class function ExtractFilePath(FileName: String): String;
     class function ExtractFileDir(FileName: String): String;
     class function ExtractFileDrive(FileName: String): String;
@@ -1355,6 +1356,11 @@ class procedure SysUtils.FileClose(Handle: TOpenedFile);
 begin
   if Handle <> nil then
     Handle.Close();
+end;
+
+class function SysUtils.ChangeFilePath(FileName, Path: String): String;
+begin
+  Result := IncludeTrailingPathDelimiter(Path) + ExtractFileName(FileName);
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS

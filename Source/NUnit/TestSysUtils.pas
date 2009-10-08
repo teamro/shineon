@@ -129,6 +129,8 @@ type
     method RenameFile;
     [Test, Ignore('Test not implemented')] 
     method ChangeFileExt;
+    [Test] 
+    method ChangeFilePath;
     [Test, Ignore('Test not implemented')] 
     method ExtractFilePath;
     [Test, Ignore('Test not implemented')] 
@@ -539,6 +541,16 @@ end;
 method SysUtilsTests.ChangeFileExt; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+end;
+
+method SysUtilsTests.ChangeFilePath;
+const
+  cPath1 = 'c:\path1';
+  cPath2 = 'c:\path2';
+  cFileName = 'FileName.txt';
+begin
+  var sFileName: String := SysUtils.ChangeFilePath(SysUtils.IncludeTrailingPathDelimiter(cPath1) + cFileName, cPath2);
+  NUnit.Framework.Assert.IsTrue(String.Equals(sFileName, SysUtils.IncludeTrailingPathDelimiter(cPath2) + cFileName));
 end;
 
 method SysUtilsTests.ExtractFilePath; 
