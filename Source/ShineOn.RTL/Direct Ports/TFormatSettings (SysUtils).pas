@@ -193,6 +193,7 @@ var
 
 type
   TFormatSettings = public record
+  public 
     CurrencyFormat: Byte;
     NegCurrFormat: Byte;
     ThousandSeparator: SeparatorType;
