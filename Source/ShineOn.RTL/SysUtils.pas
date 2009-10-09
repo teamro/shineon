@@ -118,6 +118,8 @@ type
     class function FileExists(FileName: String): Boolean;
     class procedure FileClose(Handle: TOpenedFile);
     
+    class function CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;  
+
     class function DirectoryExists(Directory: String): Boolean;
     class function ForceDirectories(Dir: String): Boolean;
     class function DeleteFile(FileName: String): Boolean;
@@ -1381,6 +1383,11 @@ begin
   result := IncludeTrailingPathDelimiter(Path) + ExtractFileName(FileName);
 end;
 
+
+class function SysUtils.CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;
+begin
+  result := C in CharSet;
+end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
 
