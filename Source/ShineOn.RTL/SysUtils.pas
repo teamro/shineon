@@ -112,9 +112,12 @@ type
     class function DateTimeToStr(ADateTime:TDateTime):String;
     class function TimeToStr(ATime:TDateTime):String;
     class procedure FreeAndNil(var Obj);
+
     class function FileAge(const FileName: String; out FileDateTime: TDateTime): Boolean;
+    class function FileCreate(const FileName: String): TOpenedFile;
     class function FileExists(FileName: String): Boolean;
     class procedure FileClose(Handle: TOpenedFile);
+    
     class function DirectoryExists(Directory: String): Boolean;
     class function ForceDirectories(Dir: String): Boolean;
     class function DeleteFile(FileName: String): Boolean;
@@ -1362,6 +1365,11 @@ begin
   result := Path.PathSeparator;
 end;
 
+class function SysUtils.FileCreate(const FileName: String): TOpenedFile;
+begin
+  result := System.IO.File.Open(FileName, System.IO.FileMode.&Create);
+end;
+
 class procedure SysUtils.FileClose(Handle: TOpenedFile);
 begin
   if Handle <> nil then
@@ -1370,8 +1378,9 @@ end;
 
 class function SysUtils.ChangeFilePath(FileName, Path: String): String;
 begin
-  Result := IncludeTrailingPathDelimiter(Path) + ExtractFileName(FileName);
+  result := IncludeTrailingPathDelimiter(Path) + ExtractFileName(FileName);
 end;
+
 
 // DELPHI COMPATIBLE GLOBAL METHODS
 
