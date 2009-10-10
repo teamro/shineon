@@ -331,7 +331,8 @@ type
   THandleStream = public class(TStream)
   protected
     FHandle: SafeFileHandle;
-    FStream:System.IO.FileStream;
+    FStream: System.IO.FileStream;
+    FReader: System.IO.StreamReader;
     function GetHandle: SafeFileHandle;
     procedure SetSize(const NewSize: Int64); override;
   assembly or protected
@@ -1815,6 +1816,7 @@ begin
   begin
     FHandle := AHandle;
     FStream := new System.IO.FileStream(FHandle, System.IO.FileAccess.ReadWrite);
+    FReader := new System.IO.StreamReader(FStream);
   end;
 end;
 
@@ -1839,8 +1841,11 @@ procedure THandleStream.Dispose;
 begin
   if FStream <> nil then
   begin
+    FReader.Close;
+
     FStream.Flush;
     FStream.Close;
+
     FHandle:Dispose;
     FStream := nil;
   end;
@@ -1849,10 +1854,7 @@ end;
 
 function THandleStream.ReadLine: String; 
 begin
-  with T := new System.IO.StreamReader(FStream) do 
-  begin  
-    Result := T.ReadLine;
-  end;
+  Result := FReader.ReadLine;
 end;
 
 procedure THandleStream.WriteLine(Value:String); 
@@ -1914,6 +1916,7 @@ begin
     FileShare := System.IO.FileShare.None;
 
   FStream := new System.IO.FileStream(FileName, FileMode, FileAccess, FileShare);
+  FReader := new System.IO.StreamReader(FStream);
 end;
 
 { TCustomMemoryStream }
