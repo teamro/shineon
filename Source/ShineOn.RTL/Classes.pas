@@ -1841,10 +1841,10 @@ procedure THandleStream.Dispose;
 begin
   if FStream <> nil then
   begin
-    FReader:Dispose;
-
     FStream.Flush;
     FStream.Close;
+
+    FReader:Dispose;
 
     FHandle:Dispose;
     FStream := nil;
