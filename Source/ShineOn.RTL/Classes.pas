@@ -1841,7 +1841,7 @@ procedure THandleStream.Dispose;
 begin
   if FStream <> nil then
   begin
-    FReader.Close;
+    FReader:Dispose;
 
     FStream.Flush;
     FStream.Close;
