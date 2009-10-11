@@ -168,13 +168,14 @@ end;
 
 class function SystemUnit.Pos(SubStr, aStr:String):Int32;
 begin
- {$IFDEF LegacyStrIndexing}
-  Result := aStr.IndexOf(SubStr)+1;
- {$ELSE}
-  Result := aStr.IndexOf(SubStr);
-{$ENDIF}  
+  if (SubStr = nil) or (aStr = nil) or (SubStr.Length = 0) or (aStr.Length = 0) then
+    Result := -1
+  else
+    Result := aStr.IndexOf(SubStr);
+{$IFDEF LegacyStrIndexing}
+  Inc(Result);
+{$ENDIF}
 end;
-
 
 class function SystemUnit.Concat(S1, S2:String):String;
 begin

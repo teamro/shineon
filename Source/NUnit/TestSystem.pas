@@ -147,6 +147,7 @@ begin
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('a Test', S), 8);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('TestString', S), 10);
   NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos('teststring', S), -1);
+  NUnit.Framework.Assert.AreEqual(ShineOn.RTL.Pos(String(nil), String(nil)), -1);
 end;
 
 method SystemTests.Concat; 
