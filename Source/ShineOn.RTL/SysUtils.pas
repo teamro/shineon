@@ -165,9 +165,10 @@ type
     class function DriveDelim: Char;
     class function DriveSeparator: Char;
     class function PathSep: Char;
-    class function PathSeparator: Char; 
-    class function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
-    class function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+    class function PathSeparator: Char;
+    class function FloatToStr(Value: Extended): String;
+    class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+    class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
   end;
 
 var
@@ -1392,6 +1393,11 @@ begin
   result := C in CharSet;
 end;
 
+class function SysUtils.FloatToStr(Value: Extended): String;
+begin
+  Result := FloatToStrF(Value, TFloatFormat.ffGeneral, 15, 0);
+end;
+
 class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
   case Format of
@@ -1409,6 +1415,11 @@ begin
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
+
+function FloatToStr(Value: Extended): String;
+begin
+  result := ShineOn.Rtl.SysUtils.FloatToStr(Value);
+end;
 
 function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
