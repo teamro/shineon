@@ -1394,7 +1394,13 @@ end;
 
 class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
-  NotImplemented;
+  case Format of
+    TFloatFormat.ffCurrency: result := Value.ToString('C' + Digits.ToString);
+    TFloatFormat.ffExponent: result := Value.ToString('E' + Digits.ToString);
+    TFloatFormat.ffFixed: result := Value.ToString('F' + Digits.ToString);
+    TFloatFormat.ffGeneral: result := Value.ToString('G' + Digits.ToString);
+    TFloatFormat.ffNumber: result := Value.ToString('N' + Digits.ToString);
+  end;
 end;
 
 class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
@@ -1403,6 +1409,16 @@ begin
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
+
+function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+begin
+  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits);
+end;
+
+function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+begin
+  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits, FormatSettings);
+end;
 
 procedure Sleep(aVal: Integer);
 begin
