@@ -75,7 +75,7 @@ type
     method TestAnsiQuotedStr;
     [Test, Ignore('Test not implemented')] 
     method AnsiExtractQuotedStr;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method AnsiDequotedStr;
     [Test] 
     method IntToStr;
@@ -352,12 +352,35 @@ end;
 
 method SysUtilsTests.AnsiExtractQuotedStr; 
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+ NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
 method SysUtilsTests.AnsiDequotedStr; 
+var
+  S : string;
+  R : string;
+  E : string;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  S := '"This is a string"';
+  E := 'This is a string';
+  R := DequotedStr(S);
+  NUnit.Framework.Assert.AreEqual(E, R, 'AnsiDequotedString Failed -- Test#01');
+
+  S := '"This is "a" string"';
+  E := 'This is a string';
+  R := DequotedStr(S);
+  NUnit.Framework.Assert.AreEqual(E, R, 'AnsiDequotedString Failed -- Test#02');
+
+  S := '"This is a" string"';
+  E := 'This is a string';
+  R := DequotedStr(S);
+  NUnit.Framework.Assert.AreEqual(E, R, 'AnsiDequotedString Failed -- Test#03');
+
+  S := '"This is open ended';
+  E := 'This is open ended';
+  R := DequotedStr(S);
+  NUnit.Framework.Assert.AreEqual(E, R, 'AnsiDequotedString Failed -- Test#04');
+
 end;
 
 method SysUtilsTests.IntToStr; 
@@ -383,8 +406,6 @@ begin
   E := '0';
 
   NUnit.Framework.Assert.AreEqual(E, R, 'IntToStr failed -- Test#3');
-
-
 end;
 
 method SysUtilsTests.IntToHex; 

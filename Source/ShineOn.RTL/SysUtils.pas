@@ -603,15 +603,23 @@ end;
 
 class function SysUtils.DequotedStr(const S: String): String;
 begin
-  Result := DequotedStr(S,'''');
+  Result := DequotedStr(S,'"');
 end;
 
 class function SysUtils.DequotedStr(const S: String; QuoteChar: Char): String;
 var
   I: Integer;
 begin
+  // First, remove the outside quotes
   Result := S;
-
+  if not Result.StartsWith(QuoteChar) then 
+  begin
+    Result := String.Empty;
+    Exit;
+  end;    
+  Result := Result.TrimStart(QuoteChar);
+  Result := Result.TrimEnd(QuoteChar);
+  // Now remove inside quotes
   for I := 0 to length(Result) - 1 do
     begin
       if Result[I] = QuoteChar then
@@ -632,8 +640,10 @@ begin
 end;
 
 class function SysUtils.DequotedStr(const S: String; QuoteChar: Char; var p: Int32): String;
+var
+  DoubleQS: String;
 begin
-  NotImplemented;
+ NotImplemented
 end;
 
 class function SysUtils.AnsiDequotedStr(const S: String; Quote: Char): String;
@@ -1243,8 +1253,7 @@ begin
        // With THandle being an IntPtr we need to special case
        // IntPtr, since AppendFormat treats an IntPtr as a string.
        if not (Args[argIndex] is IntPtr) then
-         Buffer.AppendFormat(Provider, fmtSpec.ToString,
-[Args[argIndex]])
+         Buffer.AppendFormat(Provider, fmtSpec.ToString, [Args[argIndex]])
        else
        begin
          // If running a 32-bit platform, treat it as an Int32,
