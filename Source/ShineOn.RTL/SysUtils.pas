@@ -1392,7 +1392,7 @@ begin
   result := C in CharSet;
 end;
 
-class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
   case Format of
     TFloatFormat.ffCurrency: result := Value.ToString('C' + Digits.ToString);
@@ -1403,19 +1403,19 @@ begin
   end;
 end;
 
-class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
 begin
   NotImplemented;
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
 
-function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
   result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits);
 end;
 
-function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
 begin
   result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits, FormatSettings);
 end;
