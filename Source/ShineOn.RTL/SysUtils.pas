@@ -20,6 +20,7 @@ uses System,
 
 type
   TReplaceFlags = public flags(ReplaceAll, IgnoreCase);
+  TFloatFormat = public enum(ffGeneral, ffExponent, ffFixed, ffNumber, ffCurrency);
   
 type
   TOpenedFile = public FileStream;
@@ -165,6 +166,8 @@ type
     class function DriveSeparator: Char;
     class function PathSep: Char;
     class function PathSeparator: Char; 
+    class function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+    class function FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
   end;
 
 var
@@ -1387,6 +1390,16 @@ end;
 class function SysUtils.CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;
 begin
   result := C in CharSet;
+end;
+
+class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+begin
+  NotImplemented;
+end;
+
+class function SysUtils.FloatToStrF (Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+begin
+  NotImplemented;
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
