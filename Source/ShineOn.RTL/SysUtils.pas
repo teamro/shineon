@@ -295,12 +295,17 @@ procedure Sleep(aVal: Integer);public;
 
 function Format (Const aFormatting: String; Const aData: array of Object ) : String; public;
 
-function PathDelim: Char;
-function DirectorySeparator: Char;
-function DriveDelim: Char;
-function DriveSeparator: Char;
-function PathSep: Char;
-function PathSeparator: Char;
+function PathDelim: Char; public;
+function DirectorySeparator: Char; public;
+function DriveDelim: Char; public;
+function DriveSeparator: Char; public;
+function PathSep: Char; public;
+function PathSeparator: Char; public;
+
+function FloatToStr(Value: Extended): String; public;
+function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String; public;
+function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String; public;
+
 
 implementation
 
