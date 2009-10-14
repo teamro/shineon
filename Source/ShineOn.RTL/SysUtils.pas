@@ -124,6 +124,8 @@ type
 
     class function CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;  
 
+    class procedure GetLocaleFormatSettings(LCID: Integer; var FormatSettings: TFormatSettings);
+
     class function DirectoryExists(Directory: String): Boolean;
     class function ForceDirectories(Dir: String): Boolean;
     class function DeleteFile(FileName: String): Boolean;
@@ -1425,6 +1427,41 @@ class function SysUtils.CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;
 begin
   result := C in CharSet;
 end;
+
+class procedure SysUtils.GetLocaleFormatSettings(LCID: Integer; var FormatSettings: TFormatSettings);
+var
+  iCount: Integer;
+  pInfo: CultureInfo;
+begin
+  pInfo := CultureInfo.Create(System.Threading.Thread.CurrentThread.CurrentCulture.LCID);
+  FormatSettings.CurrencyString := pInfo.NumberFormat.CurrencySymbol;
+  FormatSettings.CurrencyFormat := pInfo.NumberFormat.CurrencyPositivePattern;
+  FormatSettings.NegCurrFormat := pInfo.NumberFormat.CurrencyNegativePattern;
+  FormatSettings.ThousandSeparator := pInfo.NumberFormat.NumberGroupSeparator;
+  FormatSettings.DecimalSeparator := pInfo.NumberFormat.NumberDecimalSeparator;
+  FormatSettings.CurrencyDecimals := pInfo.NumberFormat.CurrencyDecimalDigits;
+
+  FormatSettings.DateSeparator := pInfo.DateTimeFormat.DateSeparator;
+  FormatSettings.ShortDateFormat := ConvertClrDateTimeFormat(pInfo.DateTimeFormat.ShortDatePattern);
+  FormatSettings.LongDateFormat := ConvertClrDateTimeFormat(pInfo.DateTimeFormat.LongDatePattern);
+  FormatSettings.TimeSeparator := pInfo.DateTimeFormat.TimeSeparator;
+  FormatSettings.TimeAMString := pInfo.DateTimeFormat.AMDesignator;
+  FormatSettings.TimePMString := pInfo.DateTimeFormat.PMDesignator;
+  FormatSettings.ShortTimeFormat := ConvertClrDateTimeFormat(pInfo.DateTimeFormat.ShortTimePattern);
+  FormatSettings.LongTimeFormat := ConvertClrDateTimeFormat(pInfo.DateTimeFormat.LongTimePattern);
+  for iCount := 0 to MonthsPerYear - 1 do
+  begin
+    FormatSettings.ShortMonthNames[iCount + 1] := pInfo.DateTimeFormat.AbbreviatedMonthNames[iCount];
+    FormatSettings.LongMonthNames[iCount + 1] := pInfo.DateTimeFormat.MonthNames[iCount];
+  end;
+  for iCount := 0 to DaysPerWeek -1  do
+  begin
+    FormatSettings.ShortDayNames[iCount + 1] := pInfo.DateTimeFormat.AbbreviatedDayNames[iCount];
+    FormatSettings.LongDayNames[iCount + 1] := pInfo.DateTimeFormat.DayNames[iCount];
+  end;
+
+  ListSeparator := pInfo.TextInfo.ListSeparator;
+end;          
 
 class function SysUtils.FloatToStr(Value: Extended): String;
 begin
