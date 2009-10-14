@@ -119,6 +119,9 @@ type
     class function FileExists(FileName: String): Boolean;
     class procedure FileClose(Handle: TOpenedFile);
     
+    class function FileSetDate(const AFileName: String; AAge: TDateTime): Integer;
+    class function FileSetDate(const AFileName: String; AAge: Integer): Integer;
+
     class function CharInSet(C: Char; const CharSet: TSysCharSet): Boolean;  
 
     class function DirectoryExists(Directory: String): Boolean;
@@ -1394,6 +1397,22 @@ class procedure SysUtils.FileClose(Handle: TOpenedFile);
 begin
   if Handle <> nil then
     Handle.Close();
+end;
+
+class function SysUtils.FileSetDate(const AFileName: String; AAge: TDateTime): Integer;
+begin
+  result := 0;
+  try
+    System.IO.File.SetLastWriteTime(AFileName, AAge);
+  except
+    on E: Exception do
+      result := 1;    
+  end;
+end;
+
+class function SysUtils.FileSetDate(const AFileName: String; AAge: Integer): Integer;
+begin
+  Result := FileSetDate(AFileName, FileDateToDateTime(AAge));
 end;
 
 class function SysUtils.ChangeFilePath(FileName, Path: String): String;
