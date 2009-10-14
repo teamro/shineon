@@ -30,6 +30,7 @@ type
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
     class function FormatBuf(Buffer: System.Text.StringBuilder; const aFormat: String; const Args: array of Object; Provider: IFormatProvider): Cardinal;
+    class procedure AdjustFormatProvider(AFormat: NumberFormatInfo; AdjustCurrencyFormat: Boolean; const FormatSettings: TFormatSettings);
   public
     class function UpperCase(const S: String): String; 
     class function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String; 
@@ -52,7 +53,8 @@ type
     class function AnsiUpperCase(S: String): String;
     class function AnsiLowerCase(S: String): String;
     
-    class function Format (Const aFormatting: String; Const aData: array of Object ) : String;
+    class function Format(const AFormatting: String; const AData: array of Object): String;
+    class function Format(const AFormatting: String; const AData: array of Object; const AFormatSettings: TFormatSettings): String;
     
     class function AnsiCompareStr(S1, S2: String): Integer;  
     class function AnsiSameStr(S1, S2: String): Boolean;  
@@ -1283,13 +1285,25 @@ begin
    Result := Buffer.Length;
 end;
 
-class function SysUtils.Format (Const aFormatting: String; Const aData: array of Object ) : String; 
+class function SysUtils.Format(const AFormatting: String; const AData: array of Object): String; 
 var
   fsb: StringBuilder;
 begin
   fsb := new StringBuilder(length(aFormatting) * 2);
   FormatBuf(fsb, aFormatting, aData, System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone as IFormatProvider);
   result := fsb.ToString;
+end;
+
+class function SysUtils.Format(const AFormatting: String; const AData: array of Object; const AFormatSettings: TFormatSettings): String;
+var
+  pBuilder: StringBuilder;
+  pFormat: NumberFormatInfo;
+begin
+  pFormat := NumberFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone);
+  AdjustFormatProvider(pFormat, True, AFormatSettings);
+  pBuilder := new StringBuilder(length(AFormatting) * 2);
+  FormatBuf(pBuilder, AFormatting, AData, pFormat as IFormatProvider);
+  result := pBuilder.ToString;
 end;
 
 class procedure SysUtils.Sleep(val: Integer);
@@ -1462,6 +1476,28 @@ begin
 
   ListSeparator := pInfo.TextInfo.ListSeparator;
 end;          
+
+class procedure SysUtils.AdjustFormatProvider(AFormat: NumberFormatInfo; AdjustCurrencyFormat: Boolean; const FormatSettings: TFormatSettings);
+begin
+  if AFormat.CurrencyDecimalSeparator <> FormatSettings.DecimalSeparator then
+    AFormat.CurrencyDecimalSeparator := FormatSettings.DecimalSeparator;
+  if AFormat.CurrencyGroupSeparator <> FormatSettings.ThousandSeparator then
+    AFormat.CurrencyGroupSeparator := FormatSettings.ThousandSeparator;
+  if AFormat.NumberDecimalSeparator <> FormatSettings.DecimalSeparator then
+    AFormat.NumberDecimalSeparator := FormatSettings.DecimalSeparator;
+  if AFormat.NumberGroupSeparator <> FormatSettings.ThousandSeparator then
+    AFormat.NumberGroupSeparator := FormatSettings.ThousandSeparator;
+
+  if AdjustCurrencyFormat then
+  begin
+    if AFormat.CurrencySymbol <> FormatSettings.CurrencyString then
+      AFormat.CurrencySymbol := FormatSettings.CurrencyString;
+    if AFormat.CurrencyPositivePattern <> FormatSettings.CurrencyFormat then
+      AFormat.CurrencyPositivePattern := FormatSettings.CurrencyFormat;
+    if AFormat.CurrencyNegativePattern <> FormatSettings.NegCurrFormat then
+      AFormat.CurrencyNegativePattern := FormatSettings.NegCurrFormat;
+  end;
+end;
 
 class function SysUtils.FloatToStr(Value: Extended): String;
 begin
