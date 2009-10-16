@@ -183,6 +183,7 @@ type
    function GetNamePath: String; virtual;
   end;
   
+  TStringsClass = public class of TStrings;
   TStrings = public abstract class(TPersistent)
   private
     //FStringsAdapter:IStringsAdapter;
