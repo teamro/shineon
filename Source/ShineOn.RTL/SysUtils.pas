@@ -1126,15 +1126,13 @@ class function SysUtils.FormatBuf(Buffer: System.Text.StringBuilder; const aForm
 var
    s, srclen: Cardinal;
    argIndex: Cardinal;
-   precisionStart: Cardinal;
-   precisionLen: Integer;
    fmtSpec: System.Text.StringBuilder;
-   argStr: String;
+   argStr, precisionString: String;
 begin
    s := 0;
    argIndex := 0;
    srclen := length(aFormat);
-   fmtSpec := System.Text.StringBuilder.Create;
+   fmtSpec := new System.Text.StringBuilder;
 
    while s < srclen do
    begin
@@ -1174,7 +1172,7 @@ begin
        end;
 
        if s >= srclen then Error;
-
+       
        if aFormat[s] = ':' then
        begin
          inc(s);
@@ -1218,29 +1216,34 @@ begin
          fmtSpec.Length := 2;    // remove comma if no width spec was found
 
        if s >= srclen then Error;
-
+         
        if aFormat[s] = '.' then
        begin
          inc(s);
          if aFormat[s] = '*' then
          begin
-           precisionStart := Convert.ToUInt32(Args[argIndex]);
-           precisionLen := -1;
+          // precisionStart := Convert.ToUInt32(Args[argIndex]);
+          // precisionLen := -1;
+           precisionString := '';
            inc(argIndex);
            inc(s);
          end
          else
          begin
-           precisionStart := s - 1;
+          // precisionStart := s - 1;
            while (s +1 < srclen) and System.Char.IsDigit(aFormat[s]) do
+           begin
+             precisionString := precisionString + aFormat[s];
              inc(s);
-           precisionLen := s - precisionStart - 1;
+           end;
+          // precisionLen := s - precisionStart - 1;
          end;
        end
        else
        begin
-         precisionStart := 0;
-         precisionLen := 0;
+         precisionString := '';
+         //precisionStart := 0;
+         //precisionLen := 0;
        end;
 
        fmtSpec.Append(Char(':'));
@@ -1259,10 +1262,11 @@ begin
          Error;
        end;
 
-       if precisionLen > 0 then
-         fmtSpec.Append(aFormat, precisionStart, precisionLen)
-       else if precisionLen < 0 then
-         fmtSpec.Append(precisionStart);
+       if precisionString.Length > 0 then 
+        // fmtSpec.Append(aFormat, precisionStart, precisionLen)
+         fmtSpec.Append(precisionString);
+      // else if precisionLen < 0 then
+      //   fmtSpec.Append(precisionStart);
 
        fmtSpec.Append(Char('}'));
        // With THandle being an IntPtr we need to special case
