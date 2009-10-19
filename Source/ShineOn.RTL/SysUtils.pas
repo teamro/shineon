@@ -26,6 +26,9 @@ type
   TOpenedFile = public FileStream;
 
 type
+  TEncoding = public System.Text.Encoding;
+
+type
   SysUtils = public sealed class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
