@@ -729,6 +729,8 @@ begin
   NUnit.Framework.Assert.AreEqual('Decimal          = -123', SysUtils.Format('Decimal          = %d', [-123]));
   NUnit.Framework.Assert.AreEqual('Reposition after 3 strings = Zero One Two One Two', SysUtils.Format('Reposition after 3 strings = %s %s %s %1:s %s', ['Zero', 'One', 'Two', 'Three']));
   NUnit.Framework.Assert.AreEqual('Justified decimal = <1234   >', SysUtils.Format('Justified decimal = <%-7d>', [1234]));
+  NUnit.Framework.Assert.AreEqual('0 padded decimal  = <001234>', SysUtils.Format('0 padded decimal  = <%.6d>', [1234]));
+  NUnit.Framework.Assert.AreEqual('Width + precision = <  001234>', SysUtils.Format('Width + precision = <%8.6d>', [1234]));
 end;
 
 end.
