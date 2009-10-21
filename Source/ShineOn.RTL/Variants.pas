@@ -30,6 +30,7 @@ type
                             ,Less = 14
                             ,Equal = 15
                             ,NotEqual = 16);  
+
   Variant = public record(IList)
   private
     fValue: Object; readonly;
@@ -71,6 +72,7 @@ type
     class operator implicit(val: Boolean): Variant;
     class operator implicit(val: Byte): Variant;
     class operator implicit(val: DateTime): Variant;
+    class operator implicit(val: TDateTime): Variant;
     class operator implicit(val: Decimal): Variant;
     class operator implicit(val: Double): Variant;
     class operator implicit(val: Int16): Variant;
@@ -1001,6 +1003,11 @@ end;
 class operator Variant.implicit(val: Variant): array of Object;
 begin
   result := val.Value as array of Object;
+end;
+
+class operator Variant.implicit(val: TDateTime): Variant;
+begin
+  result := new Variant(val);
 end;
 
 function VarIsArray(const A: Variant): Boolean; 
