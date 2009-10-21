@@ -1513,13 +1513,16 @@ end;
 
 class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
 begin
+  var formatChar: Char;
   case Format of
-    TFloatFormat.ffCurrency: result := Value.ToString('C' + Digits.ToString);
-    TFloatFormat.ffExponent: result := Value.ToString('E' + Digits.ToString);
-    TFloatFormat.ffFixed: result := Value.ToString('F' + Digits.ToString);
-    TFloatFormat.ffGeneral: result := Value.ToString('G' + Digits.ToString);
-    TFloatFormat.ffNumber: result := Value.ToString('N' + Digits.ToString);
+    TFloatFormat.ffCurrency: formatChar := 'C';
+    TFloatFormat.ffExponent: formatChar := 'E';
+    TFloatFormat.ffFixed: formatChar := 'f';
+    TFloatFormat.ffGeneral: formatChar := 'G';
+    TFloatFormat.ffNumber: formatChar := 'N';
   end;
+  result := String.Format('{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
+  result := String.Format('{0:00.0000}', Value);
 end;
 
 class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
