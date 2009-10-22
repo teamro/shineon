@@ -18,7 +18,9 @@ type
     class method AnsiLeftStr(aStr: String; aCount: Integer): String;
     class method AnsiRightStr(aStr: String; aCount: Integer): String;
     class method AnsiMidStr(aStr: String; aStart, aCount: Integer): String;
+    class method ContainsText(const AText, ASubText: string): Boolean; inline;
     class method AnsiContainsStr(aStr, aSubstring: String): Boolean;
+
   end;
 
 
@@ -83,8 +85,15 @@ end;
 
 class method StrUtils.AnsiContainsStr(aStr, aSubstring: String): Boolean;
 begin
-  result := aStr.Contains(aSubstring);
+  Result := aStr.Contains(aSubstring);
 end;
+
+class method StrUtils.ContainsText(const AText, ASubText: String): Boolean;
+begin
+  Result := AText.Contains(ASubText);
+end;
+
+// Standalone versions
 
 method LeftStr(aStr: String; aCount: Integer): String;
 begin

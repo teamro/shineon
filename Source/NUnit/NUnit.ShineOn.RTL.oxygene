@@ -66,6 +66,7 @@
     <Compile Include="TestIniFiles.pas" />
     <Compile Include="TestStringRead.pas" />
     <Compile Include="TestStringWrite.pas" />
+    <Compile Include="TestStrUtils.pas" />
     <Compile Include="TestSystem.pas" />
     <Compile Include="TestSysUtils.pas" />
     <Compile Include="TestTDateTime.pas" />
