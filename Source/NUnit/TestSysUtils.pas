@@ -82,9 +82,9 @@ type
     [Test, Ignore('Test not implemented')] 
     method IntToHex;
     [Test] 
-    method StrToInt;
-    [Test, Ignore('Test not implemented')] 
-    method StrToIntDef;
+    method TestStrToInt;
+    [Test] 
+    method TestStrToIntDef;
     [Test, Ignore('Test not implemented')] 
     method TryStrToInt;
     [Test, Ignore('Test not implemented')] 
@@ -413,7 +413,7 @@ begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method SysUtilsTests.StrToInt; 
+method SysUtilsTests.TestStrToInt; 
 var
   S: string;
   R: Integer;
@@ -449,9 +449,25 @@ begin
   end;
 end;
 
-method SysUtilsTests.StrToIntDef; 
+method SysUtilsTests.TestStrToIntDef; 
+var
+  Submitted: String;
+  Expected: Integer;
+  Default: Integer;
+  Actual: Integer;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  Submitted := '42';
+  Expected := 42;
+  Actual := SysUtils.StrToIntDef(Submitted, Expected);
+  NUnit.Framework.Assert.IsTrue(Actual = Expected, 'StrToIntDef Failed - Test #01');
+
+  Submitted := 'xyz';
+  Expected := 42;
+  Default := 0;
+  Actual := SysUtils.StrToIntDef(Submitted, Default);
+  NUnit.Framework.Assert.IsTrue(Actual = Default, 'StrToIntDef Failed - Test #02');
+
+
 end;
 
 method SysUtilsTests.TryStrToInt; 

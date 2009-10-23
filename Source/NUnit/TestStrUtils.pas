@@ -57,7 +57,7 @@ end;
 
 method StrUtilsTests.TestLeftStr;
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+ NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
 method StrUtilsTests.TestRightStr;
