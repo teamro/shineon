@@ -189,6 +189,7 @@ type
     //FStringsAdapter:IStringsAdapter;
     FUpdateCount:Int32;
     FDelimiter, FQuoteChar:Char;
+    FLineBreak: String;
     function GetCommaText:String;
     procedure SetCommaText(Value:String);
     function GetName(Index:Integer):String;
@@ -242,6 +243,7 @@ type
     property Count: Integer read GetCount;
     property Delimiter: Char read FDelimiter write FDelimiter;
     property DelimitedText: String read GetDelimitedText write SetDelimitedText;
+    property LineBreak: String read FLineBreak write FLineBreak;
     property Names[Index: Integer]: String read GetName;
     property Objects[Index: Integer]: Object read GetObject write PutObject;
     property QuoteChar: Char read FQuoteChar write FQuoteChar;
@@ -1196,8 +1198,8 @@ begin
   for i:Int32 := 0 to Count - 1 do
   begin
     S.Append(Strings[i]);
-    if i <> Count -1 then
-      S.Append(System.Environment.NewLine);
+    if (i <> Count -1) and not string.IsNullOrEmpty(FLineBreak) then
+      S.Append(FLineBreak);
   end;
   Result := S.ToString;
 end;
@@ -1209,20 +1211,35 @@ begin
 end;
 
 procedure TStrings.SetTextStr(Value: String); 
-var S:String;
+var
+  iPos: Integer; 
+  iStart: Integer;
+  iLength: Integer;
 begin
-  Clear;
-  if Value <> nil then
-    with T:System.IO.StringReader := new System.IO.StringReader(Value) do
+  BeginUpdate;
+  try
+    Clear;
+    if String.IsNullOrEmpty(Value) then
+      Exit;
+    if String.IsNullOrEmpty(FLineBreak) then
     begin
-      while true do
-      begin 
-        S := T.ReadLine;
-        if S = nil then
-          Exit;
-        Add(S);  
-      end;
+      Add(Value);
+      Exit;
     end;
+    iStart := 0;
+    iLength := FLineBreak.Length;
+    iPos := Value.IndexOf(FLineBreak);
+    while iPos > -1 do 
+    begin
+      Add(Value.Substring(iStart, iPos - iStart));
+      iStart := iPos + iLength;
+      iPos := Value.IndexOf(FLineBreak, iStart);
+    end;
+    if iStart <= Value.Length then
+      Add(Value.Substring(iStart, Value.Length - iStart));
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TStrings.CompareStrings(S1, S2: String): Integer; 
@@ -1248,6 +1265,7 @@ begin
   inherited Create;
   FQuoteChar := '"';
   FDelimiter := ',';
+  FLineBreak := System.Environment.NewLine;
 end;
 
 function TStrings.Add(S: String): Integer; 

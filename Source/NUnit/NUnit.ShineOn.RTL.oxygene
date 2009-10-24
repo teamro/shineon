@@ -29,7 +29,7 @@
     </Reference>
     <ProjectReference Include="..\ShineOn.RTL\ShineOn.RTL.oxygene">
       <Project>{EADE7853-FDBE-4770-B0B2-5FF5FDD2DBF7}</Project>
-      <HintPath>$(Project)\..\bin\ShineOn.Rtl.dll</HintPath>
+      <HintPath>..\bin\ShineOn.Rtl.dll</HintPath>
       <Name>ShineOn.RTL</Name>
     </ProjectReference>
     <Reference Include="System">
@@ -65,6 +65,7 @@
     <Compile Include="TestFileStream.pas" />
     <Compile Include="TestIniFiles.pas" />
     <Compile Include="TestStringRead.pas" />
+    <Compile Include="TestStrings.pas" />
     <Compile Include="TestStringWrite.pas" />
     <Compile Include="TestStrUtils.pas" />
     <Compile Include="TestSystem.pas" />
