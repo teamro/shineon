@@ -463,7 +463,7 @@ end;
 
 class function SysUtils.AnsiLowerCase(S: String): String;
 begin
-  if Length(S) = 0 then
+  if length(S) = 0 then
     Result := ''
   else
     Result := S.ToLower;
@@ -564,7 +564,7 @@ end;
 
 class function SysUtils.Trim(S: String): String; 
 begin
-  if Length(S) = 0 then
+  if length(S) = 0 then
     Result := ''
   else
     Result := S.Trim;
@@ -572,7 +572,7 @@ end;
 
 class function SysUtils.TrimLeft(S: String): String; 
 begin
-  if Length(S) = 0 then
+  if length(S) = 0 then
     Result := ''
   else
     Result := S.TrimStart(nil);
@@ -580,7 +580,7 @@ end;
 
 class function SysUtils.TrimRight(S: String): String; 
 begin
-  if Length(S) = 0 then
+  if length(S) = 0 then
     Result := ''
   else
     Result := S.TrimEnd(nil);
@@ -1296,8 +1296,8 @@ class function SysUtils.Format(const AFormatting: String; const AData: array of 
 var
   fsb: StringBuilder;
 begin
-  fsb := new StringBuilder(length(aFormatting) * 2);
-  FormatBuf(fsb, aFormatting, aData, System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone as IFormatProvider);
+  fsb := new StringBuilder(length(AFormatting) * 2);
+  FormatBuf(fsb, AFormatting, AData, System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone as IFormatProvider);
   result := fsb.ToString;
 end;
 

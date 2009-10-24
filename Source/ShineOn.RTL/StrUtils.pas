@@ -18,7 +18,7 @@ type
     class method AnsiLeftStr(aStr: String; aCount: Integer): String;
     class method AnsiRightStr(aStr: String; aCount: Integer): String;
     class method AnsiMidStr(aStr: String; aStart, aCount: Integer): String;
-    class method ContainsText(const AText, ASubText: string): Boolean; inline;
+    class method ContainsText(const AText, ASubText: String): Boolean; inline;
     class method AnsiContainsStr(aStr, aSubstring: String): Boolean;
 
   end;
