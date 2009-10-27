@@ -7,13 +7,30 @@
     <AllowLegacyWith>True</AllowLegacyWith>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AssemblyKeyFile>..\shineon.snk</AssemblyKeyFile>
+    <AssemblyDelaySign>False</AssemblyDelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE;MSWINDOWS</DefineConstants>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <SuppressWarnings>
+    </SuppressWarnings>
+    <EnableAsserts>True</EnableAsserts>
+    <CodeFlowAnalysis>True</CodeFlowAnalysis>
+    <CpuType>anycpu</CpuType>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <UseXmlDoc>False</UseXmlDoc>
+    <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
+    <XmlDocAllMembers>False</XmlDocAllMembers>
+    <Optimize>True</Optimize>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RequireExplicitLocalInitialization>False</RequireExplicitLocalInitialization>
+    <FutureHelperClassName>
+    </FutureHelperClassName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>
@@ -22,15 +39,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
-      <HintPath>$(Framework)\mscorlib.dll</HintPath>
-    </Reference>
-    <Reference Include="ShineOn.RTL">
-      <HintPath>$(Project)\..\bin\ShineOn.RTL.dll</HintPath>
-      <Name>ShineOn.RTL.dll</Name>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System">
-      <HintPath>$(Framework)\System.dll</HintPath>
+      <HintPath>System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShineOn.RTL\ShineOn.RTL.oxygene">
+      <Name>ShineOn.RTL</Name>
+      <Project>{eade7853-fdbe-4770-b0b2-5ff5fdd2dbf7}</Project>
+      <Private>True</Private>
+      <HintPath>..\ShineOn.RTL\..\..\bin\ShineOn.Rtl.dll</HintPath>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Oxygene\RemObjects.Oxygene.targets" />
 </Project>

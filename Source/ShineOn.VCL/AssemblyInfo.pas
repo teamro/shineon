@@ -21,7 +21,7 @@ uses
 [assembly: AssemblyCopyright('')]
 [assembly: AssemblyTrademark('')]
 [assembly: AssemblyCulture('')]
-[assembly: AssemblyVersion('1.0.0.1')]
+[assembly: AssemblyVersion('1.0.1.0')]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

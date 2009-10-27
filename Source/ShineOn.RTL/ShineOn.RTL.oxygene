@@ -7,13 +7,30 @@
     <AllowLegacyWith>True</AllowLegacyWith>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AssemblyKeyFile>..\shineon.snk</AssemblyKeyFile>
+    <AssemblyDelaySign>False</AssemblyDelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE;MSWINDOWS</DefineConstants>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <SuppressWarnings>
+    </SuppressWarnings>
+    <EnableAsserts>True</EnableAsserts>
+    <CodeFlowAnalysis>True</CodeFlowAnalysis>
+    <CpuType>anycpu</CpuType>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <UseXmlDoc>False</UseXmlDoc>
+    <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
+    <XmlDocAllMembers>False</XmlDocAllMembers>
+    <Optimize>True</Optimize>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RequireExplicitLocalInitialization>False</RequireExplicitLocalInitialization>
+    <FutureHelperClassName>
+    </FutureHelperClassName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>
@@ -22,27 +39,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
-      <HintPath>$(Framework)\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="System">
-      <HintPath>$(Framework)\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
       <HintPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data">
-      <HintPath>$(Framework)\System.Data.dll</HintPath>
+      <HintPath>System.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing">
-      <HintPath>$(Framework)\System.Drawing.dll</HintPath>
+      <HintPath>System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <HintPath>$(Framework)\System.Windows.Forms.dll</HintPath>
+      <HintPath>System.Windows.Forms.dll</HintPath>
       <Name>System.Windows.Forms.dll</Name>
     </Reference>
     <Reference Include="System.Xml">
-      <HintPath>$(Framework)\System.Xml.dll</HintPath>
+      <HintPath>System.Xml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

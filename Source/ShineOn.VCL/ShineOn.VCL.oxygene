@@ -7,13 +7,30 @@
     <AllowGlobals>False</AllowGlobals>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AssemblyKeyFile>..\shineon.snk</AssemblyKeyFile>
+    <AssemblyDelaySign>False</AssemblyDelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE;MSWINDOWS</DefineConstants>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <GeneratePDB>True</GeneratePDB>
     <GenerateMDB>True</GenerateMDB>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <SuppressWarnings>
+    </SuppressWarnings>
+    <EnableAsserts>True</EnableAsserts>
+    <CodeFlowAnalysis>True</CodeFlowAnalysis>
+    <CpuType>anycpu</CpuType>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <UseXmlDoc>False</UseXmlDoc>
+    <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
+    <XmlDocAllMembers>False</XmlDocAllMembers>
+    <Optimize>True</Optimize>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RequireExplicitLocalInitialization>False</RequireExplicitLocalInitialization>
+    <FutureHelperClassName>
+    </FutureHelperClassName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>MSWINDOWS</DefineConstants>
@@ -22,10 +39,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
-      <HintPath>$(Framework)\mscorlib.dll</HintPath>
+      <HintPath>mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="System">
-      <HintPath>$(Framework)\System.dll</HintPath>
+      <HintPath>System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

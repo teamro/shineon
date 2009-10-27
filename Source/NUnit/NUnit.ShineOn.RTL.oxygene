@@ -11,8 +11,25 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE;</DefineConstants>
-    <OutputPath>..\bin</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <GeneratePDB>True</GeneratePDB>
+    <SuppressWarnings>
+    </SuppressWarnings>
+    <EnableAsserts>True</EnableAsserts>
+    <CodeFlowAnalysis>True</CodeFlowAnalysis>
+    <CpuType>anycpu</CpuType>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <UseXmlDoc>False</UseXmlDoc>
+    <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
+    <XmlDocAllMembers>False</XmlDocAllMembers>
+    <Optimize>True</Optimize>
+    <GenerateMDB>False</GenerateMDB>
+    <WarnOnCaseMismatch>False</WarnOnCaseMismatch>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RequireExplicitLocalInitialization>False</RequireExplicitLocalInitialization>
+    <FutureHelperClassName>
+    </FutureHelperClassName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>..\bin</OutputPath>
@@ -20,12 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
-      <HintPath>$(Framework)\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>$(ProgramFiles)\NUnit 2.5.2\bin\net-2.0\framework\nunit.framework.dll</HintPath>
       <Name>nunit.framework.dll</Name>
       <Private>True</Private>
+      <HintPath>C:\Program Files %28x86%29\NUnit 2.5.2\bin\net-2.0\framework\nunit.framework.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\ShineOn.RTL\ShineOn.RTL.oxygene">
       <Project>{EADE7853-FDBE-4770-B0B2-5FF5FDD2DBF7}</Project>
@@ -33,23 +49,23 @@
       <Name>ShineOn.RTL</Name>
     </ProjectReference>
     <Reference Include="System">
-      <HintPath>$(Framework)\System.dll</HintPath>
+      <HintPath>System.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
       <HintPath>$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data">
-      <HintPath>$(Framework)\System.Data.dll</HintPath>
+      <HintPath>System.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing">
-      <HintPath>$(Framework)\System.Drawing.dll</HintPath>
+      <HintPath>System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <HintPath>$(Framework)\System.Windows.Forms.dll</HintPath>
+      <HintPath>System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
-      <HintPath>$(Framework)\System.Xml.dll</HintPath>
+      <HintPath>System.Xml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
