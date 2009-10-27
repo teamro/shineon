@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{574E35A9-E590-48A6-B154-35824FCF8856}</ProjectGuid>
     <RootNamespace>ShineOn.Rtl.Win32</RootNamespace>
@@ -20,7 +20,6 @@
     <OutputPath>..\bin</OutputPath>
     <EnableAsserts>False</EnableAsserts>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Chrome\RemObjects.Chrome.targets" />
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(Framework)\mscorlib.dll</HintPath>
@@ -38,4 +37,8 @@
     <Compile Include="AssemblyInfo.pas" />
     <Compile Include="Registry.pas" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Oxygene\RemObjects.Oxygene.targets" />
 </Project>
