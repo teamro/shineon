@@ -157,7 +157,7 @@ type
   end;
 
   [TestFixture]
-  TStringlistTests = public class(System.Object)
+  TStringListTests = public class(System.Object)
   public
     [Setup]
     method Setup;
@@ -210,7 +210,7 @@ type
     method SaveToFile;
     [Test, Ignore('Test not implemented')] 
     method SaveToStream;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method SetText;
     [Test, Ignore('Test not implemented')] 
     method Capacity;
@@ -697,185 +697,180 @@ begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Setup; 
+method TStringListTests.Setup; 
 begin
 end;
 
-method TStringlistTests.TearDown; 
+method TStringListTests.TearDown; 
 begin
 end;
 
-method TStringlistTests.Add; 
-begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
-end;
-
-method TStringlistTests.AddObject; 
+method TStringListTests.Add; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Append; 
+method TStringListTests.AddObject; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.AddStrings; 
+method TStringListTests.Append; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Assign; 
+method TStringListTests.AddStrings; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.BeginUpdate; 
+method TStringListTests.Assign; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Clear; 
+method TStringListTests.BeginUpdate; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Delete; 
+method TStringListTests.Clear; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.EndUpdate; 
+method TStringListTests.Delete; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Equals; 
+method TStringListTests.EndUpdate; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Exchange; 
+method TStringListTests.Equals; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.GetText; 
+method TStringListTests.Exchange; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.IndexOf; 
+method TStringListTests.GetText; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.IndexOfName; 
+method TStringListTests.IndexOf; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.IndexOfObject; 
+method TStringListTests.IndexOfName; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Insert; 
+method TStringListTests.IndexOfObject; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.InsertObject; 
+method TStringListTests.Insert; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.LoadFromFile; 
+method TStringListTests.InsertObject; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.LoadFromStream; 
+method TStringListTests.LoadFromFile; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Move; 
+method TStringListTests.LoadFromStream; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.SaveToFile; 
+method TStringListTests.Move; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.SaveToStream; 
+method TStringListTests.SaveToFile; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.SetText; 
+method TStringListTests.SaveToStream; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Capacity; 
+method TStringListTests.Capacity; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.CommaText; 
+method TStringListTests.CommaText; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Count; 
+method TStringListTests.Count; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Delimiter; 
+method TStringListTests.Delimiter; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.DelimitedText; 
+method TStringListTests.DelimitedText; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Names; 
+method TStringListTests.Names; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Objects; 
+method TStringListTests.Objects; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.QuoteChar; 
+method TStringListTests.QuoteChar; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Values; 
+method TStringListTests.Values; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Strings; 
+method TStringListTests.Strings; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Text; 
+method TStringListTests.Text; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Sort; 
+method TStringListTests.Sort; 
 const
   cFirstItem = 'First';
   cSecondItem = 'Second';
@@ -889,27 +884,27 @@ begin
   NUnit.Framework.Assert.IsTrue(String.Equals(pList[0], cFirstItem));
 end;
 
-method TStringlistTests.CustomSort; 
+method TStringListTests.CustomSort; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Duplicates; 
+method TStringListTests.Duplicates; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Sorted; 
+method TStringListTests.Sorted; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.CaseSensitive; 
+method TStringListTests.CaseSensitive; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
-method TStringlistTests.Find;
+method TStringListTests.Find;
 const
   cItem1 = '1';
   cItem2 = '2';
@@ -924,6 +919,45 @@ begin
   NUnit.Framework.Assert.IsTrue(pList.IndexOf(cItem3) = 1);
   pList.Sorted := True;
   NUnit.Framework.Assert.IsTrue(pList.IndexOf(cItem3) = 2);
+end;
+
+method TStringListTests.SetText;
+const
+  cLine1: String = 'A';
+  cLine2: String = 'B';
+  cLine3: String = cLine1 + #0 + cLine2;
+var
+  pList: TStringList;
+begin
+  //Nil Text
+  pList := new TStringList();
+  pList.Text := nil;
+  Assert.AreEqual(pList.Count, 0);
+
+  //EmptyText
+  pList := new TStringList();
+  pList.Text := '';
+  Assert.AreEqual(pList.Count, 0);
+
+  //Normal Text
+  pList := new TStringList();
+  pList.Text := cLine1 + System.Environment.NewLine + cLine2;
+  Assert.AreEqual(pList.Count, 2);
+  Assert.AreEqual(pList[0], cLine1);
+  Assert.AreEqual(pList[1], cLine2);
+
+  //Special Text
+  pList := new TStringList();
+  pList.Text := cLine3;
+  Assert.AreEqual(pList.Count, 1);
+  Assert.AreEqual(pList[0], cLine3);
+
+  //No LineBreak
+  pList := new TStringList();
+  pList.LineBreak := nil;
+  pList.Text := cLine1 + System.Environment.NewLine + cLine2;
+  Assert.AreEqual(pList.Count, 1);
+  Assert.AreEqual(pList[0], pList.Text);
 end;
 
 method THandleStreamTests.Setup; 
