@@ -2009,7 +2009,10 @@ end;
 procedure TMemoryStream.WriteLine(Value:String);
 begin
   with T:System.IO.StreamWriter := new System.IO.StreamWriter(FStream) do
+  begin
     T.WriteLine(Value); 
+    T.Flush;
+  end;
 end;
 
 procedure TMemoryStream.Clear;
