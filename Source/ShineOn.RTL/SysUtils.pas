@@ -409,7 +409,7 @@ begin
 
   for I := 0 to LA - 1 do
     begin
-      if I > LB then
+      if I >= LB then
         begin
           Result := 1;
           Exit;
