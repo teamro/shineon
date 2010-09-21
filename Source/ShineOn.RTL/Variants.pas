@@ -257,6 +257,7 @@ begin
     TypeCode.UInt64: result := varWord64;
   else begin
       if V.Value is array of Object then exit varArray or varVariant;
+      if V.Value is TDateTime then exit varDate;
       exit varError;
     end;
   end; // case
@@ -366,9 +367,9 @@ end;
 function VarToDateTime(const V: Variant): TDateTime;
 begin
   if VarType(V) = varOleStr then begin
-    result := DateTime.Parse(String(V.Value));
+    result := DateTime.Parse(String(V.Value))
   end else if VarType(V) = varDate then
-    result := V.Value as DateTime
+    result := Convert.ToDateTime(V.Value)
   else if VarIsNumeric(V) then
     result := new TDateTime(Convert.ToDouble(V.Value))
   else
