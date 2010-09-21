@@ -125,7 +125,15 @@ const
   varLongWord : Word = $0013; { vt_ui4         19 }
   varInt64    : Word = $0014; { vt_i8          20 }
   varWord64   : Word = $0015; { vt_ui8         21 } 
+
+  varStrArg   : Word = $0048; { vt_clsid        72 }
+  varString   : Word = $0100; { Pascal string  256 } {not OLE compatible }
+  varAny      : Word = $0101; { Corba any      257 } {not OLE compatible }
+  varUString  : Word = $0102; { Unicode string 258 } {not OLE compatible} 
+
+  varTypeMask : Word = $0FFF;
   varArray    : Word = $2000;
+  varByRef    : Word = $4000;
   
 { Variant support procedures and functions }
 
@@ -174,6 +182,7 @@ function VarArrayHighBound(const A: Variant; Dim: Integer): Integer;public;
 
 function VarArrayGet(const A: Variant; const Indices: array of Integer): Object;public;
 procedure VarArrayPut(var A: Variant; const Value: Object; const Indices: array of Integer);public;
+function VarTypeAsText(const AType: TVarType): string;public;
 
 
 // global enum constants
@@ -202,6 +211,30 @@ const
   vrNotEqual    = TVariantRelationship.NotEqual;
 
 implementation
+
+function VarTypeAsText(const AType: TVarType): string;
+const
+  CText: array [varEmpty..varWord64] of string = ['Empty', 'Null', 'Smallint', //Do not localize
+    'Integer', 'Single', 'Double', 'Currency', 'Date', 'OleStr', 'Dispatch', //Do not localize
+    'Error', 'Boolean', 'Variant', 'Unknown', 'Decimal', '$0F', 'ShortInt', //Do not localize
+    'Byte', 'Word', 'LongWord', 'Int64', 'UInt64']; //Do not localize
+begin
+  if AType and varTypeMask <= varWord64 then
+    Result := CText[AType and varTypeMask]
+  else if AType = varString then
+    Result := 'String' //Do not localize
+  else if AType = varUString then
+    Result := 'UnicodeString' //Do not localize
+  else if AType = varAny then
+    Result := 'Any' //Do not localize
+  else
+    Result := HexDisplayPrefix + IntToHex(AType and varTypeMask, 4);
+
+  if AType and varArray <> 0 then
+    Result := 'Array ' + Result; //Do not localize
+  if AType and varByRef <> 0 then
+    Result := 'ByRef ' + Result; //Do not localize
+end;
 
 function VarType(const V: Variant): TVarType;
 begin
