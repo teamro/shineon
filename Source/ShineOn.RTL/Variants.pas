@@ -88,6 +88,7 @@ type
     class operator implicit(val: Variant): Boolean;
     class operator implicit(val: Variant): Byte;
     class operator implicit(val: Variant): DateTime;
+    class operator implicit(val: Variant): TDateTime;
     class operator implicit(val: Variant): Decimal;
     class operator implicit(val: Variant): Double;
     class operator implicit(val: Variant): Int16;
@@ -335,6 +336,8 @@ begin
     result := DateTime.Parse(String(V.Value));
   end else if VarType(V) = varDate then
     result := V.Value as DateTime
+  else if VarIsNumeric(V) then
+    result := new TDateTime(Convert.ToDouble(V.Value))
   else
     raise new EVariantTypeCastError('Invalid variant conversion');
 end;
@@ -1008,6 +1011,11 @@ end;
 class operator Variant.implicit(val: TDateTime): Variant;
 begin
   result := new Variant(val);
+end;
+
+class operator Variant.implicit(val: Variant): TDateTime;
+begin
+  result := VarToDateTime(val);
 end;
 
 function VarIsArray(const A: Variant): Boolean; 
