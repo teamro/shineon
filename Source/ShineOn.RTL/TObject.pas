@@ -57,7 +57,7 @@ end;
 
 function TObjectExtender.ClassType(o: Object): TClass;
 begin
-  result := typeOf(self);
+  result := o.ClassInfo;
 end;
 
 class function TObjectExtender.ClassName(o: Object): String;
@@ -78,7 +78,8 @@ end;
 
 class function TObjectExtender.ClassInfo(o: Object): System.Type;
 begin
-  result := typeOf(self);
+  //o is a System.Type if the caller used typeof(TExampleClass)
+  Result := iif(o is &Type, &Type(o), o.GetType);
 end;
 
 class function TObjectExtender.InheritsFrom(o: Object; AClass: TClass): Boolean;
