@@ -233,6 +233,7 @@ type
     procedure Insert(Index: Integer; S: String); virtual; abstract;
     procedure InsertObject(Index: Integer; S: String; AObject: Object); virtual;
     procedure LoadFromFile(FileName: String); virtual;
+    procedure LoadFromFile(FileName: String; Encoding: TEncoding); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure LoadFromStream(Stream: TStream; Encoding: TEncoding); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
@@ -1407,11 +1408,17 @@ begin
 end;
 
 procedure TStrings.LoadFromFile(FileName: String); 
-var F:TFileStream;
+begin
+  LoadFromFile(FileName, TEncoding.Default);
+end;
+
+procedure TStrings.LoadFromFile(FileName: String; Encoding: TEncoding); 
+var 
+  F: TFileStream;
 begin
   F := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
-    LoadFromStream(F);
+    LoadFromStream(F, Encoding);
   finally
     F.Free; // closes the file
   end;
