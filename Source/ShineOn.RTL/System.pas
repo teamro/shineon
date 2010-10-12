@@ -39,6 +39,7 @@ type
     class procedure Delete(var S: DelphiString; Index, Count:Integer);
     class procedure Insert(Source: DelphiString; var S: DelphiString; Index: Integer);
     class function Copy(Source:DelphiString; StartIndex, length: Integer):DelphiString;
+    class function Copy(Source: TBytes; StartIndex, Length: Integer): TBytes;
 
     class function Pos(SubStr, aStr:String):Int32;
     class function Concat(S1, S2:String):String;
@@ -103,6 +104,7 @@ function Concat(S1, S2:String):String;public;
 procedure Delete(var S: String; Index, Count:Integer);public;
 procedure Insert(Source: String; var S: String; Index: Integer);public;
 function Copy(Source:String; StartIndex, length: Integer):String;public;
+function Copy(Source: TBytes; StartIndex, Length: Integer): TBytes; public;
 function UpCase(Letter: Char): Char;public;
 function LoCase(Letter: Char): Char;public;
 function StringOfChar(RepeatCharacter: Char; RepeatCount: Integer ): String; public;
@@ -240,6 +242,20 @@ begin
       Result := '';
   end;
 {$ENDIF}  
+end;
+
+class function SystemUnit.Copy(Source: TBytes; StartIndex, Length: Integer): TBytes;
+begin
+  if (Source = nil) or (StartIndex > Source.Length) or (Length < 1) then
+    Result := nil
+  else
+  begin
+    if StartIndex + Length > Source.Length then
+      Result := new TBytes(Source.Length - StartIndex + 1)
+    else
+      Result := new TBytes(Length);
+    Array.Copy(Source, StartIndex, Result, 0, Result.Length);
+  end; 
 end;
 
 class function SystemUnit.UpCase ( Letter : Char ) : Char; 
@@ -632,6 +648,11 @@ end;
 function Copy(Source:String; StartIndex, length: Integer):String;
 begin
   Result := ShineOn.Rtl.SystemUnit.Copy(Source, StartIndex, length);
+end;
+
+function Copy(Source: TBytes; StartIndex, Length: Integer): TBytes;
+begin
+  Result := ShineOn.Rtl.SystemUnit.Copy(Source, StartIndex, Length);
 end;
 
 function UpCase(Letter: Char): Char;

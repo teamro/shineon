@@ -12,7 +12,7 @@ type
   private
     fItems: List<T> := new List<T>; implements IEnumerable<T>;
   public
-    method Add(const aItem: T);
+    method Add(const AItem: T);
     method AddRange(const aItems: array of T);
     method RemoveAt(aIndex: Integer);
     method Clear;
