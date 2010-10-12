@@ -234,6 +234,7 @@ type
     procedure InsertObject(Index: Integer; S: String; AObject: Object); virtual;
     procedure LoadFromFile(FileName: String); virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
+    procedure LoadFromStream(Stream: TStream; Encoding: TEncoding); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
     procedure SaveToFile(FileName: String); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
@@ -1199,7 +1200,7 @@ begin
   for i:Int32 := 0 to Count - 1 do
   begin
     S.Append(Strings[i]);
-    if (i <> Count -1) and not string.IsNullOrEmpty(FLineBreak) then
+    if (i <> Count -1) and not String.IsNullOrEmpty(FLineBreak) then
       S.Append(FLineBreak);
   end;
   Result := S.ToString;
@@ -1417,15 +1418,32 @@ begin
 end;
 
 procedure TStrings.LoadFromStream(Stream: TStream); 
-var 
-  S:String;
+//var 
+  //S:String;
 begin
-  Clear;
-  while true do
-  begin
-    S := Stream.ReadLine;
-    if S = nil then Exit;
-    Add(S);
+  LoadFromStream(Stream, TEncoding.Default);
+  //Clear;
+  //while true do
+  //begin
+    //S := Stream.ReadLine;
+    //if S = nil then Exit;
+    //Add(S);
+  //end;
+end;
+
+procedure TStrings.LoadFromStream(Stream: TStream; Encoding: TEncoding); 
+var
+  iSize: Integer;
+  pBuffer: array of Byte;
+begin
+  BeginUpdate;
+  try
+    iSize := Stream.Size - Stream.Position;
+    pBuffer := new array of Byte(iSize);
+    Stream.Read(pBuffer, iSize);
+    Text := Encoding.GetChars(pBuffer).ToString;
+  finally
+    EndUpdate;
   end;
 end;
 
