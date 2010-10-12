@@ -359,6 +359,7 @@ type
   TCustomMemoryStream = public abstract class(TStream)
   private
     function GetMemory:array of Byte;
+    procedure SetMemory(Value: array of Byte);
   protected
     FStream:System.IO.MemoryStream;
     procedure SetSize(const NewSize: Int64);override;
@@ -371,7 +372,7 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure SaveToFile(FileName: String);
     //procedure Destroy;override;
-    property Memory: array of Byte read GetMemory;
+    property Memory: array of Byte read GetMemory write SetMemory;
   end;
   
   TMemoryStream = public class(TCustomMemoryStream)
@@ -1945,6 +1946,13 @@ begin
   Result := FStream.GetBuffer;
 end;
 
+procedure TCustomMemoryStream.SetMemory(Value: array of Byte);
+begin
+  Size := 0;
+  if Value <> nil then
+    FStream.Write(Value, 0, Value.Length);
+end;
+
 constructor TCustomMemoryStream.Create;
 begin
   inherited Create;
@@ -2009,10 +2017,7 @@ end;
 procedure TMemoryStream.WriteLine(Value:String);
 begin
   with T:System.IO.StreamWriter := new System.IO.StreamWriter(FStream) do
-  begin
     T.WriteLine(Value); 
-    T.Flush;
-  end;
 end;
 
 procedure TMemoryStream.Clear;
