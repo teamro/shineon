@@ -238,7 +238,9 @@ type
     procedure LoadFromStream(Stream: TStream; Encoding: TEncoding); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
     procedure SaveToFile(FileName: String); virtual;
+    procedure SaveToFile(FileName: String; Encoding: TEncoding); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
+    procedure SaveToStream(Stream: TStream; Encoding: TEncoding); virtual;
     procedure SetText(aText: String); virtual;
     property Capacity: Integer read GetCapacity write SetCapacity;
     property CommaText: String read GetCommaText write SetCommaText;
@@ -1466,11 +1468,17 @@ begin
 end;
 
 procedure TStrings.SaveToFile(FileName: String); 
-var F:TFileStream;
+begin
+  SaveToFile(FileName, TEncoding.Default);
+end;
+
+procedure TStrings.SaveToFile(FileName: String; Encoding: TEncoding); 
+var 
+  F:TFileStream;
 begin
   F := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
   try
-    SaveToStream(F);
+    SaveToStream(F, Encoding);
   finally
     F.Free;
   end;
@@ -1478,8 +1486,21 @@ end;
 
 procedure TStrings.SaveToStream(Stream: TStream); 
 begin
-  for i:Int32 := 0 to Count -1 do
-    Stream.WriteLine(Strings[i]);
+  SaveToStream(Stream, TEncoding.Default);
+end;
+
+procedure TStrings.SaveToStream(Stream: TStream; Encoding: TEncoding); 
+var
+  pBuffer, pPreamble: array of Byte;
+begin
+  pBuffer := Encoding.GetBytes(Text);
+  if (pBuffer <> nil) and (pBuffer.Length > 0) then
+  begin
+    pPreamble := Encoding.GetPreamble;
+    if (pPreamble <> nil) and (pPreamble.Length > 0) then
+      Stream.WriteBuffer(pPreamble, pPreamble.Length);
+    Stream.WriteBuffer(pBuffer, pBuffer.Length);
+  end;
 end;
 
 { TStringList }
