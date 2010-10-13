@@ -55,6 +55,8 @@ type
     method Insert;
     [Test]
     method Copy;
+    [Test]
+    method CopyArray;
     [Test, Ignore('Test not implemented')] 
     method Str;
     [Test]
@@ -232,6 +234,34 @@ begin
   NUnit.Framework.Assert.AreEqual('TestString',ShineOn.RTL.Copy('TestString', 0, MaxInt));
   NUnit.Framework.Assert.AreEqual('',ShineOn.RTL.Copy('TestString', 0, 0));
   NUnit.Framework.Assert.AreEqual('Test',ShineOn.RTL.Copy('TestString', 0, 4));
+end;
+
+method SystemTests.CopyArray; 
+begin
+  var pBuffer := new TBytes(3);
+  pBuffer[0] := 1;
+  pBuffer[1] := 2;
+  pBuffer[2] := 3;
+
+  var pCopy: TBytes;
+  var iCount: Integer;
+
+  pCopy := ShineOn.RTL.Copy(pBuffer, 0, 1);
+  NUnit.Framework.Assert.AreEqual(1, pCopy.Length);
+  NUnit.Framework.Assert.AreEqual(pBuffer[0], pCopy[0]);
+
+  pCopy := ShineOn.RTL.Copy(pBuffer, 1, 1);
+  NUnit.Framework.Assert.AreEqual(1, pCopy.Length);
+  NUnit.Framework.Assert.AreEqual(pBuffer[1], pCopy[0]);
+
+  pCopy := ShineOn.RTL.Copy(pBuffer, 0, 4);
+  NUnit.Framework.Assert.AreEqual(pBuffer.Length, pCopy.Length);
+  for iCount := 0 to pBuffer.Length - 1 do
+    NUnit.Framework.Assert.AreEqual(pBuffer[iCount], pCopy[iCount]);
+
+  pCopy := ShineOn.RTL.Copy(pBuffer, 2, 4);
+  NUnit.Framework.Assert.AreEqual(1, pCopy.Length);
+  NUnit.Framework.Assert.AreEqual(pBuffer[2], pCopy[0]);
 end;
 
 method SystemTests.Str; 

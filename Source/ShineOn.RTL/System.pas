@@ -251,7 +251,7 @@ begin
   else
   begin
     if StartIndex + Length > Source.Length then
-      Result := new TBytes(Source.Length - StartIndex + 1)
+      Result := new TBytes(Source.Length - StartIndex)
     else
       Result := new TBytes(Length);
     Array.Copy(Source, StartIndex, Result, 0, Result.Length);
