@@ -202,13 +202,13 @@ type
     method InsertObject;
     [Test, Ignore('Test not implemented')] 
     method LoadFromFile;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method LoadFromStream;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method Move;
     [Test, Ignore('Test not implemented')] 
     method SaveToFile;
-    [Test, Ignore('Test not implemented')] 
+    [Test] 
     method SaveToStream;
     [Test] 
     method SetText;
@@ -697,6 +697,8 @@ begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
 end;
 
+{ TStringListTests }
+
 method TStringListTests.Setup; 
 begin
 end;
@@ -797,7 +799,17 @@ end;
 
 method TStringListTests.LoadFromStream; 
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  var sBuffer: String := 'ƒ÷‹‰ˆ¸ﬂ';
+  var pBytes: TBytes := TEncoding.Unicode.GetBytes(sBuffer); 
+  var pStream := new TMemoryStream;
+  pStream.WriteBuffer(pBytes, pBytes.Length);
+  pStream.Position := 0;
+
+  var pStringList := new TStringList;
+  pStringList.LoadFromStream(pStream, TEncoding.Unicode);
+
+  NUnit.Framework.Assert.AreEqual(1, pStringList.Count);
+  NUnit.Framework.Assert.AreEqual(sBuffer, pStringList[0]);
 end;
 
 method TStringListTests.Move; 
@@ -812,7 +824,19 @@ end;
 
 method TStringListTests.SaveToStream; 
 begin
-  NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+  var pSource := new TStringList;
+  pSource.Add('ƒ÷‹‰ˆ¸ﬂ');
+
+  var pStream := new TMemoryStream;
+  pSource.SaveToStream(pStream, TEncoding.Unicode);
+  pStream.Position := 0;
+
+  var pDest := new TStringList;
+  pDest.LoadFromStream(pStream, TEncoding.Unicode);
+
+  NUnit.Framework.Assert.AreEqual(pSource.Count, pDest.Count);
+  for iCount: Integer := 0 to pSource.Count - 1 do
+    NUnit.Framework.Assert.AreEqual(pSource[iCount], pDest[iCount]);
 end;
 
 method TStringListTests.Capacity; 
