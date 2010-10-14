@@ -312,7 +312,8 @@ type
   protected
     procedure SetSize(const NewSize: Int64); virtual;abstract;
   public
-    function Read(var Buffer:array of Byte; Count: LongInt): LongInt; virtual; abstract;
+    function Read(var Buffer: TBytes; Count: LongInt): LongInt; 
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
     function Write(const Buffer: TBytes; Count: LongInt): LongInt; 
     function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; virtual; abstract;
@@ -349,7 +350,7 @@ type
     procedure WriteLine(Value:String);override;
   public
     constructor Create(AHandle: SafeFileHandle);
-    function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     procedure Dispose; override;
@@ -373,7 +374,7 @@ type
     function ReadLine:String;override;
   public
     constructor Create;
-    function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function Seek(Offset: Int64; Origin: TSeekOrigin): Int64; override;
     procedure SaveToStream(Stream: TStream);
     procedure SaveToFile(FileName: String);
@@ -409,10 +410,10 @@ type
     procedure WriteLine(Value:String);override;
   public
     constructor Create(AString: String);
-    function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function ReadString(Count: LongInt): String;
     function Seek(Offset: Int64; Origin: TSeekOrigin): Int64; override;
-    function Write(const Buffer: TBytes; OffSet: LongInt; Count: LongInt): LongInt; override;
+    function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     procedure WriteString(AString: String);
     property DataString: String read GetDataString;
   end;
@@ -430,7 +431,7 @@ type
     // chrome doesn't support constructors not named "Create"
     class function CreateFromID(aInstance: THandle; ResID: Integer; ResType: String):TResourceStream;
     function Write(const Buffer: TBytes; OffSet: LongInt; Count: LongInt): LongInt; override;
-    function Read(var Buffer:array of Byte; Count: LongInt): LongInt; override;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
   end;
 
  
@@ -1446,7 +1447,6 @@ procedure TStrings.LoadFromStream(Stream: TStream; Encoding: TEncoding);
 var
   iSize: Integer;
   pBuffer: TBytes;
-  pPreamble: TBytes;
 begin
   BeginUpdate;
   try
@@ -1875,6 +1875,11 @@ begin
   NotImplemented;
 end;
 
+function TStream.Read(var Buffer: TBytes; Count: LongInt): LongInt;
+begin
+  Result := Read(Buffer, 0, Count);
+end;
+
 function TStream.Write(const Buffer: TBytes; Count: LongInt): LongInt;
 begin
   Result := Write(Buffer, 0, Count);
@@ -1903,15 +1908,15 @@ begin
   end;
 end;
 
-function THandleStream.Read(var Buffer:array of Byte; Count: LongInt): LongInt; 
+function THandleStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
 begin
-  Result := FStream.Read(Buffer, 0, Count);
+  Result := FStream.Read(Buffer, Offset, Count);
 end;
 
-function THandleStream.Write(const Buffer: TBytes; OffSet: LongInt; Count: LongInt): LongInt; 
+function THandleStream.Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
 begin
   Result := FStream.Position;
-  FStream.Write(Buffer, OffSet, Count);
+  FStream.Write(Buffer, Offset, Count);
   Result := FStream.Position - Result;
 end;
 
@@ -2022,9 +2027,9 @@ begin
   FStream := new System.IO.MemoryStream;
 end;
 
-function TCustomMemoryStream.Read(var Buffer:array of Byte; Count: LongInt): LongInt; 
+function TCustomMemoryStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
 begin
-  Result := FStream.Read(Buffer, 0, Count);
+  Result := FStream.Read(Buffer, Offset, Count);
 end;
 
 function TCustomMemoryStream.ReadLine: String; 
@@ -2133,12 +2138,14 @@ begin
   WriteString(AString);
 end;
 
-function TStringStream.Read(var Buffer:array of Byte; Count: LongInt): LongInt; 
-var S:String;b:array of Char;
+function TStringStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
+var 
+  S:String;
+  b:array of Char;
 begin
   S := ReadString(Count);
   b := S.ToCharArray;
-  &Array.Copy(b, Buffer, Count);
+  &Array.Copy(b, Offset, Buffer, 0, Count);
   Result := b.Length;
 end;
 
@@ -2165,7 +2172,7 @@ begin
   Result := FPosition;
 end;
 
-function TStringStream.Write(const Buffer: TBytes; OffSet: LongInt; Count: LongInt): LongInt; 
+function TStringStream.Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
 var 
   b: array of Char;
 begin
@@ -2216,7 +2223,7 @@ begin
   raise EStreamError.Create(SCantWriteResourceStreamError);
 end;
 
-function TResourceStream.Read(var Buffer:array of Byte; Count: LongInt): LongInt; 
+function TResourceStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; 
 begin
   NotImplemented;
 end;
