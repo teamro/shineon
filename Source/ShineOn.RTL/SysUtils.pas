@@ -128,6 +128,9 @@ type
     class function TimeToStr(ATime:TDateTime):String;
     class procedure FreeAndNil(var Obj);
 
+    class function BytesOf(S: String): TBytes;
+    class function StringOf(B: TBytes): String;
+
     class function FileAge(const FileName: String; out FileDateTime: TDateTime): Boolean;
     class function FileCreate(const FileName: String): TOpenedFile;
     class function FileExists(FileName: String): Boolean;
@@ -320,6 +323,9 @@ function DriveDelim: Char; public;
 function DriveSeparator: Char; public;
 function PathSep: Char; public;
 function PathSeparator: Char; public;
+
+function BytesOf(S: String): TBytes; public;
+function StringOf(B: TBytes): String; public;
 
 function FloatToStr(Value: Extended): String; public;
 function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String; public;
@@ -1539,7 +1545,27 @@ begin
   NotImplemented;
 end;
 
+class function SysUtils.BytesOf(S: String): TBytes;
+begin
+  Result := TEncoding.Unicode.GetBytes(S);
+end;
+
+class function SysUtils.StringOf(B: TBytes): String;
+begin
+  Result := TEncoding.Unicode.GetString(B);
+end;
+
 // DELPHI COMPATIBLE GLOBAL METHODS
+
+function BytesOf(S: String): TBytes;
+begin
+  Result := ShineOn.Rtl.SysUtils.BytesOf(S);
+end;
+
+function StringOf(B: TBytes): String;
+begin
+  Result := ShineOn.Rtl.SysUtils.StringOf(B);
+end;
 
 function FloatToStr(Value: Extended): String;
 begin
