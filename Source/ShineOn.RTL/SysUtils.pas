@@ -27,6 +27,15 @@ type
 
 type
   TEncoding = public System.Text.Encoding;
+  TEncodingHelper = public sealed class
+  private
+    class function ContainsPreamble(const ABuffer, APreamble: TBytes): Boolean;
+  public
+    class function GetBufferEncoding(const ABuffer: TBytes; var AEncoding: TEncoding): Integer;
+  end;
+
+type
+  TBytes = public array of Byte;
 
 type
   SysUtils = public sealed class
@@ -409,7 +418,7 @@ begin
 
   for I := 0 to LA - 1 do
     begin
-      if I >= LB then
+      if I > LB then
         begin
           Result := 1;
           Exit;
@@ -2087,5 +2096,48 @@ begin
   Result := ShineOn.Rtl.SysUtils.PathSeparator;
 end;
 
-  
+{ TEncodingHelper }  
+
+class function TEncodingHelper.ContainsPreamble(const ABuffer, APreamble: TBytes): Boolean;
+var
+  I: Integer;
+begin
+  if (APreamble = nil) or (APreamble.Length > ABuffer.Length) then
+    exit(False);
+
+  for I := 0 to APreamble.Length - 1 do
+  begin
+    if APreamble[I] <> ABuffer[I] then
+      exit(False);
+  end;
+  exit(True);
+end;
+
+class function TEncodingHelper.GetBufferEncoding(const ABuffer: TBytes; var AEncoding: TEncoding): Integer;
+var
+  pPreamble: TBytes;
+begin
+  Result := 0;
+  if AEncoding = nil then
+  begin
+    if ContainsPreamble(ABuffer, TEncoding.Unicode.GetPreamble) then
+      AEncoding := TEncoding.Unicode
+    else if ContainsPreamble(ABuffer, TEncoding.BigEndianUnicode.GetPreamble) then
+      AEncoding := TEncoding.BigEndianUnicode
+    else if ContainsPreamble(ABuffer, TEncoding.UTF8.GetPreamble) then
+      AEncoding := TEncoding.UTF8
+    else
+      AEncoding := TEncoding.Default;
+    pPreamble := AEncoding.GetPreamble;
+    if pPreamble <> nil then
+      Result := pPreamble.Length;
+  end
+  else
+  begin
+    pPreamble := AEncoding.GetPreamble;
+    if (pPreamble <> nil) and ContainsPreamble(ABuffer, pPreamble) then
+      Result := pPreamble.Length;
+  end;
+end;
+
 end.

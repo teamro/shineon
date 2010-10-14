@@ -197,7 +197,6 @@ type
     procedure SetValue(Name, Value:String);
     function GetDelimitedText:String;
     procedure SetDelimitedText(Value:String);
-    function SameBytes(ABytes1, ABytes2: TBytes): Boolean;
 //    procedure SetStringsAdapter(const Value:IStringsAdapter);
   protected
     function Get(Index: Integer): String; virtual; abstract;
@@ -1453,11 +1452,7 @@ begin
     pBuffer := new TBytes(iSize);
     Stream.Read(pBuffer, iSize);
 
-    iSize := 0;
-    pPreamble := Encoding.GetPreamble;
-    if (pPreamble <> nil) and (pPreamble.Length > 0) and SameBytes(pPreamble, Copy(pBuffer, 0, pPreamble.Length)) then
-      iSize := pPreamble.Length;
-
+    iSize := TEncodingHelper.GetBufferEncoding(pBuffer, Encoding);
     Text := Encoding.GetString(pBuffer, iSize, pBuffer.Length - iSize);
   finally
     EndUpdate;
@@ -1509,18 +1504,6 @@ begin
       Stream.WriteBuffer(pPreamble, pPreamble.Length);
     Stream.WriteBuffer(pBuffer, pBuffer.Length);
   end;
-end;
-
-function TStrings.SameBytes(ABytes1, ABytes2: TBytes): Boolean;
-begin
-  if ABytes1.Length <> ABytes2.Length then
-    exit(False);
-  for iCount: Integer := 0 to ABytes1.Length - 1 do
-  begin
-    if ABytes1[iCount] <> ABytes2[iCount] then
-      exit(False);
-  end;
-  Exit(True);
 end;
 
 { TStringList }
