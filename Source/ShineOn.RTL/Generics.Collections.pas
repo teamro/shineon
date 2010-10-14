@@ -18,8 +18,15 @@ type
     method Clear;
     method Sort;
     method Sort(aComparer: IComparer<T>);
-    property Item[aIndex: Integer]: T read fItems.Item[aIndex] write fItems.Item[aIndex];
+    property Item[aIndex: Integer]: T read fItems.Item[aIndex] write fItems.Item[aIndex]; default;
     property Count: Integer read fItems.Count;
+  end;
+
+  TObjectList<T> = public class(TList<T>)
+  private
+    FOwnsObjects: Boolean;
+  public
+    property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
   end;
 
   TQueue<T> = public class(TObject, IEnumerable<T>, IEnumerable)
