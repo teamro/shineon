@@ -1243,7 +1243,8 @@ begin
       iStart := iPos + iLength;
       iPos := Value.IndexOf(FLineBreak, iStart);
     end;
-    if iStart <= Value.Length then
+    //Account for case that there is no FLineBreak after the last string
+    if iStart < Value.Length then
       Add(Value.Substring(iStart, Value.Length - iStart));
   finally
     EndUpdate;
