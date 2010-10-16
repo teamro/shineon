@@ -8,21 +8,17 @@ uses
 
 type
   StrUtils = public class
-  private
-  protected
   public
     class method LeftStr(aStr: String; aCount: Integer): String;
     class method RightStr(aStr: String; aCount: Integer): String;
     class method MidStr(aStr: String; aStart, aCount: Integer): String;
+    class method AnsiReverseString(S: String): String;
     class method AnsiDupeStr(aStr: String; aCount: Integer): String;
     class method AnsiLeftStr(aStr: String; aCount: Integer): String;
     class method AnsiRightStr(aStr: String; aCount: Integer): String;
     class method AnsiMidStr(aStr: String; aStart, aCount: Integer): String;
     class method ContainsText(const AText, ASubText: String): Boolean; inline;
     class method AnsiContainsStr(aStr, aSubstring: String): Boolean;
-    class method AnsiStartsText(const ASubText, AText: String): Boolean; 
-
-
   end;
 
 
@@ -30,13 +26,15 @@ method LeftStr(aStr: String; aCount: Integer): String; public;
 method RightStr(aStr: String; aCount: Integer): String; public;
 method MidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiDupeStr(aStr: String; aCount: Integer): String; public;
+method AnsiReverseString(S: String): String; public;
 method AnsiLeftStr(aStr: String; aCount: Integer): String; public;
 method AnsiRightStr(aStr: String; aCount: Integer): String; public;
 method AnsiMidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiContainsStr(aStr, aSubstring: String): Boolean; public;
-method AnsiStartsText(const ASubText, AText: String): Boolean; public; 
   
 implementation
+
+{ StrUtils }
 
 class method StrUtils.LeftStr(aStr: String; aCount: Integer): String;
 begin
@@ -76,6 +74,20 @@ begin
   result := LeftStr(aStr, aCount);
 end;
 
+class method StrUtils.AnsiReverseString(S: String): String;
+begin
+  if S = nil then  
+    exit(nil);
+
+  if S.Length = 0 then
+    exit(S);
+
+  var pChars: array of System.Char := S.ToCharArray;
+  Array.Reverse(pChars);
+
+  exit(new String(pChars));
+end;
+
 class method StrUtils.AnsiRightStr(aStr: String; aCount: Integer): String;
 begin
   result := RightStr(aStr, aCount);
@@ -94,11 +106,6 @@ end;
 class method StrUtils.ContainsText(const AText, ASubText: String): Boolean;
 begin
   Result := AText.Contains(ASubText);
-end;
-
-class method StrUtils.AnsiStartsText(const ASubText, AText: string): Boolean;
-begin
-  Result := AText.StartsWith(ASubText, StringComparison.CurrentCultureIgnoreCase);
 end;
 
 // Standalone versions
@@ -128,6 +135,11 @@ begin
   result := StrUtils.AnsiLeftStr(aStr, aCount);
 end;
 
+method AnsiReverseString(S: String): String; 
+begin
+  Result := StrUtils.AnsiReverseString(S);
+end;
+
 method AnsiRightStr(aStr: String; aCount: Integer): String;
 begin
   result := StrUtils.AnsiRightStr(aStr, aCount);
@@ -141,11 +153,6 @@ end;
 method AnsiContainsStr(aStr, aSubstring: String): Boolean; 
 begin
   result := StrUtils.AnsiContainsStr(aStr, aSubstring);
-end;
-
-method AnsiStartsText(const ASubText, AText: string): Boolean; 
-begin
-  result := StrUtils.AnsiStartsText(ASubText, AText);
 end;
 
 end.

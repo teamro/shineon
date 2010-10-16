@@ -32,6 +32,8 @@ type
     method TestAnsiDupeStr;
     [Test, Ignore('Test not implemented')] 
     method TestAnsiLeftStr;
+    [Test] 
+    method AnsiReverseString;
     [Test, Ignore('Test not implemented')] 
     method TestAnsiRightStr;
     [Test, Ignore('Test not implemented')] 
@@ -78,6 +80,13 @@ end;
 method StrUtilsTests.TestAnsiLeftStr;
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+end;
+
+method StrUtilsTests.AnsiReverseString; 
+begin
+  NUnit.Framework.Assert.AreEqual(nil, SysUtils.AnsiReverseString(nil));
+  NUnit.Framework.Assert.AreEqual('', SysUtils.AnsiReverseString(''));
+  NUnit.Framework.Assert.AreEqual('ollaH', SysUtils.AnsiReverseString('Hallo'));
 end;
 
 method StrUtilsTests.TestAnsiRightStr;
