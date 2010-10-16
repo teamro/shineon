@@ -14,6 +14,7 @@ type
     class method MidStr(aStr: String; aStart, aCount: Integer): String;
     class method AnsiReverseString(S: String): String;
     class method AnsiDupeStr(aStr: String; aCount: Integer): String;
+    class method DupeString(AText: String; ACount: Integer): String;
     class method AnsiLeftStr(aStr: String; aCount: Integer): String;
     class method AnsiRightStr(aStr: String; aCount: Integer): String;
     class method AnsiMidStr(aStr: String; aStart, aCount: Integer): String;
@@ -26,6 +27,7 @@ method LeftStr(aStr: String; aCount: Integer): String; public;
 method RightStr(aStr: String; aCount: Integer): String; public;
 method MidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiDupeStr(aStr: String; aCount: Integer): String; public;
+method DupeString(AText: String; ACount: Integer): String; public;
 method AnsiReverseString(S: String): String; public;
 method AnsiLeftStr(aStr: String; aCount: Integer): String; public;
 method AnsiRightStr(aStr: String; aCount: Integer): String; public;
@@ -67,6 +69,11 @@ begin
   for i: Integer := 0 to aCount -1 do 
     fSb.Append(aStr);
   result := fSb.ToString;
+end;
+
+class method StrUtils.DupeString(AText: String; ACount: Integer): String;
+begin
+  exit(AnsiDupeStr(AText, ACount));
 end;
 
 class method StrUtils.AnsiLeftStr(aStr: String; aCount: Integer): String;
@@ -128,6 +135,11 @@ end;
 method AnsiDupeStr(aStr: String; aCount: Integer): String;
 begin
   result := StrUtils.AnsiDupeStr(aStr, aCount);
+end;
+
+method DupeString(AText: String; ACount: Integer): String;
+begin
+  exit(StrUtils.DupeString(AText, ACount));
 end;
 
 method AnsiLeftStr(aStr: String; aCount: Integer): String;
