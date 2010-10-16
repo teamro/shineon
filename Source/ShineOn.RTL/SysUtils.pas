@@ -173,6 +173,7 @@ type
     class function LastDelimiter(Delimiters, S: String): Integer;
     class function AnsiCompareFileName(S1, S2: String): Integer;
     class function SameFileName(S1, S2: String): Boolean;
+    class function AnsiReverseString(S: String): String;
     class function AnsiLowerCaseFileName(S: String): String;
     class function AnsiUpperCaseFileName(S: String): String;
     class function AnsiStrPos(Str, SubStr: String): String;
@@ -306,6 +307,7 @@ function ExcludeTrailingBackslash(S: String): String;public;
 function LastDelimiter(Delimiters, S: String): Integer;public;
 function AnsiCompareFileName(S1, S2: String): Integer;public;
 function SameFileName(S1, S2: String): Boolean;public;
+function AnsiReverseString(S: String): String; public;
 function AnsiLowerCaseFileName(S: String): String;public;
 function AnsiUpperCaseFileName(S: String): String;public;
 function AnsiStrPos(aStr, SubStr: String): String;public;
@@ -1041,6 +1043,20 @@ end;
 class function SysUtils.SameFileName(S1, S2: String): Boolean;
 begin
   Result := AnsiSameText(S1, S2);
+end;
+
+class function SysUtils.AnsiReverseString(S: String): String;
+begin
+  if S = nil then  
+    exit(nil);
+
+  if S.Length = 0 then
+    exit(S);
+
+  var pChars: array of System.Char := S.ToCharArray;
+  Array.Reverse(pChars);
+
+  exit(new String(pChars));
 end;
 
 class function SysUtils.AnsiLowerCaseFileName(S: String): String;
@@ -2057,6 +2073,11 @@ begin
   Result := ShineOn.Rtl.SysUtils.SameFileName(S1, S2);
 end;
   
+function AnsiReverseString(S: String): String; 
+begin
+  Result := ShineOn.Rtl.SysUtils.AnsiReverseString(S);
+end;
+
 function AnsiLowerCaseFileName(S: String): String;
 begin
   Result := ShineOn.Rtl.SysUtils.AnsiLowerCaseFileName(S);

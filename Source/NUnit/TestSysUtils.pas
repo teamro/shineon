@@ -175,6 +175,8 @@ type
     method AnsiCompareFileName;
     [Test, Ignore('Test not implemented')] 
     method SameFileName;
+    [Test] 
+    method AnsiReverseString;
     [Test, Ignore('Test not implemented')] 
     method AnsiLowerCaseFileName;
     [Test, Ignore('Test not implemented')] 
@@ -698,6 +700,13 @@ end;
 method SysUtilsTests.SameFileName; 
 begin
   NUnit.Framework.Assert.IsTrue(false, 'Not implemented');
+end;
+
+method SysUtilsTests.AnsiReverseString; 
+begin
+  NUnit.Framework.Assert.AreEqual(nil, SysUtils.AnsiReverseString(nil));
+  NUnit.Framework.Assert.AreEqual('', SysUtils.AnsiReverseString(''));
+  NUnit.Framework.Assert.AreEqual('ollaH', SysUtils.AnsiReverseString('Hallo'));
 end;
 
 method SysUtilsTests.AnsiLowerCaseFileName; 
