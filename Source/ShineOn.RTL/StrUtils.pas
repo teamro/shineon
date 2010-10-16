@@ -12,7 +12,7 @@ type
     class method LeftStr(aStr: String; aCount: Integer): String;
     class method RightStr(aStr: String; aCount: Integer): String;
     class method MidStr(aStr: String; aStart, aCount: Integer): String;
-    class method AnsiReverseString(S: String): String;
+    class method ReverseString(S: String): String;
     class method AnsiDupeStr(aStr: String; aCount: Integer): String;
     class method DupeString(AText: String; ACount: Integer): String;
     class method AnsiLeftStr(aStr: String; aCount: Integer): String;
@@ -28,7 +28,7 @@ method RightStr(aStr: String; aCount: Integer): String; public;
 method MidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiDupeStr(aStr: String; aCount: Integer): String; public;
 method DupeString(AText: String; ACount: Integer): String; public;
-method AnsiReverseString(S: String): String; public;
+method ReverseString(S: String): String; public;
 method AnsiLeftStr(aStr: String; aCount: Integer): String; public;
 method AnsiRightStr(aStr: String; aCount: Integer): String; public;
 method AnsiMidStr(aStr: String; aStart, aCount: Integer): String; public;
@@ -81,7 +81,7 @@ begin
   result := LeftStr(aStr, aCount);
 end;
 
-class method StrUtils.AnsiReverseString(S: String): String;
+class method StrUtils.ReverseString(S: String): String;
 begin
   if S = nil then  
     exit(nil);
@@ -147,9 +147,9 @@ begin
   result := StrUtils.AnsiLeftStr(aStr, aCount);
 end;
 
-method AnsiReverseString(S: String): String; 
+method ReverseString(S: String): String; 
 begin
-  Result := StrUtils.AnsiReverseString(S);
+  Result := StrUtils.ReverseString(S);
 end;
 
 method AnsiRightStr(aStr: String; aCount: Integer): String;
