@@ -14,6 +14,7 @@ uses System,
      System.Collections,
      System.Globalization,
      System.IO,
+     System.Runtime.CompilerServices, // for Extension attribute
      System.Text,
      System.Threading,
      System.Windows.Forms;
@@ -27,11 +28,12 @@ type
 
 type
   TEncoding = public System.Text.Encoding;
-  TEncodingHelper = public sealed class
-  private
-    class function ContainsPreamble(const ABuffer, APreamble: TBytes): Boolean;
+
+  [Extension]
+  TEncodingExtender = public static sealed class
   public
-    class function GetBufferEncoding(const ABuffer: TBytes; var AEncoding: TEncoding): Integer;
+    [Extension]class function ContainsPreamble(ABuffer, APreamble: TBytes): Boolean;
+    [Extension]class function GetBufferEncoding(ABuffer: TBytes; var AEncoding: TEncoding): Integer;
   end;
 
 type
@@ -2150,9 +2152,9 @@ begin
   Result := ShineOn.Rtl.SysUtils.PathSeparator;
 end;
 
-{ TEncodingHelper }  
+{ TEncodingExtender }  
 
-class function TEncodingHelper.ContainsPreamble(const ABuffer, APreamble: TBytes): Boolean;
+class function TEncodingExtender.ContainsPreamble(ABuffer, APreamble: TBytes): Boolean;
 var
   I: Integer;
 begin
@@ -2167,7 +2169,7 @@ begin
   exit(True);
 end;
 
-class function TEncodingHelper.GetBufferEncoding(const ABuffer: TBytes; var AEncoding: TEncoding): Integer;
+class function TEncodingExtender.GetBufferEncoding(ABuffer: TBytes; var AEncoding: TEncoding): Integer;
 var
   pPreamble: TBytes;
 begin

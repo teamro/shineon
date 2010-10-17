@@ -1243,8 +1243,7 @@ begin
       iStart := iPos + iLength;
       iPos := Value.IndexOf(FLineBreak, iStart);
     end;
-    //Account for case that there is no FLineBreak after the last string
-    if iStart < Value.Length then
+    if iStart <= Value.Length then
       Add(Value.Substring(iStart, Value.Length - iStart));
   finally
     EndUpdate;
@@ -1455,7 +1454,7 @@ begin
     pBuffer := new TBytes(iSize);
     Stream.Read(pBuffer, iSize);
 
-    iSize := TEncodingHelper.GetBufferEncoding(pBuffer, Encoding);
+    iSize := TEncodingExtender.GetBufferEncoding(pBuffer, Encoding);
     Text := Encoding.GetString(pBuffer, iSize, pBuffer.Length - iSize);
   finally
     EndUpdate;
@@ -2086,10 +2085,7 @@ end;
 procedure TMemoryStream.WriteLine(Value:String);
 begin
   with T:System.IO.StreamWriter := new System.IO.StreamWriter(FStream) do
-  begin
     T.WriteLine(Value); 
-    T.Flush;
-  end;
 end;
 
 procedure TMemoryStream.Clear;

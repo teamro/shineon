@@ -5,7 +5,7 @@ interface
 uses
   System.ComponentModel, // for IComponent
   System.Runtime.InteropServices, // for guid attribute
-  System.Runtime.CompilerServices,
+  System.Runtime.CompilerServices, // for Extension attribute
   System.Threading,
   System.Collections,
   System.Reflection,
@@ -57,7 +57,7 @@ end;
 
 function TObjectExtender.ClassType(o: Object): TClass;
 begin
-  result := o.ClassInfo;
+  result := typeOf(self);
 end;
 
 class function TObjectExtender.ClassName(o: Object): String;
@@ -78,8 +78,7 @@ end;
 
 class function TObjectExtender.ClassInfo(o: Object): System.Type;
 begin
-  //o is a System.Type if the caller used typeof(TExampleClass)
-  Result := iif(o is &Type, &Type(o), o.GetType);
+  result := typeOf(self);
 end;
 
 class function TObjectExtender.InheritsFrom(o: Object; AClass: TClass): Boolean;
