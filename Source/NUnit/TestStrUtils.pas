@@ -84,9 +84,9 @@ end;
 
 method StrUtilsTests.ReverseString; 
 begin
-  NUnit.Framework.Assert.AreEqual(nil, SysUtils.ReverseString(nil));
-  NUnit.Framework.Assert.AreEqual('', SysUtils.ReverseString(''));
-  NUnit.Framework.Assert.AreEqual('ollaH', SysUtils.ReverseString('Hallo'));
+  NUnit.Framework.Assert.AreEqual(nil, StrUtils.ReverseString(nil));
+  NUnit.Framework.Assert.AreEqual('', StrUtils.ReverseString(''));
+  NUnit.Framework.Assert.AreEqual('ollaH', StrUtils.ReverseString('Hallo'));
 end;
 
 method StrUtilsTests.TestAnsiRightStr;
