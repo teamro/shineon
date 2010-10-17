@@ -38,6 +38,9 @@ type
   TBytes = public array of Byte;
 
 type
+  TInterfaceRef = &Type;
+
+type
   SysUtils = public sealed class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
@@ -191,6 +194,8 @@ type
     class function FloatToStr(Value: Extended): String;
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+
+    class function Supports(Instance: IInterface; IID: TInterfaceRef; out Intf): Boolean; 
   end;
 
 var
@@ -1553,6 +1558,29 @@ end;
 class function SysUtils.StringOf(B: TBytes): String;
 begin
   Result := TEncoding.Unicode.GetString(B);
+end;
+
+class function SysUtils.Supports(Instance: IInterface; IID: TInterfaceRef; out Intf): Boolean;
+begin
+  if Instance = nil then
+  begin
+    Intf := nil;
+    exit False;
+  end;
+
+  var pInstanceType: &Type := Instance.GetType;
+  var pInstanceTypes: array of &Type := pInstanceType.GetInterfaces;
+  for each pType: &Type in pInstanceTypes do 
+  begin
+    if pType.Equals(IID) then
+    begin
+      Intf := Instance;
+      exit True;
+    end;
+  end;
+
+  Intf := nil;
+  exit False;
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS

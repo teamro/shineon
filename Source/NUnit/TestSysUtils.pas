@@ -193,9 +193,21 @@ type
     method GetEnvironmentVariable;
     [Test]
     method Format;
+    [Test]
+    method Supports;
   end;
 
 implementation
+
+type
+  IInterface1 = interface(IInterface)
+  end;
+
+  IInterface2 = interface(IInterface)
+  end;
+
+  TIntfObject12 = class(TObject, IInterface1, IInterface2)
+  end;
 
 method SysUtilsTests.Setup; 
 begin
@@ -747,6 +759,18 @@ begin
   NUnit.Framework.Assert.AreEqual('Justified decimal = <1234   >', SysUtils.Format('Justified decimal = <%-7d>', [1234]));
   NUnit.Framework.Assert.AreEqual('0 padded decimal  = <001234>', SysUtils.Format('0 padded decimal  = <%.6d>', [1234]));
   NUnit.Framework.Assert.AreEqual('Width + precision = <  001234>', SysUtils.Format('Width + precision = <%8.6d>', [1234]));
+end;
+
+method SysUtilsTests.Supports;
+begin
+  var pIntf1: IInterface1 := new TIntfObject12;
+  var pIntf2: IInterface2;
+
+  NUnit.Framework.Assert.AreEqual(false, SysUtils.Supports(nil, typeof(IInterface2), pIntf2));
+  NUnit.Framework.Assert.AreEqual(nil, pIntf2);
+
+  NUnit.Framework.Assert.AreEqual(true, SysUtils.Supports(pIntf1, typeof(IInterface2), pIntf2));
+  NUnit.Framework.Assert.AreEqual(pIntf1, pIntf2);
 end;
 
 end.
