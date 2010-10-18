@@ -766,7 +766,7 @@ begin
   var pIntf1: IInterface1 := new TIntfObject12;
   var pIntf2: IInterface2;
 
-  NUnit.Framework.Assert.AreEqual(false, SysUtils.Supports(nil, typeof(IInterface2), pIntf2));
+  NUnit.Framework.Assert.AreEqual(false, SysUtils.Supports(TObject(nil), typeof(IInterface2), pIntf2));
   NUnit.Framework.Assert.AreEqual(nil, pIntf2);
 
   NUnit.Framework.Assert.AreEqual(true, SysUtils.Supports(pIntf1, typeof(IInterface2), pIntf2));

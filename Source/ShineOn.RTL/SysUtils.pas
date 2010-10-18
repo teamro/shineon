@@ -197,7 +197,10 @@ type
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
 
+    class function Supports(Instance: IInterface; IID: TInterfaceRef): Boolean; 
     class function Supports(Instance: IInterface; IID: TInterfaceRef; out Intf): Boolean; 
+    class function Supports(Instance: TObject; IID: TInterfaceRef): Boolean; 
+    class function Supports(Instance: TObject; IID: TInterfaceRef; out Intf): Boolean; 
   end;
 
 var
@@ -1562,7 +1565,24 @@ begin
   Result := TEncoding.Unicode.GetString(B);
 end;
 
+class function SysUtils.Supports(Instance: IInterface; IID: TInterfaceRef): Boolean;
+begin
+  var pInst: TObject;
+  exit Supports(Instance as TObject, IID, pInst);
+end;
+
 class function SysUtils.Supports(Instance: IInterface; IID: TInterfaceRef; out Intf): Boolean;
+begin
+  exit Supports(Instance as TObject, IID, Intf);
+end;
+
+class function SysUtils.Supports(Instance: TObject; IID: TInterfaceRef): Boolean;
+begin
+  var pInst: TObject;
+  exit Supports(Instance as TObject, IID, pInst);
+end;
+
+class function SysUtils.Supports(Instance: TObject; IID: TInterfaceRef; out Intf): Boolean;
 begin
   if Instance = nil then
   begin
