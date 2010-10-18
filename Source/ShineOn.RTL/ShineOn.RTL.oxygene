@@ -81,6 +81,7 @@
     <Compile Include="Globals.pas" />
     <Compile Include="IniFiles.pas" />
     <Compile Include="Langs.pas" />
+    <Compile Include="Math.pas" />
     <Compile Include="StrUtils.pas" />
     <Compile Include="System.pas" />
     <Compile Include="SysUtils.pas" />
