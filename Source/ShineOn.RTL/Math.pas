@@ -8,7 +8,7 @@ type
     const FuzzFactor = 1000;
     const DoubleResolution = 1E-15 * FuzzFactor;
   public
-    class method CompareValue(A, B, Epsilon: Double): TValueRelationship;
+    class method CompareValue(A, B: Double; Epsilon: Double = 0): TValueRelationship;
     class method CompareValue(A, B: Int32): TValueRelationship;
     class method CompareValue(A, B: Int64): TValueRelationship;
     class method IsZero(A: Double; Epsilon: Double = 0): Boolean;
@@ -27,7 +27,7 @@ implementation
 
 { MathUnit }
 
-class method MathUnit.CompareValue(A, B, Epsilon: Double): TValueRelationship;
+class method MathUnit.CompareValue(A, B: Double; Epsilon: Double = 0): TValueRelationship;
 begin
   if SameValue(A, B, Epsilon) then
     exit EqualsValue
