@@ -186,7 +186,10 @@ type
     class function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
     class function GetEnvironmentVariable(Name: String): String;
     class procedure Sleep(val: Integer);
-    class function FormatFloat(aFormat: String; V: Double): String;
+
+    class function FormatFloat(AFormat: String; V: Double): String;
+    class function FormatFloat(AFormat: String; V: Double; FormatSettings: TFormatSettings): String;
+
     class function PathDelim: Char;
     class function DirectorySeparator: Char;
     class function DriveDelim: Char;
@@ -1407,9 +1410,16 @@ begin
 end;
 
 
-class function SysUtils.FormatFloat(aFormat: String; V: Double): String;
+class function SysUtils.FormatFloat(AFormat: String; V: Double): String;
 begin
-  Result := Double(V).ToString(AdjustCommaInFormat(aFormat), System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat);
+  Result := Double(V).ToString(AdjustCommaInFormat(AFormat), System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat);
+end;
+
+class function SysUtils.FormatFloat(AFormat: String; V: Double; FormatSettings: TFormatSettings): String;
+begin
+  var LFormat: NumberFormatInfo := NumberFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone);
+  AdjustFormatProvider(LFormat, False, FormatSettings);
+  Result := Double(V).ToString(AdjustCommaInFormat(AFormat), LFormat);
 end;
 
 class function SysUtils.PathDelim: Char;
