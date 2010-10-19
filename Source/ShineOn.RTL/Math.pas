@@ -76,8 +76,8 @@ begin
   if (Data = nil) or (Data.Length = 0) then
     exit 0;
 
-  Result := Data[Low(Data)];
-  for I: Integer := Low(Data) + 1 to High(Data) do
+  Result := Data[low(Data)];
+  for I: Integer := low(Data) + 1 to high(Data) do
   begin
     if Result < Data[I] then
       Result := Data[I];
@@ -89,8 +89,8 @@ begin
   if (Data = nil) or (Data.Length = 0) then
     exit 0;
 
-  Result := Data[Low(Data)];
-  for I: Integer := Low(Data) + 1 to High(Data) do
+  Result := Data[low(Data)];
+  for I: Integer := low(Data) + 1 to high(Data) do
   begin
     if Result < Data[I] then
       Result := Data[I];

@@ -197,6 +197,10 @@ type
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
     class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
 
+    class function StrToFloat(S: String; FormatSettings: TFormatSettings): Double;
+    class function TryStrToFloat(S: String; out Value: Double; FormatSettings: TFormatSettings): Boolean;
+    class function TryStrToFloat(S: String; out Value: Double; Provider: IFormatProvider): Boolean;
+
     class function Supports(Instance: IInterface; IID: TInterfaceRef): Boolean; 
     class function Supports(Instance: IInterface; IID: TInterfaceRef; out Intf): Boolean; 
     class function Supports(Instance: TObject; IID: TInterfaceRef): Boolean; 
@@ -1603,6 +1607,29 @@ begin
 
   Intf := nil;
   exit False;
+end;
+
+class function SysUtils.TryStrToFloat(S: String; out Value: Double; Provider: IFormatProvider): Boolean;
+begin
+  Result := System.Double.TryParse(S, NumberStyles.Float, Provider, Value);
+end;
+
+class function SysUtils.TryStrToFloat(S: String; out Value: Double; FormatSettings: TFormatSettings): Boolean;
+var
+  LFormat: NumberFormatInfo;
+begin
+  LFormat := NumberFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone);
+  AdjustFormatProvider(LFormat, False, FormatSettings);
+  Result := TryStrToFloat(S, Value, LFormat);
+end;
+
+class function SysUtils.StrToFloat(S: String; FormatSettings: TFormatSettings): Double;
+var
+  Value: Double;
+begin
+  if not TryStrToFloat(S, Value, FormatSettings) then
+    ConvertErrorFmt(SInvalidFloat, [S]);
+  Result := Value;
 end;
 
 // DELPHI COMPATIBLE GLOBAL METHODS
