@@ -207,8 +207,7 @@ method IncMilliSecond(const AValue: TDateTime;
 
 { Unified encode/decode functions that deal with all datetime fields at once }
 
-{method EncodeDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond,
-  AMilliSecond: Word): TDateTime;
+method EncodeDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word): TDateTime; public;
 {method DecodeDateTime(const AValue: TDateTime; out AYear, AMonth, ADay,
   AHour, AMinute, ASecond, AMilliSecond: Word);}
 
