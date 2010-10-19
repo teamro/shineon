@@ -8,10 +8,10 @@ type
     const FuzzFactor = 1000;
     const DoubleResolution = 1E-15 * FuzzFactor;
   public
-    class method CompareValue(A, B: Double; Epsilon: Double = 0): TValueRelationship;
+    class method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship;
     class method CompareValue(A, B: Int32): TValueRelationship;
     class method CompareValue(A, B: Int64): TValueRelationship;
-    class method IsZero(A: Double; Epsilon: Double = 0): Boolean;
+    class method IsZero(A: Double; Epsilon: Double := 0): Boolean;
     class method Max(A, B: Double): Double; 
     class method Max(A, B: Int32): Integer; 
     class method Max(A, B: Int64): Integer; 
@@ -27,7 +27,7 @@ implementation
 
 { MathUnit }
 
-class method MathUnit.CompareValue(A, B: Double; Epsilon: Double = 0): TValueRelationship;
+class method MathUnit.CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship;
 begin
   if SameValue(A, B, Epsilon) then
     exit EqualsValue
@@ -57,7 +57,7 @@ begin
     exit GreaterThanValue;
 end;
 
-class method MathUnit.IsZero(A: Double; Epsilon: Double = 0): Boolean;
+class method MathUnit.IsZero(A: Double; Epsilon: Double := 0): Boolean;
 begin
   if Epsilon = 0 then
     Epsilon := DoubleResolution;
