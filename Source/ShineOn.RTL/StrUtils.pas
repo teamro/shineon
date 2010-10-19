@@ -20,6 +20,7 @@ type
     class method AnsiMidStr(aStr: String; aStart, aCount: Integer): String;
     class method ContainsText(const AText, ASubText: String): Boolean; inline;
     class method AnsiContainsStr(aStr, aSubstring: String): Boolean;
+    class method AnsiStartsText(const ASubText, AText: String): Boolean; 
   end;
 
 
@@ -33,6 +34,7 @@ method AnsiLeftStr(aStr: String; aCount: Integer): String; public;
 method AnsiRightStr(aStr: String; aCount: Integer): String; public;
 method AnsiMidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiContainsStr(aStr, aSubstring: String): Boolean; public;
+method AnsiStartsText(const ASubText, AText: String): Boolean; public; 
   
 implementation
 
@@ -115,6 +117,11 @@ begin
   Result := AText.Contains(ASubText);
 end;
 
+class method StrUtils.AnsiStartsText(const ASubText, AText: string): Boolean;
+begin
+  Result := AText.StartsWith(ASubText, StringComparison.CurrentCultureIgnoreCase);
+end;
+
 // Standalone versions
 
 method LeftStr(aStr: String; aCount: Integer): String;
@@ -165,6 +172,11 @@ end;
 method AnsiContainsStr(aStr, aSubstring: String): Boolean; 
 begin
   result := StrUtils.AnsiContainsStr(aStr, aSubstring);
+end;
+
+method AnsiStartsText(const ASubText, AText: string): Boolean; 
+begin
+  result := StrUtils.AnsiStartsText(ASubText, AText);
 end;
 
 end.
