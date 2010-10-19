@@ -47,7 +47,9 @@ type
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
     class function FormatBuf(Buffer: System.Text.StringBuilder; const aFormat: String; const Args: array of Object; Provider: IFormatProvider): Cardinal;
+
     class procedure AdjustFormatProvider(AFormat: NumberFormatInfo; AdjustCurrencyFormat: Boolean; const FormatSettings: TFormatSettings);
+    class procedure AdjustFormatProvider(AFormat: DateTimeFormatInfo; FormatSettings: TFormatSettings);
   public
     class function UpperCase(const S: String): String; 
     class function UpperCase(const S: String; LocaleOptions: TLocaleOptions): String; 
@@ -128,8 +130,13 @@ type
     class function StrToDateTimeDef(S:String; Default:TDateTime):TDateTime;
     class function StrToTime(S:String):TDateTime;
     class function StrToTimeDef(S:String; Default:TDateTime):TDateTime;
-    class function DateToStr(ADate:TDateTime):String;
-    class function DateTimeToStr(ADateTime:TDateTime):String;
+
+    class function DateToStr(ADate: TDateTime): String;
+    class function DateToStr(ADate: TDateTime; ASettings: TFormatSettings): String;
+
+    class function DateTimeToStr(ADateTime: TDateTime): String;
+    class function DateTimeToStr(ADateTime: TDateTime; ASettings: TFormatSettings): String;
+
     class function TimeToStr(ATime:TDateTime):String;
     class procedure FreeAndNil(var Obj);
 
@@ -809,14 +816,28 @@ begin
   result := StrToDateTimeDef(S,Default);
 end;
 
-class function SysUtils.DateToStr(ADate:TDateTime):String;
+class function SysUtils.DateToStr(ADate: TDateTime): String;
 begin
   Result := ADate.ToString;
 end;
 
-class function SysUtils.DateTimeToStr(ADateTime:TDateTime):String;
+class function SysUtils.DateToStr(ADate: TDateTime; ASettings: TFormatSettings): String;
+begin
+  var pFormat: DateTimeFormatInfo;
+  AdjustFormatProvider(pFormat, ASettings);
+  Result := ADate.ToString(pFormat);
+end;
+
+class function SysUtils.DateTimeToStr(ADateTime: TDateTime): String;
 begin
   Result := ADateTime.ToString;
+end;
+
+class function SysUtils.DateTimeToStr(ADateTime: TDateTime; ASettings: TFormatSettings): String;
+begin
+  var pFormat: DateTimeFormatInfo;
+  AdjustFormatProvider(pFormat, ASettings);
+  Result := ADateTime.ToString(pFormat);
 end;
 
 class function SysUtils.TimeToStr(ATime:TDateTime):String;
@@ -1547,6 +1568,11 @@ begin
   end;
 end;
 
+class procedure SysUtils.AdjustFormatProvider(AFormat: DateTimeFormatInfo; FormatSettings: TFormatSettings);
+begin
+  NotImplemented;
+end;
+
 class function SysUtils.FloatToStr(Value: Extended): String;
 begin
   Result := FloatToStrF(Value, TFloatFormat.ffGeneral, 15, 0);
@@ -2008,7 +2034,7 @@ begin
   Result := ShineOn.Rtl.SysUtils.DateToStr(ADate);
 end;
   
-function DateTimeToStr(ADateTime:TDateTime):String;
+function DateTimeToStr(ADateTime: TDateTime): String;
 begin
   Result := ShineOn.Rtl.SysUtils.DateTimeToStr(ADateTime);
 end;
