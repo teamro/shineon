@@ -193,9 +193,11 @@ type
     class function DriveSeparator: Char;
     class function PathSep: Char;
     class function PathSeparator: Char;
+
     class function FloatToStr(Value: Extended): String;
-    class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
-    class function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+    class function FloatToStr(Value: Extended; FormatSettings: TFormatSettings): String;
+    class function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer): String;
+    class function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; FormatSettings: TFormatSettings ): String;
 
     class function StrToFloat(S: String; FormatSettings: TFormatSettings): Double;
     class function TryStrToFloat(S: String; out Value: Double; FormatSettings: TFormatSettings): Boolean;
@@ -342,8 +344,8 @@ function BytesOf(S: String): TBytes; public;
 function StringOf(B: TBytes): String; public;
 
 function FloatToStr(Value: Extended): String; public;
-function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String; public;
-function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String; public;
+function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer): String; public;
+function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String; public;
 
 
 implementation
@@ -1540,10 +1542,15 @@ begin
   Result := FloatToStrF(Value, TFloatFormat.ffGeneral, 15, 0);
 end;
 
-class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+class function SysUtils.FloatToStr(Value: Extended; FormatSettings: TFormatSettings): String;
+begin
+  Result := FloatToStrF(Value, TFloatFormat.ffGeneral, 15, 0, FormatSettings);
+end;
+
+class function SysUtils.FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer): String;
 begin
   var formatChar: Char;
-  case Format of
+  case AFormat of
     TFloatFormat.ffCurrency: formatChar := 'C';
     TFloatFormat.ffExponent: formatChar := 'E';
     TFloatFormat.ffFixed: formatChar := 'f';
@@ -1554,9 +1561,21 @@ begin
   result := String.Format('{0:00.0000}', Value);
 end;
 
-class function SysUtils.FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+class function SysUtils.FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; FormatSettings: TFormatSettings ): String;
 begin
-  NotImplemented;
+  var formatChar: Char;
+  case AFormat of
+    TFloatFormat.ffCurrency: formatChar := 'C';
+    TFloatFormat.ffExponent: formatChar := 'E';
+    TFloatFormat.ffFixed: formatChar := 'f';
+    TFloatFormat.ffGeneral: formatChar := 'G';
+    TFloatFormat.ffNumber: formatChar := 'N';
+  end;
+  var LFormat: NumberFormatInfo := NumberFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone);
+  AdjustFormatProvider(LFormat, False, FormatSettings);
+
+  result := String.Format(LFormat, '{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
+  result := String.Format(LFormat, '{0:00.0000}', Value);
 end;
 
 class function SysUtils.BytesOf(S: String): TBytes;
@@ -1649,14 +1668,14 @@ begin
   result := ShineOn.Rtl.SysUtils.FloatToStr(Value);
 end;
 
-function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer): String;
+function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer): String;
 begin
-  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits);
+  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, AFormat, Precision, Digits);
 end;
 
-function FloatToStrF(Value: Extended; Format: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
+function FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; const FormatSettings: TFormatSettings ): String;
 begin
-  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, Format, Precision, Digits, FormatSettings);
+  result := ShineOn.Rtl.SysUtils.FloatToStrF(Value, AFormat, Precision, Digits, FormatSettings);
 end;
 
 procedure Sleep(aVal: Integer);
