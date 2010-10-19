@@ -11,6 +11,7 @@ type
     class method CompareValue(A, B, Epsilon: Double): TValueRelationship;
     class method CompareValue(A, B: Int32): TValueRelationship;
     class method CompareValue(A, B: Int64): TValueRelationship;
+    class method IsZero(A: Double; Epsilon: Double = 0): Boolean;
     class method Max(A, B: Double): Double; 
     class method Max(A, B: Int32): Integer; 
     class method Max(A, B: Int64): Integer; 
@@ -54,6 +55,13 @@ begin
     exit LessThanValue
   else
     exit GreaterThanValue;
+end;
+
+class method MathUnit.IsZero(A: Double; Epsilon: Double = 0): Boolean;
+begin
+  if Epsilon = 0 then
+    Epsilon := DoubleResolution;
+  Result := Abs(A) <= Epsilon;
 end;
 
 class method MathUnit.Max(A, B: Double): Double;
