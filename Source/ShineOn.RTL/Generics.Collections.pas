@@ -14,6 +14,9 @@ type
   public
     method Add(const AItem: T);
     method AddRange(const aItems: array of T);
+    method Delete(AIndex: Integer);
+    method Exchange(Index1, Index2: Integer);
+    method Insert(AIndex: Integer; AItem: T);
     method RemoveAt(aIndex: Integer);
     method Clear;
     method Sort;
@@ -58,6 +61,23 @@ end;
 method TList<T>.AddRange(const aItems: array of T);
 begin
   fItems.AddRange(aItems);
+end;
+
+method TList<T>.Delete(AIndex: Integer);
+begin
+  RemoveAt(AIndex);
+end;
+
+method TList<T>.Exchange(Index1, Index2: Integer);
+begin
+  var pItem: T := fItems[Index1];
+  fItems[Index1] := fItems[Index2];
+  fItems[Index2] := pItem;
+end;
+
+method TList<T>.Insert(AIndex: Integer; AItem: T);
+begin
+  fItems.Insert(AIndex, AItem);
 end;
 
 method TList<T>.RemoveAt(aIndex: Integer);
