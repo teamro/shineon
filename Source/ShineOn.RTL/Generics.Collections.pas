@@ -7,6 +7,13 @@ uses
   System.Collections.Generic;
 
 type
+  TPair<TKey, TValue> = public record
+    Key: TKey;
+    Value: TValue;
+    constructor Create(AKey: TKey; AValue: TValue);
+  end;
+
+  TArray<T> = public class(List<T>);
 
   TList<T> = public class(TObject, IEnumerable<T>, IEnumerable)
   private
@@ -52,6 +59,16 @@ type
 
   
 implementation
+
+{ TPair<TKey,TValue> }
+
+constructor TPair<TKey,TValue>.Create(AKey: TKey; AValue: TValue);
+begin
+  Key := AKey;
+  Value := AValue;
+end;
+
+{ TList<T> }
 
 method TList<T>.Add(const AItem: T);
 begin
