@@ -409,6 +409,7 @@ type
     function ReadLine:String;override;
     procedure WriteLine(Value:String);override;
   public
+    constructor Create;
     constructor Create(AString: String);
     function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function ReadString(Count: LongInt): String;
@@ -2205,6 +2206,11 @@ end;
 procedure TStringStream.WriteLine(Value:String); 
 begin
   WriteString(Value);
+end;
+
+constructor TStringStream.Create;
+begin
+  Create('');
 end;
 
 { TResourceStream }
