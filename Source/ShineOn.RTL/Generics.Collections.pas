@@ -54,11 +54,8 @@ type
     FItems: Stack<T> := new Stack<T>; implements IEnumerable<T>;
   end;
 
-  TDictionary<K,V> = public class(TObject, IEnumerable<KeyValuePair<K, V>>, IEnumerable)
-  private
-    FItems: Dictionary<K,V> := new Dictionary<K,V>; implements IEnumerable<KeyValuePair<K, V>>; 
+  TDictionary<TKey, TValue> = public class(Dictionary<TKey, TValue>)
   end;
-
   
 implementation
 
