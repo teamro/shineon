@@ -7,8 +7,8 @@ uses
   System.Collections.Generic;
 
 type
-  TComparer<T> = public class(Comparer<T>);
-  TEqualityComparer<T> = public class(EqualityComparer<T>);
+  TComparer<T> = public abstract class(Comparer<T>);
+  TEqualityComparer<T> = public abstract class(EqualityComparer<T>);
 
   TPair<TKey, TValue> = public record
   public
