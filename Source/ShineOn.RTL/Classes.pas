@@ -172,6 +172,7 @@ type
     property Size: Integer read GetSize write SetSize;
   end;
 
+  TPersistentClass = public class of TPersistent;
   TPersistent = public class(TObject)
   private
     procedure AssignError(Source: TPersistent);
@@ -435,7 +436,20 @@ type
     function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
   end;
 
- 
+  EClassNotFound = public class(Exception);
+
+  Classes = public class(Object)
+  private
+    class var FLock: TCriticalSection;
+    class var FRegisteredClasses: TDictionary<String, TPersistentClass>;
+    class method ClassNotFound(AClassName: String);
+  public
+    class constructor Create;
+    class method FindClass(AClassName: String): TPersistentClass;
+    class method GetClass(AClassName: String): TPersistentClass;
+    class method RegisterClass(AClass: TPersistentClass);
+  end; 
+
   EThread = public class(Exception);
 
   TThreadMethod = public procedure of object;
@@ -2391,5 +2405,44 @@ begin
   result := 0;
 end;
 
+{ Classes }
+
+class constructor Classes.Create;
+begin
+  FLock := new TCriticalSection;
+  FRegisteredClasses := new TDictionary<String, TPersistentClass>;
+end;
+
+class method Classes.ClassNotFound(AClassName: String);
+begin
+  raise EClassNotFound.Create(String.Format(SClassNotFound, [AClassName]));
+end;
+
+class method Classes.FindClass(AClassName: String): TPersistentClass;
+begin
+  Result := GetClass(AClassName);
+  if Result = nil then 
+    ClassNotFound(AClassName);
+end;
+
+class method Classes.GetClass(AClassName: String): TPersistentClass;
+begin
+  FLock.Enter;
+  try
+    FRegisteredClasses.TryGetValue(AClassName, Result);
+  finally
+    FLock.Leave;
+  end;
+end;
+
+class method Classes.RegisterClass(AClass: TPersistentClass);
+begin
+  FLock.Enter;
+  try
+    FRegisteredClasses.Add(AClass.ClassName, AClass);
+  finally
+    FLock.Leave;
+  end;
+end;
 
 end.
