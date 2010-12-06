@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{EADE7853-FDBE-4770-B0B2-5FF5FDD2DBF7}</ProjectGuid>
     <RootNamespace>ShineOn.Rtl</RootNamespace>
@@ -73,7 +73,7 @@
     <Compile Include="DelphiString.Standard Interfaces.pas" />
     <None Include="Direct Ports\ConvUtils.pas" />
     <None Include="Direct Ports\StdConvs.pas" />
-    <None Include="Direct Ports\SyncObjects.pas" />
+    <Compile Include="Direct Ports\SyncObjects.pas" />
     <Compile Include="Direct Ports\TFormatSettings (SysUtils).pas" />
     <Compile Include="Direct Ports\TMultiReadExclusiveWriteSynchonizer.pas" />
     <Compile Include="Files.pas" />
