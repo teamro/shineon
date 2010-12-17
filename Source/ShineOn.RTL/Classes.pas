@@ -1224,6 +1224,10 @@ begin
     if (i <> Count -1) and not String.IsNullOrEmpty(FLineBreak) then
       S.Append(FLineBreak);
   end;
+  //Classic (Unmanaged) Delphi appends a line break when there is 
+  //1 one or more strings
+  if (Count > 0) and (not String.IsNullOrEmpty(FLineBreak)) then
+    S.Append(FLineBreak);
   Result := S.ToString;
 end;
 
