@@ -72,8 +72,7 @@ end;
 
 class function TObjectExtender.ClassParent(o: Object): TClass;
 begin
-  Result := o.GetType.BaseType;
-  NotImplemented;
+  Result:=iif(o is &Type, &Type(o), o.GetType).BaseType;
 end;
 
 class function TObjectExtender.ClassInfo(o: Object): System.Type;
