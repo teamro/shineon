@@ -83,7 +83,7 @@ end;
 
 class function TObjectExtender.InheritsFrom(o: Object; AClass: TClass): Boolean;
 begin
-  AClass.IsAssignableFrom(o.ClassInfo);
+  Result:=AClass.IsAssignableFrom(o.ClassInfo);
 end;
 
 procedure TObjectExtender.AfterConstruction(o: Object);
