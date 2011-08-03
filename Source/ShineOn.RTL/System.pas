@@ -25,6 +25,11 @@ uses
 type
   EShineOnError = public class(Exception);
   EAbort = public class(Exception) constructor; empty; end;
+{$ifdef LegacyStrIndexing}
+  //Give dependent classes of ShineOn a way of ensuring that LegacyStrIndexing 
+  //was defined at compile time 
+  LegacyStrIndexingDefinedAttribute = public class(Attribute);
+{$endif}
   
   SystemUnit = assembly sealed class 
   private
