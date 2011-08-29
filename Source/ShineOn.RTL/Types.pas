@@ -149,18 +149,18 @@ type
   THandle = public IntPtr;
   Currency = public Decimal;     
     
-function EqualRect(const R1, R2: TRect): Boolean;
-function Rect(Left, Top, Right, Bottom: Integer): TRect;
-function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect;
-function Point(X, Y: Integer): TPoint;
-function SmallPoint(X, Y: Integer): TSmallPoint;
-function SmallPoint(XY: LongWord): TSmallPoint;
-function PtInRect(const aRect: TRect; const P: TPoint): Boolean;
-function IntersectRect(out aRect: TRect; const R1, R2: TRect): Boolean;
-function UnionRect(out aRect: TRect; const R1, R2: TRect): Boolean;
-function IsRectEmpty(const aRect: TRect): Boolean;
-function OffsetRect(var aRect: TRect; DX: Integer; DY: Integer): Boolean;
-function CenterPoint(const aRect: TRect): TPoint;
+function EqualRect(const R1, R2: TRect): Boolean; public;
+function Rect(Left, Top, Right, Bottom: Integer): TRect; public;
+function Bounds(ALeft, ATop, AWidth, AHeight: Integer): TRect; public;
+function Point(X, Y: Integer): TPoint; public;
+function SmallPoint(X, Y: Integer): TSmallPoint; public;
+function SmallPoint(XY: LongWord): TSmallPoint; public;
+function PtInRect(const aRect: TRect; const P: TPoint): Boolean; public;
+function IntersectRect(out aRect: TRect; const R1, R2: TRect): Boolean; public;
+function UnionRect(out aRect: TRect; const R1, R2: TRect): Boolean; public;
+function IsRectEmpty(const aRect: TRect): Boolean; public;
+function OffsetRect(var aRect: TRect; DX: Integer; DY: Integer): Boolean; public;
+function CenterPoint(const aRect: TRect): TPoint; public;
   
 implementation
 
