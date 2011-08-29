@@ -21,6 +21,9 @@ type
     class method ContainsText(const AText, ASubText: String): Boolean; inline;
     class method AnsiContainsStr(aStr, aSubstring: String): Boolean;
     class method AnsiStartsText(const ASubText, AText: String): Boolean; 
+    class method IfThen(AValue: Boolean; const ATrue: String; AFalse: String := ''): String; 
+    class method AnsiStartsStr(const ASubText, AText: String): Boolean; 
+    class method AnsiEndsStr(const ASubText, AText: String): Boolean;
   end;
 
 
@@ -35,7 +38,10 @@ method AnsiRightStr(aStr: String; aCount: Integer): String; public;
 method AnsiMidStr(aStr: String; aStart, aCount: Integer): String; public;
 method AnsiContainsStr(aStr, aSubstring: String): Boolean; public;
 method AnsiStartsText(const ASubText, AText: String): Boolean; public; 
-  
+method IfThen(AValue: Boolean; const ATrue: String; AFalse: String := ''): String; public;
+method AnsiStartsStr(const ASubText, AText: String): Boolean; public;
+method AnsiEndsStr(const ASubText, AText: String): Boolean; public;
+
 implementation
 
 { StrUtils }
@@ -122,6 +128,21 @@ begin
   Result := AText.StartsWith(ASubText, StringComparison.CurrentCultureIgnoreCase);
 end;
 
+class method StrUtils.IfThen(AValue: Boolean; const ATrue: String; AFalse: String := ''): String;
+begin
+  Result:=iif(AValue, ATrue, AFalse);
+end;
+
+class method StrUtils.AnsiStartsStr(const ASubText, AText: String): Boolean;
+begin
+  Result:=AText.StartsWith(ASubText, StringComparison.CurrentCulture);
+end;
+
+class method StrUtils.AnsiEndsStr(const ASubText, AText: String): Boolean;
+begin
+  Result:=AText.EndsWith(ASubText, StringComparison.CurrentCulture);
+end;
+
 // Standalone versions
 
 method LeftStr(aStr: String; aCount: Integer): String;
@@ -177,6 +198,21 @@ end;
 method AnsiStartsText(const ASubText, AText: string): Boolean; 
 begin
   result := StrUtils.AnsiStartsText(ASubText, AText);
+end;
+
+method IfThen(AValue: Boolean; const ATrue: String; AFalse: String := ''): String;
+begin
+  result:=StrUtils.IfThen(AValue, ATrue, AFalse);
+end;
+
+method AnsiStartsStr(const ASubText, AText: string): Boolean; 
+begin
+  result:=StrUtils.AnsiStartsStr(ASubText, AText);
+end;
+
+method AnsiEndsStr(const ASubText, AText: string): Boolean;
+begin
+  result:=StrUtils.AnsiEndsStr(ASubText, AText);
 end;
 
 end.
