@@ -91,6 +91,7 @@
     <Compile Include="TObject.pas" />
     <Compile Include="TypeAliases.pas" />
     <Compile Include="Types.pas" />
+    <Compile Include="TypInfo.pas" />
     <Compile Include="Variants.pas" />
   </ItemGroup>
   <ItemGroup>
