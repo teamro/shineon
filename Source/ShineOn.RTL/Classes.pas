@@ -499,34 +499,82 @@ type
     property ThreadID: THandle read FThreadID;
     property OnTerminate: TNotifyEvent read FOnTerminate write FOnTerminate;
   end;  
+
+  TStreamUtils = public class
+  public
+    class procedure ConvertRTLStreamToDotNetStream(AInStream:TStream; AOutStream: System.IO.Stream);
+    class procedure ConvertDotNetStreamToRTLStream(AInStream: System.IO.Stream; AOutStream: TStream);
+    class function RTLStreamToDotNetStream(AStream: TStream): System.IO.Stream;
+    class function DotNetStreamToRTLStream(AStream: System.IO.Stream): TStream;
+  end;
+
+{ Stream Conversion procedures }
+procedure ConvertRTLStreamToDotNetStream(AInStream:TStream; AOutStream: System.IO.Stream); public;
+procedure ConvertDotNetStreamToRTLStream(AInStream: System.IO.Stream; AOutStream: TStream); public;
+function RTLStreamToDotNetStream(AStream:TStream): System.IO.Stream; public;
+function DotNetStreamToRTLStream(AStream:System.IO.Stream): TStream; public;
+
   
 implementation
 
-function RTLStreamToDotNetStream(AStream:TStream):System.IO.Stream;
-var 
-  buf:array of Byte := new Byte[1024]; // need to be dynamic
-  ACount:Int32;
+function RTLStreamToDotNetStream(AStream: TStream): System.IO.Stream;
 begin
-  Result := new System.IO.MemoryStream;
-  while AStream.Position <= AStream.Size do
-  begin
-    ACount := AStream.Read(buf, buf.Length);
-    Result.Write(buf, 0, ACount);
-    if ACount < buf.Length then 
-      Exit;
-  end;
+  Result:=TStreamUtils.RTLStreamToDotNetStream(AStream);
 end;
 
-function DotNetStreamToRTLStream(AStream:System.IO.Stream):TStream;
+function DotNetStreamToRTLStream(AStream: System.IO.Stream): TStream;
+begin
+  Result:=TStreamUtils.DotNetStreamToRTLStream(AStream);
+end;
+
+class function TStreamUtils.RTLStreamToDotNetStream(AStream:TStream):System.IO.Stream;
+begin
+  Result := new System.IO.MemoryStream;
+  ConvertRTLStreamToDotNetStream(AStream, Result);
+end;
+
+class function TStreamUtils.DotNetStreamToRTLStream(AStream:System.IO.Stream):TStream;
 var 
   buf:array of Byte := new Byte [1024];
   ACount:Int32;
 begin
   Result := new TMemoryStream;
-  while AStream.Position <= AStream.Length do
+  ConvertDotNetStreamToRTLStream(AStream, Result);
+end;
+
+procedure ConvertRTLStreamToDotNetStream(AInStream:TStream; AOutStream: System.IO.Stream);
+begin
+  TStreamUtils.ConvertRTLStreamToDotNetStream(AInStream, AOutStream);
+end;
+
+procedure ConvertDotNetStreamToRTLStream(AInStream: System.IO.Stream; AOutStream: TStream);
+begin
+  TStreamUtils.ConvertDotNetStreamToRTLStream(AInStream, AOutStream);
+end;
+
+class procedure TStreamUtils.ConvertRTLStreamToDotNetStream(AInStream:TStream; AOutStream: System.IO.Stream);
+var 
+  buf:array of Byte := new Byte[1024]; // need to be dynamic
+  ACount:Int32;
+begin
+  while AInStream.Position <= AInStream.Size do
   begin
-    ACount := AStream.Read(buf, 0, buf.Length);
-    Result.Write(buf, ACount);
+    ACount := AInStream.Read(buf, buf.Length);
+    AOutStream.Write(buf, 0, ACount);
+    if ACount < buf.Length then 
+      Exit;
+  end;
+end;
+
+class procedure TStreamUtils.ConvertDotNetStreamToRTLStream(AInStream: System.IO.Stream; AOutStream: TStream);
+var 
+  buf:array of Byte := new Byte [1024];
+  ACount:Int32;
+begin
+  while AInStream.Position <= AInStream.Length do
+  begin
+    ACount := AInStream.Read(buf, 0, buf.Length);
+    AOutStream.Write(buf, ACount);
     if ACount < buf.Length then 
       Exit;
   end;
