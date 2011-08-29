@@ -99,6 +99,11 @@ type
     class function ParamStr(i: Integer): String;
     class function GetDir: String;
     class procedure Abort;
+    { Trigonometric functions }
+    class function Tan(const X: Double): Double;
+    class function Sin(const X: Double): Double;
+    class function Cos(const X: Double): Double;
+    class function ArcTan(const X: Double): Double;
   end;
   
 const
@@ -166,7 +171,10 @@ procedure Read(var P);public;
 procedure ReadLn(var P);public;
 function ParamCount: Integer; public;
 function ParamStr(i: Integer): String; public;
-
+function Tan(const X: Double): Double; public;
+function Sin(const X: Double): Double; public;
+function Cos(const X: Double): Double; public;
+function ArcTan(const X: Double): Double; public;
 
 implementation
 
@@ -633,6 +641,26 @@ begin
   result:=SystemUnit.Copy(Source, StartIndex, iif(Assigned(Source), Source.Length, 0));
 end;
 
+class function SystemUnit.Tan(const X: Double): Double;
+begin
+  Result:=Math.Tan(X);
+end;
+
+class function SystemUnit.Sin(const X: Double): Double;
+begin
+  Result:=Math.Sin(X);
+end;
+
+class function SystemUnit.Cos(const X: Double): Double;
+begin
+  Result:=Math.Cos(X);
+end;
+
+class function SystemUnit.ArcTan(const X: Double): Double;
+begin
+  Result:=Math.Atan(X);
+end;
+
 // DELPHI COMPATIBLE GLOBAL METHODS
 procedure NotImplemented;
 begin
@@ -914,6 +942,26 @@ end;
 procedure Abort;
 begin
   ShineOn.Rtl.SystemUnit.Abort;
+end;
+
+function Tan(const X: Double): Double;
+begin
+  Result:=SystemUnit.Tan(X);
+end;
+
+function Sin(const X: Double): Double;
+begin
+  Result:=SystemUnit.Sin(X);
+end;
+
+function Cos(const X: Double): Double;
+begin
+  Result:=SystemUnit.Cos(X);
+end;
+
+function ArcTan(const X: Double): Double;
+begin
+  Result:=SystemUnit.ArcTan(X);
 end;
 
 end.
