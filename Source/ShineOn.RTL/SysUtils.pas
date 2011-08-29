@@ -27,6 +27,19 @@ type
   TOpenedFile = public FileStream;
 
 type
+
+  TStringBuilder = public class(TObject)
+  private
+    fBuilder: StringBuilder;
+    function GetLength: Integer;
+    procedure SetLength(Value: Integer);
+  public
+    constructor Create;
+    function Append(const Value: string): TStringBuilder; 
+    function ToString: String; override;
+    property Length: Integer read GetLength write SetLength;
+  end;
+
   TEncoding = public System.Text.Encoding;
 
   [Extension]
@@ -2308,6 +2321,32 @@ begin
     if (pPreamble <> nil) and ContainsPreamble(ABuffer, pPreamble) then
       Result := pPreamble.Length;
   end;
+end;
+
+constructor TStringBuilder.Create;
+begin
+  fBuilder:=new StringBuilder;
+end;
+
+function TStringBuilder.Append(const Value: string): TStringBuilder;
+begin
+  fBuilder.Append(Value);
+  Result:=Self;
+end;
+
+function TStringBuilder.GetLength: Integer;
+begin
+  Result:=fBuilder.Length;
+end;
+
+procedure TStringBuilder.SetLength(Value: Integer);
+begin
+  fBuilder.Length:=Value;
+end;
+
+function TStringBuilder.ToString: String;
+begin
+  Result:=fBuilder.ToString();
 end;
 
 end.
