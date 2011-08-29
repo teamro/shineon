@@ -101,6 +101,8 @@ type
     class procedure Abort;
   end;
   
+const
+  Pi = Math.Pi;
 
 procedure NotImplemented;public;
 
@@ -778,12 +780,12 @@ begin
   Result := ShineOn.Rtl.SystemUnit.Abs(X);
 end;
   
-function Abs(X:Double):Double;
+function Abs(X: Double):Double;
 begin
   Result := ShineOn.Rtl.SystemUnit.Abs(X);
 end;
   
-function Abs(X:TDateTime):TDateTime;
+function Abs(X: TDateTime):TDateTime;
 begin
   Result := ShineOn.Rtl.SystemUnit.Abs(X);
 end;
