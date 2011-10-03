@@ -743,7 +743,7 @@ end;
 
 procedure TList.Insert(Index: Integer; Item: Object);
 begin
-  if (Index < 0) or (Index >= Count) then
+  if (Index < 0) or (Index > Count) then
     Error(SListIndexError, Index);
   FList.Insert(Index, Item);
   if Item <> nil then
