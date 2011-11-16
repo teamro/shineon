@@ -48,13 +48,13 @@ implementation
 
 class method StrUtils.LeftStr(aStr: String; aCount: Integer): String;
 begin
-  if aCount > length(aStr) then aCount := length(aStr);
+  aCount := Math.Min(Math.Max(0, aCount), length(aStr));
   Result := aStr.Substring(0, aCount);
 end;
 
 class method StrUtils.RightStr(aStr: String; aCount: Integer): String;
 begin
-  if aCount > length(aStr) then aCount := length(aStr);
+  aCount := Math.Min(Math.Max(0, aCount), length(aStr));
   Result := aStr.Substring(aStr.Length - aCount);
 end;
 
