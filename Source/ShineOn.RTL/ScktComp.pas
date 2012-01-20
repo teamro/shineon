@@ -8,6 +8,7 @@ uses
 
 type
   TClientType = public (ctNonBlocking, ctBlocking);
+  ESocketError = public class(Exception);
 
 
   TCustomWinSocket = public class
@@ -142,21 +143,21 @@ end;
 procedure TAbstractSocket.SetAddress(Value: string);
 begin
   if Active then
-    raise Exception.Create(sCantChangeWhileActive);
+    raise ESocketError.Create(sCantChangeWhileActive);
   fAddress:=Value;
 end;
 
 procedure TAbstractSocket.SetHost(Value: string);
 begin
   if Active then
-    raise Exception.Create(sCantChangeWhileActive);
+    raise ESocketError.Create(sCantChangeWhileActive);
   fHost:=Value;
 end;
 
 procedure TAbstractSocket.SetPort(Value: Integer);
 begin
   if Active then
-    raise Exception.Create(sCantChangeWhileActive);
+    raise ESocketError.Create(sCantChangeWhileActive);
   fPort:=Value;
 end;
 
@@ -203,14 +204,14 @@ begin
     if Length(lIPHost.AddressList) > 0 then
       lIPAddress := lIPHost.AddressList[0]
     else
-      raise new Exception(Format('Host %s not found.', [Name]));
+      raise new ESocketError(Format('Host %s not found.', [Name]));
   end 
   else if Address<>'' then
   begin
     lIPAddress:=IPAddress.Parse(Address);
   end else
   begin
-    raise new Exception(Format('No host or address specified.', [Name]));
+    raise new ESocketError(Format('No host or address specified.', [Name]));
   end;
   
   lEndPoint := IPEndPoint.Create(lIPAddress, Port);
@@ -245,7 +246,7 @@ begin
     if Connected then
       FClientType := AValue
     else 
-      raise Exception.Create(sCantChangeWhileActive);
+      raise ESocketError.Create(sCantChangeWhileActive);
   end;
 end;
 
