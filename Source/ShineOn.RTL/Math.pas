@@ -60,7 +60,10 @@ method ArcSin(const X : Double) : Double; public;
 method RadToDeg(const Radians: Double): Double; public;
 method DegToRad(const Degrees: Double): Double; public;
 method SameValue(const A, B: Double; Epsilon: Double := 0): Boolean; public;
-method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean; public;
+method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean; public;    
+method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship; public;
+method CompareValue(A, B: Int32): TValueRelationship; public;
+method CompareValue(A, B: Int64): TValueRelationship; public;
 
 implementation
 
@@ -310,6 +313,22 @@ end;
 method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean;
 begin
   Result:=MathUnit.SameValue(A, B, Epsilon);
+end;
+
+    
+method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship; 
+begin
+  Result:=MathUnit.CompareValue(A,B,Epsilon);
+end;
+
+method CompareValue(A, B: Int32): TValueRelationship; 
+begin
+  Result:=MathUnit.CompareValue(A,B);
+end;
+
+method CompareValue(A, B: Int64): TValueRelationship; 
+begin
+  Result:=MathUnit.CompareValue(A,B);
 end;
 
 end.
