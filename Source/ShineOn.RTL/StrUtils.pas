@@ -9,6 +9,7 @@ uses
 type
   StrUtils = public class
   public
+    class method SplitString(const S, Delimiters: string): TStringDynArray;
     class method LeftStr(aStr: String; aCount: Integer): String;
     class method RightStr(aStr: String; aCount: Integer): String;
     class method MidStr(aStr: String; aStart, aCount: Integer): String;
@@ -27,6 +28,7 @@ type
   end;
 
 
+method SplitString(const S, Delimiters: string): TStringDynArray; public;
 method LeftStr(aStr: String; aCount: Integer): String; public;
 method RightStr(aStr: String; aCount: Integer): String; public;
 method MidStr(aStr: String; aStart, aCount: Integer): String; public;
@@ -143,7 +145,17 @@ begin
   Result:=AText.EndsWith(ASubText, StringComparison.CurrentCulture);
 end;
 
+class method StrUtils.SplitString(const S, Delimiters: string): TStringDynArray;
+begin
+  Result:=S.Split([Delimiters], StringSplitOptions.None);
+end;
+
 // Standalone versions
+
+method SplitString(const S, Delimiters: string): TStringDynArray;
+begin
+  result := StrUtils.SplitString(S, Delimiters);
+end;
 
 method LeftStr(aStr: String; aCount: Integer): String;
 begin
