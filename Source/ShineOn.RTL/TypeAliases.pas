@@ -7,7 +7,7 @@ uses
 
 type
   { Types.pas }
-  TValueRelationship = Int16; //-1..1;
+  TValueRelationship = public Int16; //-1..1;
  
 const
   LessThanValue = -1;
