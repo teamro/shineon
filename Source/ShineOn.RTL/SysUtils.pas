@@ -20,7 +20,11 @@ uses System,
      System.Windows.Forms;
 
 type
-  TReplaceFlags = public flags(ReplaceAll, IgnoreCase);
+  //TReplaceFlags is defined as set of (rfReplaceAll, rfIgnoreCase) in classic Delphi
+  TReplaceFlags = public set of TReplaceFlag;
+  TReplaceFlag = public enum (rfReplaceAll = 1, rfIgnoreCase = 2);
+  //TReplaceFlagSet will give the ability to use the native .NET flag attribute 
+  TReplaceFlagSet = public flags(ReplaceAll = TReplaceFlag.rfReplaceAll, IgnoreCase = TReplaceFlag.rfIgnoreCase);
   TFloatFormat = public enum(ffGeneral, ffExponent, ffFixed, ffNumber, ffCurrency);
   
 type
@@ -203,6 +207,7 @@ type
     class function AnsiStrPos(Str, SubStr: String): String;
     class function AnsiStrRScan(Str: String; Chr: Char): String;
     class function AnsiStrScan(Str: String; Chr: Char): String;
+    class function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlagSet): String;
     class function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
     class function GetEnvironmentVariable(Name: String): String;
     class procedure Sleep(val: Integer);
@@ -352,6 +357,7 @@ function AnsiStrPos(aStr, SubStr: String): String;public;
 function AnsiStrRScan(aStr: String; Chr: Char): String;public;
 function AnsiStrScan(aStr: String; Chr: Char): String;public;
 function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;public;
+function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlagSet): String;public;
 function GetEnvironmentVariable(Name: String): String;   public;
 procedure Sleep(aVal: Integer);public;
 
@@ -1161,7 +1167,7 @@ class function SysUtils.StringReplace(S, OldPattern, NewPattern: String;
 var
   tempRegex: Regex;
 begin
-  if TReplaceFlags.IgnoreCase in Flags then
+  if TReplaceFlag.rfIgnoreCase in Flags then
   begin
     tempRegex := new Regex(OldPattern, RegexOptions.IgnoreCase);
   end
@@ -1169,7 +1175,7 @@ begin
   begin
     tempRegex := new Regex(OldPattern);
   end;
-  if TReplaceFlags.ReplaceAll in Flags then
+  if TReplaceFlag.rfReplaceAll in Flags then
   begin
    Result := tempRegex.Replace(S,NewPattern);
   end
@@ -1177,6 +1183,15 @@ begin
   begin
     Result := tempRegex.Replace(S,NewPattern,1);
   end;  
+end;
+
+class function SysUtils.StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlagSet): String;
+var
+  NewFlags: TReplaceFlags := [];
+begin
+  if TReplaceFlagSet.ReplaceAll in Flags then NewFlags := NewFlags + [TReplaceFlag.rfReplaceAll];
+  if TReplaceFlagSet.IgnoreCase in Flags then NewFlags := NewFlags + [TReplaceFlag.rfIgnoreCase];
+  Result := StringReplace(S, OldPattern, NewPattern, NewFlags);
 end;
  
 class function SysUtils.GetEnvironmentVariable(Name: String): String;   
@@ -2240,6 +2255,11 @@ begin
 end;
   
 function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlags): String;
+begin
+  Result := ShineOn.Rtl.SysUtils.StringReplace(S, OldPattern, NewPattern, Flags);
+end;
+
+function StringReplace(S, OldPattern, NewPattern: String; Flags: TReplaceFlagSet): String;
 begin
   Result := ShineOn.Rtl.SysUtils.StringReplace(S, OldPattern, NewPattern, Flags);
 end;

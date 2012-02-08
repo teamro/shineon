@@ -91,8 +91,8 @@ type
     class const dupError = TDuplicates.Error;
     class const tlbsLF = TTextLineBreakStyle.LF;
     class const tlbsCRLF = TTextLineBreakStyle.CRLF;
-    class const rfReplaceAll = TReplaceFlags.ReplaceAll;
-    class const rfIgnoreCase = TReplaceFlags.IgnoreCase;
+    class const rfReplaceAll = TReplaceFlag.rfReplaceAll;
+    class const rfIgnoreCase = TReplaceFlag.rfIgnoreCase;
     class const lnAdded = TListNotification.Added;
     class const lnExtracted = TListNotification.Extracted;
     class const lnDeleted = TListNotification.Deleted;
