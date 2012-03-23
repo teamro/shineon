@@ -317,9 +317,6 @@ function StrToDateTime(S:String):TDateTime;public;
 function StrToDateTimeDef(S:String; Default:TDateTime):TDateTime;public;
 function StrToTime(S:String):TDateTime;public;
 function StrToTimeDef(S:String; Default:TDateTime):TDateTime;public;
-{function DateToStr(ADate:TDateTime):String;public;
-function DateTimeToStr(ADateTime:TDateTime):String;public;
-function TimeToStr(ATime:TDateTime):String;public;}
 procedure FreeAndNil(var obj);public;
 function FileExists(FileName: String): Boolean;public;
 function DirectoryExists(Directory: String): Boolean;public;
@@ -2072,11 +2069,6 @@ end;
 function DateToStr(ADate:TDateTime):String;
 begin
   Result := ShineOn.Rtl.SysUtils.DateToStr(ADate);
-end;
-  
-function DateTimeToStr(ADateTime: TDateTime): String;
-begin
-  Result := ShineOn.Rtl.SysUtils.DateTimeToStr(ADateTime);
 end;
   
 function TimeToStr(ATime:TDateTime):String;
