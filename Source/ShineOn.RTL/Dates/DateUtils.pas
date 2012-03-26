@@ -285,7 +285,7 @@ method TryEncodeDayOfWeekInMonth(const AYear, AMonth, ANthDayOfWeek,
 //InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; ABaseDate: TDateTime = 0)
 //however, for some reason in XE2 version of Prism, it does not support the record default parameter's implicit assignment of "0"
 //So to work around it, we will overload the method which should do the same thing
-method InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; ABaseDate: TDateTime); public;  
+method InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; const ABaseDate: TDateTime); public;  
 method InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word); public;
 method InvalidDateWeekError(const AYear, AWeekOfYear, ADayOfWeek: Word); public;
 method InvalidDateDayError(const AYear, ADayOfYear: Word); public;
