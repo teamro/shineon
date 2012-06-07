@@ -3,6 +3,8 @@
 interface
 
 type
+  TRoundToEXRangeExtended = -20..20;
+
   MathUnit = public sealed class
   private
     const FuzzFactor = 1000;
@@ -43,6 +45,9 @@ type
     { Floating point compare functions }
     //function SameValue(const A, B: Extended; Epsilon: Extended := 0): Boolean; public;  //Does not appear to be a need for this one
     class method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean;
+
+    class method RoundTo(const AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
+    class method RoundTo(const AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
   end;
 
 method IsZero(const A: Double; Epsilon: Double := 0): Boolean; public;
@@ -64,6 +69,9 @@ method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean; public;
 method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship; public;
 method CompareValue(A, B: Int32): TValueRelationship; public;
 method CompareValue(A, B: Int64): TValueRelationship; public;
+method RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double; public;
+method RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal; public;
+
 
 implementation
 
@@ -233,6 +241,35 @@ begin
     Result := (A - B) <= Epsilon
   else
     Result := (B - A) <= Epsilon;
+end;
+
+class method MathUnit.RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double;
+begin
+  Result:=Convert.ToDouble(RoundTo(Convert.ToDecimal(AValue), ADigit));
+end;
+
+class method MathUnit.RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal;
+var
+  Scaler: Decimal;
+  TempVal: Decimal;
+begin
+  //Need to use Decimal data type in order to avoid issues that 
+  //can arrise as a result of double division and multiplication
+  Scaler := Convert.ToDecimal(Math.Pow(10.0, ADigit));
+  TempVal := Convert.ToDecimal(AValue) / Scaler;
+  //Need to use "Bankers Rounding"
+  TempVal := System.Math.Round(TempVal, MidpointRounding.ToEven); 
+  Result := TempVal * Scaler;
+end;
+
+method RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double;
+begin
+  Result:=MathUnit.RoundTo(AValue, ADigit);
+end;
+
+method RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal;
+begin
+  Result:=MathUnit.RoundTo(AValue, ADigit);
 end;
 
 method IsZero(const A: Double; Epsilon: Double := 0): Boolean;
