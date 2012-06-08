@@ -69,8 +69,8 @@ method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean; public;
 method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship; public;
 method CompareValue(A, B: Int32): TValueRelationship; public;
 method CompareValue(A, B: Int64): TValueRelationship; public;
-method RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double; public;
-method RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal; public;
+method RoundTo(const AValue: Double; const ADigit: TRoundToEXRangeExtended): Double; public;
+method RoundTo(const AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal; public;
 
 
 implementation
@@ -262,12 +262,12 @@ begin
   Result := TempVal * Scaler;
 end;
 
-method RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
+method RoundTo(const AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
 begin
   Result:=MathUnit.RoundTo(AValue, ADigit);
 end;
 
-method RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
+method RoundTo(const AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
 begin
   Result:=MathUnit.RoundTo(AValue, ADigit);
 end;
