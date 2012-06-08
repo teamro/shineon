@@ -60,7 +60,7 @@ type
   TInterfaceRef = &Type;
 
 type
-  SysUtils = public sealed class
+  SysUtils = public class
   private
     class function _CompareText(const S1, S2: String; Culture: CultureInfo): Integer;
     class function FormatBuf(Buffer: System.Text.StringBuilder; const aFormat: String; const Args: array of Object; Provider: IFormatProvider): Cardinal;
@@ -1621,7 +1621,6 @@ begin
     TFloatFormat.ffNumber: formatChar := 'N';
   end;
   result := String.Format('{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
-  result := String.Format('{0:00.0000}', Value);
 end;
 
 class function SysUtils.FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; FormatSettings: TFormatSettings ): String;
@@ -1638,7 +1637,6 @@ begin
   AdjustFormatProvider(LFormat, False, FormatSettings);
 
   result := String.Format(LFormat, '{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
-  result := String.Format(LFormat, '{0:00.0000}', Value);
 end;
 
 class function SysUtils.BytesOf(S: String): TBytes;
