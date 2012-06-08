@@ -69,8 +69,8 @@ method SameValue(const A, B: Single; Epsilon: Single := 0): Boolean; public;
 method CompareValue(A, B: Double; Epsilon: Double := 0): TValueRelationship; public;
 method CompareValue(A, B: Int32): TValueRelationship; public;
 method CompareValue(A, B: Int64): TValueRelationship; public;
-method RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double; public;
-method RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal; public;
+method RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double; public;
+method RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal; public;
 
 
 implementation
@@ -243,12 +243,12 @@ begin
     Result := (B - A) <= Epsilon;
 end;
 
-class method MathUnit.RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double;
+class method MathUnit.RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
 begin
   Result:=Convert.ToDouble(RoundTo(Convert.ToDecimal(AValue), ADigit));
 end;
 
-class method MathUnit.RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal;
+class method MathUnit.RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
 var
   Scaler: Decimal;
   TempVal: Decimal;
@@ -262,12 +262,12 @@ begin
   Result := TempVal * Scaler;
 end;
 
-method RoundTo(AValue: Double; ADigit: TRoundToEXRangeExtended): Double;
+method RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
 begin
   Result:=MathUnit.RoundTo(AValue, ADigit);
 end;
 
-method RoundTo(AValue: Decimal; ADigit: TRoundToEXRangeExtended): Decimal;
+method RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
 begin
   Result:=MathUnit.RoundTo(AValue, ADigit);
 end;
