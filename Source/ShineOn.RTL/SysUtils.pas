@@ -1620,7 +1620,9 @@ begin
     TFloatFormat.ffGeneral: formatChar := 'G';
     TFloatFormat.ffNumber: formatChar := 'N';
   end;
-  result := String.Format('{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
+  //We still need to do something with digits.. 
+  //We also need to go through each of the TFloatFormats and get them working the same as VCL
+  result := String.Format('{0' + ':' + formatChar + Precision.ToString +  '}', Value);
 end;
 
 class function SysUtils.FloatToStrF(Value: Extended; AFormat: TFloatFormat; Precision, Digits: Integer; FormatSettings: TFormatSettings ): String;
@@ -1636,7 +1638,9 @@ begin
   var LFormat: NumberFormatInfo := NumberFormatInfo(System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.Clone);
   AdjustFormatProvider(LFormat, False, FormatSettings);
 
-  result := String.Format(LFormat, '{0,' + Precision.ToString + ':' + formatChar + Digits.ToString +  '}', Value);
+  //We still need to do something with digits.. 
+  //We also need to go through each of the TFloatFormats and get them working the same as VCL
+  result := String.Format(LFormat, '{0' + ':' + formatChar + Precision.ToString +  '}', Value);
 end;
 
 class function SysUtils.BytesOf(S: String): TBytes;
