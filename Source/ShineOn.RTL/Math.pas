@@ -243,12 +243,12 @@ begin
     Result := (B - A) <= Epsilon;
 end;
 
-class method MathUnit.RoundTo(AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
+class method MathUnit.RoundTo(const AValue: Double; const ADigit: TRoundToEXRangeExtended): Double;
 begin
   Result:=Convert.ToDouble(RoundTo(Convert.ToDecimal(AValue), ADigit));
 end;
 
-class method MathUnit.RoundTo(AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
+class method MathUnit.RoundTo(const AValue: Decimal; const ADigit: TRoundToEXRangeExtended): Decimal;
 var
   Scaler: Decimal;
   TempVal: Decimal;
