@@ -567,31 +567,14 @@ begin
 end;
 
 class operator TDateTime.Subtract(const Left, Right: TDateTime): TDateTime;
-var
-  Buffer: TimeSpan;
-  LeftDateTime, RightDateTime: DateTime;
 begin
-  LeftDateTime := Left.ToDateTime;
-  RightDateTime := Right.ToDateTime;
-
-  Buffer := new TimeSpan(RightDateTime.Ticks);
-
-  Result := TDateTime(LeftDateTime.Subtract(Buffer));
+  //Behave as if it were the native Floating point TDateTime
+  Result:=DoubleToDateTime(DateTimeToDouble(Left) - DateTimeToDouble(Right));
 end;
 
 class operator TDateTime.Subtract(const Left: TDateTime; const Right: Double): TDateTime;
-var
-  LeftDateTime, RightDateTime: DateTime;
-  Span: TimeSpan;
-  Buffer: DateTime;
 begin
-  LeftDateTime := Left.ToDateTime;
-  RightDateTime := new TDateTime(Right).ToDateTime;
-
-  Span := new TimeSpan(RightDateTime.Ticks);
-  Buffer := LeftDateTime.Subtract(Span);
-
-  Result := TDateTime(Buffer);
+  Result:=Left - (new TDateTime(Right));
 end;
 
 class operator TDateTime.Subtract(const Left: TDateTime; const Right: System.TimeSpan): TDateTime;
