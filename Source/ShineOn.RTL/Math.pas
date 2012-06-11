@@ -252,10 +252,12 @@ class method MathUnit.RoundTo(const AValue: Decimal; const ADigit: TRoundToEXRan
 var
   Scaler: Decimal;
   TempVal: Decimal;
+  DigitVal: Double;
 begin
   //Need to use Decimal data type in order to avoid issues that 
   //can arrise as a result of double division and multiplication
-  Scaler := Convert.ToDecimal(Math.Pow(10.0, ADigit));
+  DigitVal:=Double(ADigit);  //Be sure the TRoundToEXRangeExtended is converted properly
+  Scaler := Convert.ToDecimal(Math.Pow(10.0, DigitVal));
   TempVal := Convert.ToDecimal(AValue) / Scaler;
   //Need to use "Bankers Rounding"
   TempVal := System.Math.Round(TempVal, MidpointRounding.ToEven); 
