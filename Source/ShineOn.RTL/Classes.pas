@@ -306,17 +306,17 @@ type
   private
     function GetPosition:Int64;
     procedure SetPosition(const Value:Int64);
-    function GetSize:Int64;
   assembly or protected
-    function ReadLine:String;virtual;abstract;
-    procedure WriteLine(Value:String);virtual;abstract;
+    function ReadLine:String;virtual;
+    procedure WriteLine(Value:String);virtual;
   protected
     procedure SetSize(const NewSize: Int64); virtual;abstract;
+    function GetSize:Int64; virtual;
   public
-    function Read(var Buffer: TBytes; Count: LongInt): LongInt; 
-    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
-    function Write(const Buffer: TBytes; Count: LongInt): LongInt; 
-    function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
+    function Read(var Buffer: TBytes; Count: LongInt): LongInt; virtual;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual;
+    function Write(const Buffer: TBytes; Count: LongInt): LongInt; virtual;
+    function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; virtual; abstract;
     function Seek(const Offset: Int64; Origin: Int32): Int64; 
     procedure ReadBuffer(var Buffer:array of Byte; Count: LongInt);
@@ -370,11 +370,11 @@ type
     procedure SetMemory(Value: array of Byte);
   protected
     FStream:System.IO.MemoryStream;
-    procedure SetSize(const NewSize: Int64);override;
   assembly or protected
     function ReadLine:String;override;
   public
     constructor Create;
+    procedure SetSize(const NewSize: Int64);override;
     function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
     function Seek(Offset: Int64; Origin: TSeekOrigin): Int64; override;
     procedure SaveToStream(Stream: TStream);
@@ -423,8 +423,6 @@ type
   TResourceStream = public class(TCustomMemoryStream)
   private
     // FStream:System.Resources.ResourceReader;
-  protected
-    procedure SetSize(NewSize: Int64); override;
   assembly or protected
     function ReadLine:String;override;
     procedure WriteLine(Value:String);override;
@@ -432,6 +430,7 @@ type
     constructor Create(Instance: THandle; ResName: String; ResType: String);
     // chrome doesn't support constructors not named "Create"
     class function CreateFromID(aInstance: THandle; ResID: Integer; ResType: String):TResourceStream;
+    procedure SetSize(NewSize: Int64); override;
     function Write(const Buffer: TBytes; OffSet: LongInt; Count: LongInt): LongInt; override;
     function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; override;
   end;
@@ -1951,6 +1950,26 @@ end;
 function TStream.Write(const Buffer: TBytes; Count: LongInt): LongInt;
 begin
   Result := Write(Buffer, 0, Count);
+end;
+
+function TStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
+begin
+
+end;
+
+function TStream.Write(Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
+begin
+
+end;
+
+function TStream.ReadLine: String;
+begin
+
+end;
+
+procedure TStream.WriteLine(Value: String);
+begin
+
 end;
 
 { THandleStream }
