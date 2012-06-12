@@ -1957,7 +1957,7 @@ begin
 
 end;
 
-function TStream.Write(Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
+function TStream.Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
 begin
 
 end;
