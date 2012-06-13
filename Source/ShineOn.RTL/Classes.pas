@@ -313,10 +313,10 @@ type
     procedure SetSize(const NewSize: Int64); virtual;abstract;
     function GetSize:Int64; virtual;
   public
-    function Read(var Buffer: TBytes; Count: LongInt): LongInt; virtual;
-    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual;
-    function Write(const Buffer: TBytes; Count: LongInt): LongInt; virtual;
-    function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual;
+    function Read(var Buffer: TBytes; Count: LongInt): LongInt;
+    function Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
+    function Write(const Buffer: TBytes; Count: LongInt): LongInt;
+    function Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt; virtual; abstract;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; virtual; abstract;
     function Seek(const Offset: Int64; Origin: Int32): Int64; 
     procedure ReadBuffer(var Buffer:array of Byte; Count: LongInt);
@@ -1950,16 +1950,6 @@ end;
 function TStream.Write(const Buffer: TBytes; Count: LongInt): LongInt;
 begin
   Result := Write(Buffer, 0, Count);
-end;
-
-function TStream.Read(var Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
-begin
-
-end;
-
-function TStream.Write(const Buffer: TBytes; Offset: LongInt; Count: LongInt): LongInt;
-begin
-
 end;
 
 function TStream.ReadLine: String;
