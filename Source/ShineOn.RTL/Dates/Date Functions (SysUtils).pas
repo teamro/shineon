@@ -429,9 +429,16 @@ method MaxDateTime: TDateTime; public; { 12/31/9999 11:59:59.999 PM }
 
 method FloatToDateTime(const Value: Extended): TDateTime; public;
 method TryFloatToDateTime(const Value: Extended; out AResult: TDateTime): Boolean; public;
-
+method ConvertErrorFmt(const ResString: DelphiString; const Args: array of Object {const});
+function DelphiEpoch: DateTime;
 
 implementation
+
+function DelphiEpoch: DateTime;
+begin
+  Result := new DateTime(1899,12,30,0,0,0,0);
+end;
+
 
 method ConvertError(const ResString: DelphiString);
 begin

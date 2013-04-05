@@ -154,11 +154,6 @@ const
 
 implementation
 
-function DelphiEpoch: DateTime;
-begin
-  Result := new DateTime(1899,12,30,0,0,0,0);
-end;
-
 function DateTimeToDouble(const AValue: DateTime): Double;
 begin
   Result := AValue.ToOADate;
